@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Reporting.WinForms;
 using static Proyecto_restaurante.menu;
 
 namespace Proyecto_restaurante
@@ -1649,175 +1650,72 @@ namespace Proyecto_restaurante
             }
         }
         
-        private void GenerarFacturaPDF(int idPedido, int cuenta)
+
+    private void GenerarFacturaPDF(int idPedido, int cuenta)
+    {
+        try
         {
-            try
+            string folderPath = @"C:\SistemaArchivos\Facturas\";
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+            string filePath = Path.Combine(folderPath, cuenta == 0 ? $"Pedido_{idPedido}.pdf" : $"Pedido_{idPedido}_Cuenta_{cuenta}.pdf");
+
+            DataTable dtDetalle = new DataTable();
+            using (SqlConnection con = new SqlConnection(conexionString))
             {
-                string folderPath = @"C:\SistemaArchivos\Facturas\";
+                string sqlDetalle = @"
+                SELECT p.Nombre AS Producto, d.Cantidad, d.PrecioUnitario, 
+                        (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
+                        (d.Cantidad * d.Itbis) AS Itbis, 
+                        (d.Cantidad * (d.PrecioUnitario + d.Itbis)) AS Total 
+                FROM DetallePedido d 
+                INNER JOIN ProductoVenta p ON p.IdProducto = d.IdProducto 
+                WHERE d.IdPedido = @id AND d.Cuenta = @cuenta";
 
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                string filePath = Path.Combine(
-                    folderPath,
-                    cuenta == 0
-                        ? $"Pedido_{idPedido}.pdf"
-                        : $"Pedido_{idPedido}_Cuenta_{cuenta}.pdf"
-                );
-
-                PdfSharp.Pdf.PdfDocument document = new PdfSharp.Pdf.PdfDocument();
-                document.Info.Title = $"Pedido {idPedido}";
-
-                PdfSharp.Pdf.PdfPage page = document.AddPage();
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-
-                XFont titleFont = new XFont("Segoe UI", 20, XFontStyleEx.Bold);
-                XFont headerFont = new XFont("Segoe UI", 12, XFontStyleEx.Bold);
-                XFont textFont = new XFont("Segoe UI", 12, XFontStyleEx.Regular);
-                XFont smallFont = new XFont("Segoe UI", 10, XFontStyleEx.Regular);
-
-                double currentY = 40;
-                double marginLeft = 30;
-                double lineHeight = 20;
-
-                gfx.DrawString(
-                    cuenta == 0 ? "ORDEN" : $"ORDEN - CUENTA {cuenta}",
-                    titleFont,
-                    XBrushes.Black,
-                    new XRect(0, currentY, page.Width, 40),
-                    XStringFormats.TopCenter
-                );
-
-                currentY += 50;
-
-                string nombreCliente = "", fecha = "", mesa = "", comprobante = "";
-
-                using (SqlConnection con = new SqlConnection(conexionString))
+                using (SqlCommand cmd = new SqlCommand(sqlDetalle, con))
                 {
-                    con.Open();
+                    cmd.Parameters.AddWithValue("@id", idPedido);
+                    cmd.Parameters.AddWithValue("@cuenta", cuenta);
 
-                    string sqlPedido = @"
-                    SELECT IdPedido, Fecha, NombreCliente, IdMesa, Comprobante 
-                    FROM Pedido 
-                    WHERE IdPedido = @id";
-
-                    using (SqlCommand cmd = new SqlCommand(sqlPedido, con))
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
-                        cmd.Parameters.AddWithValue("@id", idPedido);
-
-                        using (SqlDataReader dr = cmd.ExecuteReader())
-                        {
-                            if (dr.Read())
-                            {
-                                fecha = Convert.ToDateTime(dr["Fecha"]).ToString("dd/MM/yyyy HH:mm");
-                                nombreCliente = dr["NombreCliente"].ToString();
-                                mesa = dr["IdMesa"].ToString();
-                                comprobante = dr["Comprobante"]?.ToString() ?? "";
-                            }
-                        }
+                        da.Fill(dtDetalle);
                     }
                 }
+            }
 
-                gfx.DrawString($"Pedido: {idPedido}", headerFont, XBrushes.Black, marginLeft, currentY); currentY += lineHeight;
-                gfx.DrawString($"Cliente: {nombreCliente}", textFont, XBrushes.Black, marginLeft, currentY); currentY += lineHeight;
-                gfx.DrawString($"Mesa: {mesa}", textFont, XBrushes.Black, marginLeft, currentY); currentY += lineHeight;
-                gfx.DrawString($"Fecha: {fecha}", textFont, XBrushes.Black, marginLeft, currentY); currentY += lineHeight;
+            LocalReport reporte = new LocalReport();
 
-                if (!string.IsNullOrWhiteSpace(comprobante))
-                {
-                    gfx.DrawString($"Comprobante: {comprobante}", textFont, XBrushes.Black, marginLeft, currentY);
-                    currentY += lineHeight;
-                }
+            string rutaReporte = System.IO.Path.Combine(Application.StartupPath, "Reportes", "ReporteFactura.rdl");
 
-                currentY += 10;
-                gfx.DrawLine(XPens.Black, marginLeft, currentY, page.Width - marginLeft, currentY);
-                currentY += 20;
+            if (!System.IO.File.Exists(rutaReporte))
+            {
+                MessageBox.Show("No se encontró el diseño del reporte en la ruta:\n" + rutaReporte, "Archivo no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-                gfx.DrawString("DETALLE", headerFont, XBrushes.Black, marginLeft, currentY);
-                currentY += lineHeight;
+            reporte.ReportPath = rutaReporte;
 
-                double colProducto = marginLeft;
-                double colCant = marginLeft + 190;
-                double colPrecio = marginLeft + 245;
-                double colSubtotal = marginLeft + 335;
-                double colItbis = marginLeft + 415;
-                double colTotal = marginLeft + 475;
+            reporte.DataSources.Add(new ReportDataSource("DsFactura", dtDetalle));
 
-                gfx.DrawString("Producto", headerFont, XBrushes.Black, colProducto, currentY);
-                gfx.DrawString("Cant.", headerFont, XBrushes.Black, colCant, currentY);
-                gfx.DrawString("Precio Unit.", headerFont, XBrushes.Black, colPrecio, currentY);
-                gfx.DrawString("Subtotal", headerFont, XBrushes.Black, colSubtotal, currentY);
-                gfx.DrawString("ITBIS", headerFont, XBrushes.Black, colItbis, currentY);
-                gfx.DrawString("Total", headerFont, XBrushes.Black, colTotal, currentY);
+            byte[] pdfBytes = reporte.Render("PDF");
 
-                currentY += lineHeight;
-                gfx.DrawLine(XPens.Black, marginLeft, currentY, page.Width - marginLeft, currentY);
-                currentY += 10;
+            File.WriteAllBytes(filePath, pdfBytes);
 
-                decimal totalFactura = 0;
-
-                using (SqlConnection con = new SqlConnection(conexionString))
-                {
-                    con.Open();
-
-                    string sqlDetalle = @"
-                    SELECT d.Cantidad, 
-                           d.PrecioUnitario, 
-                           (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
-                           (d.Cantidad * d.Itbis) AS ItbisTotal, 
-                           (d.Cantidad * (d.PrecioUnitario + d.Itbis)) AS Total, 
-                           p.Nombre 
-                    FROM DetallePedido d 
-                    INNER JOIN ProductoVenta p ON p.IdProducto = d.IdProducto 
-                    WHERE d.IdPedido = @id AND d.Cuenta = @cuenta";
-
-                    using (SqlCommand cmd = new SqlCommand(sqlDetalle, con))
-                    {
-                        cmd.Parameters.AddWithValue("@id", idPedido);
-                        cmd.Parameters.AddWithValue("@cuenta", cuenta);
-
-                        using (SqlDataReader dr = cmd.ExecuteReader())
-                        {
-                            while (dr.Read())
-                            {
-                                string prod = dr["Nombre"].ToString();
-                                decimal cant = Convert.ToDecimal(dr["Cantidad"]);
-                                decimal precio = Convert.ToDecimal(dr["PrecioUnitario"]);
-                                decimal sub = Convert.ToDecimal(dr["Subtotal"]);
-                                decimal itbis = Convert.ToDecimal(dr["ItbisTotal"]);
-                                decimal total = Convert.ToDecimal(dr["Total"]);
-
-                                totalFactura += total;
-
-                                gfx.DrawString(prod, textFont, XBrushes.Black, colProducto, currentY);
-                                gfx.DrawString(cant.ToString(), textFont, XBrushes.Black, colCant, currentY);
-                                gfx.DrawString(precio.ToString("N2"), textFont, XBrushes.Black, colPrecio, currentY);
-                                gfx.DrawString(sub.ToString("N2"), textFont, XBrushes.Black, colSubtotal, currentY);
-                                gfx.DrawString(itbis.ToString("N2"), textFont, XBrushes.Black, colItbis, currentY);
-                                gfx.DrawString(total.ToString("N2"), textFont, XBrushes.Black, colTotal, currentY);
-
-                                currentY += lineHeight;
-                            }
-                        }
-                    }
-                }
-
-                currentY += 10;
-                gfx.DrawLine(XPens.Black, marginLeft, currentY, page.Width - marginLeft, currentY);
-                currentY += 20;
-
-                gfx.DrawString($"TOTAL: RD$ {totalFactura:N2}", titleFont, XBrushes.Black, colSubtotal, currentY);
-
-                document.Save(filePath);
-
-                using (FormVisorFactura visor = new FormVisorFactura(filePath))
-                {
-                    visor.ShowDialog();
-                }
+            using (FormVisorFactura visor = new FormVisorFactura(filePath))
+            {
+                visor.ShowDialog();
+            }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al generar el PDF: " + ex.Message);
+                string mensajeError = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    mensajeError += "\nDetalle interno: " + ex.InnerException.Message;
+                }
+
+                MessageBox.Show("Error al generar el PDF: " + mensajeError);
             }
         }
 

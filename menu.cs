@@ -588,13 +588,13 @@ namespace Proyecto_restaurante
         {
             foreach (Form f in this.MdiChildren)
             {
-                if (f is Reportes)
+                if (f is Reporteria)
                 {
                     f.BringToFront();
                     return;
                 }
             }
-            Reportes reportes = new Reportes();
+            Reporteria reportes = new Reporteria();
             reportes.Location = new Point(200, 50);
             reportes.MdiParent = this;
             reportes.Show();

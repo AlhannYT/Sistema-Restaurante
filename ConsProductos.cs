@@ -285,7 +285,7 @@ namespace Proyecto_restaurante
 
         private void Editar_Click(object sender, EventArgs e)
         {
-            //Pal futuro
+            //Pal futuro xd
         }
 
         private int ObtenerIdUnidadMedida(SqlConnection conexion, string nombreUM)

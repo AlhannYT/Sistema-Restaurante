@@ -2179,11 +2179,6 @@ namespace Proyecto_restaurante
                     {
                         txtPromedioResena.Text = Convert.ToDecimal(dr["Promedio"]).ToString("0.00");
                         txtCantidadResenas.Text = dr["Cantidad"].ToString();
-
-                        // Solo si tienes estos controles creados:
-                        // txtPromedioCalidad.Text = Convert.ToDecimal(dr["PromedioCalidad"]).ToString("0.00");
-                        // txtPromedioAmabilidad.Text = Convert.ToDecimal(dr["PromedioAmabilidad"]).ToString("0.00");
-                        // txtPromedioPuntualidad.Text = Convert.ToDecimal(dr["PromedioPuntualidad"]).ToString("0.00");
                     }
                 }
             }
