@@ -52,10 +52,12 @@
             button3 = new Button();
             defectochk = new CheckBox();
             contservidortxt = new TextBox();
+            DBTxt = new TextBox();
             usuarioservidortxt = new TextBox();
             servidortxt = new TextBox();
             salirsqlbtn = new Button();
             guardarbtn = new Button();
+            label8 = new Label();
             label5 = new Label();
             label4 = new Label();
             label6 = new Label();
@@ -271,10 +273,12 @@
             conexionpanel.Controls.Add(button3);
             conexionpanel.Controls.Add(defectochk);
             conexionpanel.Controls.Add(contservidortxt);
+            conexionpanel.Controls.Add(DBTxt);
             conexionpanel.Controls.Add(usuarioservidortxt);
             conexionpanel.Controls.Add(servidortxt);
             conexionpanel.Controls.Add(salirsqlbtn);
             conexionpanel.Controls.Add(guardarbtn);
+            conexionpanel.Controls.Add(label8);
             conexionpanel.Controls.Add(label5);
             conexionpanel.Controls.Add(label4);
             conexionpanel.Controls.Add(label6);
@@ -311,7 +315,7 @@
             // button6
             // 
             button6.Image = Properties.Resources.limpio;
-            button6.Location = new Point(442, 63);
+            button6.Location = new Point(442, 61);
             button6.Name = "button6";
             button6.Size = new Size(31, 25);
             button6.TabIndex = 5;
@@ -334,7 +338,7 @@
             defectochk.CheckAlign = ContentAlignment.MiddleRight;
             defectochk.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             defectochk.ForeColor = Color.White;
-            defectochk.Location = new Point(204, 193);
+            defectochk.Location = new Point(204, 207);
             defectochk.Name = "defectochk";
             defectochk.Size = new Size(194, 25);
             defectochk.TabIndex = 3;
@@ -343,31 +347,38 @@
             // 
             // contservidortxt
             // 
-            contservidortxt.Location = new Point(167, 159);
+            contservidortxt.Location = new Point(183, 172);
             contservidortxt.Name = "contservidortxt";
-            contservidortxt.Size = new Size(258, 23);
+            contservidortxt.Size = new Size(253, 23);
             contservidortxt.TabIndex = 2;
             contservidortxt.UseSystemPasswordChar = true;
             // 
+            // DBTxt
+            // 
+            DBTxt.Location = new Point(183, 100);
+            DBTxt.Name = "DBTxt";
+            DBTxt.Size = new Size(253, 23);
+            DBTxt.TabIndex = 2;
+            // 
             // usuarioservidortxt
             // 
-            usuarioservidortxt.Location = new Point(167, 112);
+            usuarioservidortxt.Location = new Point(183, 136);
             usuarioservidortxt.Name = "usuarioservidortxt";
-            usuarioservidortxt.Size = new Size(258, 23);
+            usuarioservidortxt.Size = new Size(253, 23);
             usuarioservidortxt.TabIndex = 2;
             // 
             // servidortxt
             // 
-            servidortxt.Location = new Point(167, 66);
+            servidortxt.Location = new Point(183, 64);
             servidortxt.Name = "servidortxt";
-            servidortxt.Size = new Size(258, 23);
+            servidortxt.Size = new Size(253, 23);
             servidortxt.TabIndex = 2;
             // 
             // salirsqlbtn
             // 
             salirsqlbtn.Image = Properties.Resources.salida;
             salirsqlbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            salirsqlbtn.Location = new Point(320, 228);
+            salirsqlbtn.Location = new Point(320, 242);
             salirsqlbtn.Name = "salirsqlbtn";
             salirsqlbtn.Size = new Size(104, 41);
             salirsqlbtn.TabIndex = 1;
@@ -380,7 +391,7 @@
             // 
             guardarbtn.Image = Properties.Resources.disco;
             guardarbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            guardarbtn.Location = new Point(150, 228);
+            guardarbtn.Location = new Point(150, 242);
             guardarbtn.Name = "guardarbtn";
             guardarbtn.Size = new Size(104, 41);
             guardarbtn.TabIndex = 1;
@@ -389,12 +400,23 @@
             guardarbtn.UseVisualStyleBackColor = true;
             guardarbtn.Click += guardarbtn_Click;
             // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label8.ForeColor = Color.White;
+            label8.Location = new Point(61, 99);
+            label8.Name = "label8";
+            label8.Size = new Size(118, 21);
+            label8.TabIndex = 0;
+            label8.Text = "Base De Datos";
+            // 
             // label5
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label5.ForeColor = Color.White;
-            label5.Location = new Point(61, 159);
+            label5.Location = new Point(61, 171);
             label5.Name = "label5";
             label5.Size = new Size(96, 21);
             label5.TabIndex = 0;
@@ -405,7 +427,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label4.ForeColor = Color.White;
-            label4.Location = new Point(61, 111);
+            label4.Location = new Point(61, 135);
             label4.Name = "label4";
             label4.Size = new Size(69, 21);
             label4.TabIndex = 0;
@@ -427,7 +449,7 @@
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label3.ForeColor = Color.White;
-            label3.Location = new Point(61, 65);
+            label3.Location = new Point(61, 63);
             label3.Name = "label3";
             label3.Size = new Size(75, 21);
             label3.TabIndex = 0;
@@ -585,6 +607,7 @@
             contAdmin.Name = "contAdmin";
             contAdmin.Size = new Size(258, 23);
             contAdmin.TabIndex = 5;
+            contAdmin.KeyPress += contAdmin_KeyPress;
             // 
             // usuAdmin
             // 
@@ -593,6 +616,7 @@
             usuAdmin.Name = "usuAdmin";
             usuAdmin.Size = new Size(258, 23);
             usuAdmin.TabIndex = 6;
+            usuAdmin.KeyPress += usuAdmin_KeyPress;
             // 
             // label1
             // 
@@ -725,5 +749,7 @@
         private Panel panelSesion;
         private PictureBox pictureBox3;
         private Panel AvisoDBIMG;
+        private TextBox DBTxt;
+        private Label label8;
     }
 }

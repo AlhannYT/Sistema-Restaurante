@@ -6,7 +6,7 @@ public static class ConexionBD
 {
     private static string rutaArchivo = @"C:\SistemaArchivos\Conexion\ConexionesSQL.txt";
 
-    private static string BaseDeDatos = "GloriaRestaurant";
+    //private static string BaseDeDatos = "GloriaRestaurant";
 
     private static Dictionary<string, string> datosConexion = new Dictionary<string, string>();
 
@@ -29,8 +29,9 @@ public static class ConexionBD
         var partes = lineaDefecto.Split('|');
 
         datosConexion["Servidor"] = partes[0];
-        datosConexion["Usuario"] = partes[1];
-        datosConexion["Contrasena"] = partes[2];
+        datosConexion["BaseDeDatos"] = partes[1];
+        datosConexion["Usuario"] = partes[2];
+        datosConexion["Contrasena"] = partes[3];
     }
 
     public static string ConexionSQL()
@@ -38,9 +39,10 @@ public static class ConexionBD
         LeerArchivo();
 
         string servidor = datosConexion.ContainsKey("Servidor") ? datosConexion["Servidor"] : "";
+        string baseDeDatos = datosConexion.ContainsKey("BaseDeDatos") ? datosConexion["BaseDeDatos"] : "";
         string usuario = datosConexion.ContainsKey("Usuario") ? datosConexion["Usuario"] : "";
         string contrasena = datosConexion.ContainsKey("Contrasena") ? datosConexion["Contrasena"] : "";
 
-        return $"Server={servidor};Database={BaseDeDatos};User Id={usuario};Password={contrasena};";
+        return $"Server={servidor};Database={baseDeDatos};User Id={usuario};Password={contrasena};";
     }
 }

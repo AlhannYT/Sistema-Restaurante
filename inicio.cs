@@ -225,6 +225,7 @@ namespace Proyecto_restaurante
         private void guardarbtn_Click(object sender, EventArgs e)
         {
             string servidor = servidortxt.Text.Trim();
+            string basededatos = DBTxt.Text.Trim();
             string usuario = usuarioservidortxt.Text.Trim();
             string contraseña = contservidortxt.Text.Trim();
             string porDefecto = defectochk.Checked ? "1" : "0";
@@ -252,14 +253,14 @@ namespace Proyecto_restaurante
 
                         if (mismaConexion)
                         {
-                            lineas.Add($"{servidor}|{usuario}|{contraseña}|{porDefecto}");
+                            lineas.Add($"{servidor}|{basededatos}|{usuario}|{contraseña}|{porDefecto}");
                             actualizada = true;
                         }
                         else
                         {
-                            if (partes[3] == "1" && porDefecto == "1" && !reemplazoHecho)
+                            if (partes[4] == "1" && porDefecto == "1" && !reemplazoHecho)
                             {
-                                partes[3] = "0";
+                                partes[4] = "0";
                                 reemplazoHecho = true;
                             }
 
@@ -270,7 +271,7 @@ namespace Proyecto_restaurante
             }
 
             if (!actualizada)
-                lineas.Add($"{servidor}|{usuario}|{contraseña}|{porDefecto}");
+                lineas.Add($"{servidor}|{basededatos}|{usuario}|{contraseña}|{porDefecto}");
 
             File.WriteAllLines(rutaArchivo, lineas);
 
@@ -294,6 +295,7 @@ namespace Proyecto_restaurante
 
             DataTable tabla = new DataTable();
             tabla.Columns.Add("Servidor");
+            tabla.Columns.Add("Base de Datos");
             tabla.Columns.Add("Usuario");
             tabla.Columns.Add("Contraseña");
             tabla.Columns.Add("PorDefecto");
@@ -303,9 +305,9 @@ namespace Proyecto_restaurante
             foreach (var linea in lineas)
             {
                 var partes = linea.Split('|');
-                if (partes.Length == 4)
+                if (partes.Length == 5)
                 {
-                    tabla.Rows.Add(partes[0], partes[1], partes[2], partes[3] == "1" ? "Sí" : "No");
+                    tabla.Rows.Add(partes[0], partes[1], partes[2], partes[3], partes[4] == "1" ? "Sí" : "No");
                 }
             }
 
@@ -326,6 +328,7 @@ namespace Proyecto_restaurante
                 DataGridViewRow fila = txtsql.Rows[e.RowIndex];
 
                 servidortxt.Text = fila.Cells["Servidor"].Value?.ToString();
+                DBTxt.Text = fila.Cells["Base de Datos"].Value?.ToString();
                 usuarioservidortxt.Text = fila.Cells["Usuario"].Value?.ToString();
                 contservidortxt.Text = fila.Cells["Contraseña"].Value?.ToString();
 
@@ -342,9 +345,10 @@ namespace Proyecto_restaurante
 
         private void button6_Click(object sender, EventArgs e)
         {
-            servidortxt.Text = "";
-            usuarioservidortxt.Text = "";
-            contservidortxt.Text = "";
+            servidortxt.Clear();
+            DBTxt.Clear();
+            usuarioservidortxt.Clear();
+            contservidortxt.Clear();
             defectochk.Checked = false;
         }
 
@@ -358,6 +362,7 @@ namespace Proyecto_restaurante
 
             DataGridViewRow fila = txtsql.SelectedRows[0];
             string servidor = fila.Cells["Servidor"].Value?.ToString();
+            string basededatos = fila.Cells["Base de Datos"].Value?.ToString();
             string usuario = fila.Cells["Usuario"].Value?.ToString();
             string contraseña = fila.Cells["Contraseña"].Value?.ToString();
             string porDefecto = fila.Cells["PorDefecto"].Value?.ToString() == "Sí" ? "1" : "0";
@@ -513,7 +518,7 @@ namespace Proyecto_restaurante
 
         private async void CrearDBbtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(servidortxt.Text) || string.IsNullOrEmpty(usuarioservidortxt.Text) || string.IsNullOrEmpty(contservidortxt.Text))
+            if (string.IsNullOrEmpty(servidortxt.Text) || string.IsNullOrEmpty(DBTxt.Text) || string.IsNullOrEmpty(usuarioservidortxt.Text) || string.IsNullOrEmpty(contservidortxt.Text))
             {
                 MessageBox.Show("Error: Campos vacíos.");
                 return;
@@ -523,12 +528,13 @@ namespace Proyecto_restaurante
             progressBar1.Value = 10;
 
             string servidor = servidortxt.Text;
+            string nombreDB = DBTxt.Text;
             string usuario = usuarioservidortxt.Text;
             string contraseña = contservidortxt.Text;
 
             string conexion = $"Server={servidor};Database=master;User Id={usuario};Password={contraseña};TrustServerCertificate=True;";
 
-            string nombreDB = "GloriaRestaurant";
+            //string nombreDB = "GloriaRestaurant";
 
             try
             {
@@ -551,7 +557,11 @@ namespace Proyecto_restaurante
 
                 progressBar1.Value = 50;
 
-                await Task.Run(() => EjecutarScript(conexion, ScriptDB.CrearBaseDatos));
+                string scriptOriginal = ScriptDB.CrearBaseDatos;
+
+                string scriptDinamico = scriptOriginal.Replace("GloriaRestaurant", nombreDB);
+
+                await Task.Run(() => EjecutarScript(conexion, scriptDinamico));
 
                 progressBar1.Value = 90;
 
@@ -642,9 +652,9 @@ namespace Proyecto_restaurante
 
         private void salirAutorBTN_Click(object sender, EventArgs e)
         {
+            autorizar.Visible = false;
             autorizar.Location = new Point(51, 436);
             autorizar.BringToFront();
-            autorizar.Visible = true;
 
             panelSesion.Enabled = true;
         }
@@ -654,7 +664,28 @@ namespace Proyecto_restaurante
             if (e.Alt && e.KeyCode == Keys.B)
             {
                 sqlbtn.Visible = true;
+                sqlbtn.PerformClick();
+                usuAdmin.Focus();
                 e.SuppressKeyPress = true;
+            }
+        }
+
+        private void usuAdmin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                contAdmin.Focus();
+                e.Handled = true;
+            }
+        }
+
+        private void contAdmin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                autorizarBTN.PerformClick();
+                autorizarBTN.Focus();
+                e.Handled = true;
             }
         }
     }
