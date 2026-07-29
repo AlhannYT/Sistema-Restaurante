@@ -19,7 +19,7 @@ public static class ConexionBD
 
         var lineas = File.ReadAllLines(rutaArchivo);
 
-        var lineaDefecto = lineas.Reverse().FirstOrDefault(l => l.Split('|').Length >= 4 && l.Split('|')[3] == "1");
+        var lineaDefecto = lineas.Reverse().FirstOrDefault(l => l.Split('|').Length >= 5 && l.Split('|')[4] == "1");
 
         if (lineaDefecto == null)
         {
