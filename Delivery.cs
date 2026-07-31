@@ -1254,24 +1254,23 @@ namespace Proyecto_restaurante
                     else if (canceladochk.Checked) estado = "Cancelado";
 
                     string query = @"
-                      SELECT 
-                      IdPedido,
-                      NombreCliente,
-                      IdMesa,
-                      Total,
-                       Estado,
-                      EstadoDelivery,
-                      Fecha
-                     FROM Pedido
-                    WHERE
-                     (NombreCliente LIKE @buscar
-                     OR CAST(IdPedido AS VARCHAR) LIKE @buscar
-                     OR CAST(IdMesa AS VARCHAR) LIKE @buscar
-                     OR CAST(Total AS VARCHAR) LIKE @buscar)
-                     AND Fecha >= @inicio
-                     AND Fecha <= @fin
-                     AND (@estado = '' OR Estado = @estado)
-                     ORDER BY Fecha DESC";
+                      SELECT idpedido,
+                               nombrecliente,
+                               idmesa,
+                               total,
+                               estado,
+                               estadodelivery,
+                               fecha
+                        FROM   pedido
+                        WHERE  ( nombrecliente LIKE @buscar
+                                  OR Cast(idpedido AS VARCHAR) LIKE @buscar
+                                  OR Cast(idmesa AS VARCHAR) LIKE @buscar
+                                  OR Cast(total AS VARCHAR) LIKE @buscar )
+                               AND fecha >= @inicio
+                               AND fecha <= @fin
+                               AND ( @estado = ''
+                                      OR estado = @estado )
+                        ORDER  BY fecha DESC ";
 
                     using (SqlCommand comando = new SqlCommand(query, conectar))
                     {
@@ -2065,12 +2064,12 @@ namespace Proyecto_restaurante
 
                 // Si ya existe un link activo para ese pedido, lo reutiliza
                 string sqlExiste = @"
-        SELECT TOP 1 Token
-        FROM dbo.LinkResenaDelivery
-        WHERE IdPedido = @IdPedido
-          AND Usado = 0
-          AND Expirado = 0
-        ORDER BY IdLinkResena DESC";
+                    SELECT TOP 1 Token
+                    FROM dbo.LinkResenaDelivery
+                    WHERE IdPedido = @IdPedido
+                      AND Usado = 0
+                      AND Expirado = 0
+                    ORDER BY IdLinkResena DESC";
 
                 using (SqlCommand cmdExiste = new SqlCommand(sqlExiste, con))
                 {
@@ -2088,8 +2087,8 @@ namespace Proyecto_restaurante
                 string tokenNuevo = GenerarTokenResena();
 
                 string sqlInsert = @"
-        INSERT INTO dbo.LinkResenaDelivery (IdPedido, Token, TelefonoDestino, Expirado, Usado)
-        VALUES (@IdPedido, @Token, @TelefonoDestino, 0, 0)";
+                INSERT INTO dbo.LinkResenaDelivery (IdPedido, Token, TelefonoDestino, Expirado, Usado)
+                VALUES (@IdPedido, @Token, @TelefonoDestino, 0, 0)";
 
                 using (SqlCommand cmdInsert = new SqlCommand(sqlInsert, con))
                 {
@@ -2114,10 +2113,10 @@ namespace Proyecto_restaurante
                 con.Open();
 
                 string sql = @"
-        SELECT TOP 1 Zona
-        FROM dbo.SectorZona
-        WHERE UPPER(@Direccion) LIKE '%' + UPPER(Sector) + '%'
-        ORDER BY LEN(Sector) DESC;";
+                SELECT TOP 1 Zona
+                FROM dbo.SectorZona
+                WHERE UPPER(@Direccion) LIKE '%' + UPPER(Sector) + '%'
+                ORDER BY LEN(Sector) DESC;";
 
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {
@@ -2234,11 +2233,6 @@ namespace Proyecto_restaurante
 
             if (dgvUltimasResenas.Columns.Contains("FechaResena"))
                 dgvUltimasResenas.Columns["FechaResena"].HeaderText = "Fecha";
-        }
-
-        private void label18_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void tabPage1_Click(object sender, EventArgs e)
