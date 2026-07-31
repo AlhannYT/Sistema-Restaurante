@@ -1568,6 +1568,7 @@ namespace Proyecto_restaurante
                         AND Fecha >= @inicio
                         AND Fecha <= @fin
                         AND (@estado = '' OR Estado = @estado)
+	                    AND IdMesa IS NOT NULL
                     ORDER BY Fecha DESC";
 
                     using (SqlCommand comando = new SqlCommand(query, conectar))

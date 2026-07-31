@@ -6,8 +6,6 @@ public static class ConexionBD
 {
     private static string rutaArchivo = @"C:\SistemaArchivos\Conexion\ConexionesSQL.txt";
 
-    //private static string BaseDeDatos = "GloriaRestaurant";
-
     private static Dictionary<string, string> datosConexion = new Dictionary<string, string>();
 
     private static void LeerArchivo()

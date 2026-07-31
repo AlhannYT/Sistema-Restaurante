@@ -542,7 +542,7 @@ namespace Proyecto_restaurante
 
         private void labelfecha_Click(object sender, EventArgs e)
         {
-            if(estadobarra == 1)
+            if (estadobarra == 1)
             {
                 cambiarfechapanel.Location = new Point(667, 73);
                 cambiarfechapanel.Visible = !cambiarfechapanel.Visible;

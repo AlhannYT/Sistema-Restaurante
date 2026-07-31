@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-07-27T05:45:10.5228965Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-07-31T03:43:17.7378682Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -497,7 +497,7 @@
             </Style>
           </Tablix>
           <Line Name="Line1">
-            <Top>1.71662cm</Top>
+            <Top>2.35162cm</Top>
             <Left>0.47308cm</Left>
             <Height>0cm</Height>
             <Width>15cm</Width>
@@ -521,6 +521,38 @@
               </RightBorder>
             </Style>
           </Line>
+          <Textbox Name="Textbox25">
+            <rd:DefaultName>Textbox24</rd:DefaultName>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Detalle orden</Value>
+                    <Style>
+                      <FontSize>12pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>1.54878cm</Top>
+            <Left>0.47308cm</Left>
+            <Height>0.62645cm</Height>
+            <Width>5.96604cm</Width>
+            <ZIndex>2</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <Height>2.99202in</Height>
         <Style />
@@ -549,7 +581,7 @@
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <Top>0.52599cm</Top>
+              <Top>0.64919cm</Top>
               <Left>0.47308cm</Left>
               <Height>1.15562cm</Height>
               <Width>5.96604cm</Width>

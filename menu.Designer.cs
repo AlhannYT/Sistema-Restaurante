@@ -65,9 +65,7 @@
             button1 = new Button();
             creditoslabel = new Label();
             abrirtTV = new Button();
-            abrirTablet = new Button();
             label4 = new Label();
-            label5 = new Label();
             oculto = new Panel();
             recargarbtn = new Button();
             toolTip1 = new ToolTip(components);
@@ -578,19 +576,19 @@
             creditoslabel.AutoSize = true;
             creditoslabel.BackColor = Color.Transparent;
             creditoslabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            creditoslabel.Location = new Point(692, 1);
+            creditoslabel.Location = new Point(743, 1);
             creditoslabel.Margin = new Padding(2, 0, 2, 0);
             creditoslabel.Name = "creditoslabel";
-            creditoslabel.Size = new Size(331, 21);
+            creditoslabel.Size = new Size(280, 21);
             creditoslabel.TabIndex = 2;
-            creditoslabel.Text = "Wilder (2-21-0179) / Alhann (2-21-0018) ©";
+            creditoslabel.Text = "Alhann Jiménez (Tel: 829-641-2172)";
             // 
             // abrirtTV
             // 
             abrirtTV.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             abrirtTV.Cursor = Cursors.Hand;
             abrirtTV.Image = Properties.Resources.tv;
-            abrirtTV.Location = new Point(129, 48);
+            abrirtTV.Location = new Point(108, 3);
             abrirtTV.Margin = new Padding(2);
             abrirtTV.Name = "abrirtTV";
             abrirtTV.Size = new Size(44, 38);
@@ -599,20 +597,6 @@
             abrirtTV.UseVisualStyleBackColor = true;
             abrirtTV.Click += abrirtTV_Click;
             // 
-            // abrirTablet
-            // 
-            abrirTablet.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            abrirTablet.Cursor = Cursors.Hand;
-            abrirTablet.Image = Properties.Resources.tablet;
-            abrirTablet.Location = new Point(129, 4);
-            abrirTablet.Margin = new Padding(2);
-            abrirTablet.Name = "abrirTablet";
-            abrirTablet.Size = new Size(44, 38);
-            abrirTablet.TabIndex = 0;
-            abrirTablet.TextAlign = ContentAlignment.MiddleLeft;
-            abrirTablet.UseVisualStyleBackColor = true;
-            abrirTablet.Click += abrirTablet_Click;
-            // 
             // label4
             // 
             label4.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -620,26 +604,12 @@
             label4.BackColor = Color.FromArgb(64, 64, 64);
             label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.White;
-            label4.Location = new Point(32, 57);
+            label4.Location = new Point(11, 12);
             label4.Margin = new Padding(2, 0, 2, 0);
             label4.Name = "label4";
             label4.Size = new Size(94, 21);
             label4.TabIndex = 2;
             label4.Text = "Sistema TV";
-            // 
-            // label5
-            // 
-            label5.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label5.AutoSize = true;
-            label5.BackColor = Color.FromArgb(64, 64, 64);
-            label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.ForeColor = Color.White;
-            label5.Location = new Point(5, 13);
-            label5.Margin = new Padding(2, 0, 2, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(121, 21);
-            label5.TabIndex = 2;
-            label5.Text = "Sistema Tablet";
             // 
             // oculto
             // 
@@ -667,9 +637,9 @@
             // 
             deslizar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             deslizar.Image = Properties.Resources.flechaizquierdaroja;
-            deslizar.Location = new Point(1230, 722);
+            deslizar.Location = new Point(1230, 767);
             deslizar.Name = "deslizar";
-            deslizar.Size = new Size(33, 89);
+            deslizar.Size = new Size(33, 44);
             deslizar.TabIndex = 26;
             toolTip1.SetToolTip(deslizar, "Sistemas de simulación");
             deslizar.UseVisualStyleBackColor = true;
@@ -704,13 +674,11 @@
             // 
             sistemasPanel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             sistemasPanel.BackColor = Color.FromArgb(64, 64, 64);
-            sistemasPanel.Controls.Add(abrirTablet);
             sistemasPanel.Controls.Add(label4);
-            sistemasPanel.Controls.Add(label5);
             sistemasPanel.Controls.Add(abrirtTV);
-            sistemasPanel.Location = new Point(1053, 722);
+            sistemasPanel.Location = new Point(1074, 767);
             sistemasPanel.Name = "sistemasPanel";
-            sistemasPanel.Size = new Size(177, 90);
+            sistemasPanel.Size = new Size(156, 45);
             sistemasPanel.TabIndex = 25;
             sistemasPanel.Visible = false;
             // 
@@ -857,9 +825,7 @@
         private Label label3;
         private Button reportesbtn;
         public Button abrirtTV;
-        public Button abrirTablet;
         public Label label4;
-        public Label label5;
         private Panel oculto;
         public Button recargarbtn;
         private Button button1;
