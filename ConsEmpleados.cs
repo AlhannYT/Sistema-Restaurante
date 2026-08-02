@@ -380,19 +380,19 @@ namespace Proyecto_restaurante
             EmpleadoID = 0;
             PersonaID = 0;
 
-            if (numeroEmpleado.ColumnCount == 0)
-            {
-                numeroEmpleado.Columns.Add("nombre", "Etiqueta");
-                numeroEmpleado.Columns.Add("numero", "Número");
-                numeroEmpleado.Columns.Add("principal", "Principal");
-            }
+            //if (numeroEmpleado.ColumnCount == 0)
+            //{
+            //    numeroEmpleado.Columns.Add("nombre", "Etiqueta");
+            //    numeroEmpleado.Columns.Add("numero", "Número");
+            //    numeroEmpleado.Columns.Add("principal", "Principal");
+            //}
 
-            if (direccionEmpleado.ColumnCount == 0)
-            {
-                direccionEmpleado.Columns.Add("nombre", "Etiqueta");
-                direccionEmpleado.Columns.Add("direccion", "Dirección");
-                direccionEmpleado.Columns.Add("principal", "Principal");
-            }
+            //if (direccionEmpleado.ColumnCount == 0)
+            //{
+            //    direccionEmpleado.Columns.Add("nombre", "Etiqueta");
+            //    direccionEmpleado.Columns.Add("direccion", "Dirección");
+            //    direccionEmpleado.Columns.Add("principal", "Principal");
+            //}
         }
 
         private void puestoconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -530,7 +530,7 @@ namespace Proyecto_restaurante
                 numeroEmpleado.Rows.RemoveAt(fila);
                 EliminarNum = 0;
 
-                if(numeroEmpleado.Rows.Count == 0)
+                if (numeroEmpleado.Rows.Count == 0)
                 {
                     TelActivado = 0;
                 }
@@ -549,7 +549,7 @@ namespace Proyecto_restaurante
                 direccionEmpleado.Rows.RemoveAt(fila);
                 EliminarDir = 0;
 
-                if(direccionEmpleado.Rows.Count == 0)
+                if (direccionEmpleado.Rows.Count == 0)
                 {
                     DirActivado = 0;
                 }
@@ -740,6 +740,30 @@ namespace Proyecto_restaurante
             nombredirecciontxt.Clear();
             direcciontxt.Clear();
             principalDireccion.Checked = false;
+        }
+
+        private void numerotxt_TextChanged(object sender, EventArgs e)
+        {
+            string posNum = numerotxt.Text;
+            posNum = posNum.Replace("-", "");
+
+            if (posNum.Length > 10)
+            {
+                posNum = posNum.Substring(0, 10);
+            }
+
+            if (posNum.Length > 3)
+            {
+                posNum = posNum.Insert(3, "-");
+            }
+
+            if (posNum.Length > 7)
+            {
+                posNum = posNum.Insert(7, "-");
+            }
+
+            numerotxt.Text = posNum;
+            numerotxt.SelectionStart = numerotxt.Text.Length;
         }
     }
 }

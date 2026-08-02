@@ -2423,6 +2423,26 @@ namespace Proyecto_restaurante.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ubicacion_del_terreno {
+            get {
+                object obj = ResourceManager.GetObject("ubicacion-del-terreno", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ubicacion_del_terreno__1_ {
+            get {
+                object obj = ResourceManager.GetObject("ubicacion-del-terreno (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap unir {
             get {
                 object obj = ResourceManager.GetObject("unir", resourceCulture);

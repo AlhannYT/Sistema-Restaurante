@@ -47,24 +47,28 @@
             panel8 = new Panel();
             cmbZonaEntrega = new ComboBox();
             idrepartidor = new TextBox();
-            button3 = new Button();
             repartidorbtn = new Button();
             label22 = new Label();
+            pictureBox7 = new PictureBox();
+            pictureBox6 = new PictureBox();
+            pictureBox4 = new PictureBox();
             repartidorlabel = new Label();
             nombrerepartidor = new TextBox();
             txtVehiculoAsignado = new TextBox();
-            button2 = new Button();
             vehiculolabel = new Label();
             label18 = new Label();
             txtMotivoAsignacion = new TextBox();
-            panel4 = new Panel();
+            panel29 = new Panel();
+            panelBloqueoNCF = new Panel();
             tipoComp = new ComboBox();
             label40 = new Label();
             Comprobantetxt = new TextBox();
             labelcaja = new Label();
             panel9 = new Panel();
             labelsubtotal = new Label();
+            itbisLBL = new Label();
             labeltotal = new Label();
+            label23 = new Label();
             label7 = new Label();
             label3 = new Label();
             fechapedido = new DateTimePicker();
@@ -203,7 +207,10 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel8.SuspendLayout();
-            panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            panel29.SuspendLayout();
             panel9.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -263,7 +270,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(509, 323);
             panel1.TabIndex = 1;
-            panel1.Paint += panel1_Paint;
             // 
             // pictureBox3
             // 
@@ -420,13 +426,14 @@
             panel8.BackColor = Color.DimGray;
             panel8.Controls.Add(cmbZonaEntrega);
             panel8.Controls.Add(idrepartidor);
-            panel8.Controls.Add(button3);
             panel8.Controls.Add(repartidorbtn);
             panel8.Controls.Add(label22);
+            panel8.Controls.Add(pictureBox7);
+            panel8.Controls.Add(pictureBox6);
+            panel8.Controls.Add(pictureBox4);
             panel8.Controls.Add(repartidorlabel);
             panel8.Controls.Add(nombrerepartidor);
             panel8.Controls.Add(txtVehiculoAsignado);
-            panel8.Controls.Add(button2);
             panel8.Controls.Add(vehiculolabel);
             panel8.Controls.Add(label18);
             panel8.Controls.Add(txtMotivoAsignacion);
@@ -437,6 +444,7 @@
             // 
             // cmbZonaEntrega
             // 
+            cmbZonaEntrega.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbZonaEntrega.FormattingEnabled = true;
             cmbZonaEntrega.Location = new Point(138, 79);
             cmbZonaEntrega.Margin = new Padding(3, 2, 3, 2);
@@ -453,16 +461,6 @@
             idrepartidor.PlaceholderText = "ID";
             idrepartidor.Size = new Size(45, 29);
             idrepartidor.TabIndex = 0;
-            // 
-            // button3
-            // 
-            button3.Image = Properties.Resources._3_rayas;
-            button3.Location = new Point(3, 116);
-            button3.Name = "button3";
-            button3.RightToLeft = RightToLeft.No;
-            button3.Size = new Size(29, 29);
-            button3.TabIndex = 14;
-            button3.UseVisualStyleBackColor = true;
             // 
             // repartidorbtn
             // 
@@ -486,6 +484,42 @@
             label22.Size = new Size(57, 21);
             label22.TabIndex = 12;
             label22.Text = "Zona: ";
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.BackColor = SystemColors.Window;
+            pictureBox7.Image = Properties.Resources._3_rayas;
+            pictureBox7.Location = new Point(3, 116);
+            pictureBox7.Margin = new Padding(3, 2, 3, 2);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new Size(27, 29);
+            pictureBox7.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox7.TabIndex = 4;
+            pictureBox7.TabStop = false;
+            // 
+            // pictureBox6
+            // 
+            pictureBox6.BackColor = SystemColors.Window;
+            pictureBox6.Image = Properties.Resources.ubicacion_del_terreno;
+            pictureBox6.Location = new Point(3, 79);
+            pictureBox6.Margin = new Padding(3, 2, 3, 2);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new Size(27, 29);
+            pictureBox6.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox6.TabIndex = 4;
+            pictureBox6.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.BackColor = SystemColors.Window;
+            pictureBox4.Image = Properties.Resources.delivery;
+            pictureBox4.Location = new Point(3, 42);
+            pictureBox4.Margin = new Padding(3, 2, 3, 2);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(27, 29);
+            pictureBox4.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox4.TabIndex = 4;
+            pictureBox4.TabStop = false;
             // 
             // repartidorlabel
             // 
@@ -518,17 +552,6 @@
             txtVehiculoAsignado.PlaceholderText = "Vehiculo";
             txtVehiculoAsignado.Size = new Size(351, 29);
             txtVehiculoAsignado.TabIndex = 7;
-            txtVehiculoAsignado.TextChanged += textBox2_TextChanged;
-            // 
-            // button2
-            // 
-            button2.Image = Properties.Resources.delivery1;
-            button2.Location = new Point(3, 42);
-            button2.Name = "button2";
-            button2.RightToLeft = RightToLeft.No;
-            button2.Size = new Size(29, 29);
-            button2.TabIndex = 11;
-            button2.UseVisualStyleBackColor = true;
             // 
             // vehiculolabel
             // 
@@ -564,22 +587,32 @@
             txtMotivoAsignacion.Size = new Size(351, 29);
             txtMotivoAsignacion.TabIndex = 10;
             // 
-            // panel4
+            // panel29
             // 
-            panel4.BackColor = SystemColors.WindowFrame;
-            panel4.Controls.Add(tipoComp);
-            panel4.Controls.Add(label40);
-            panel4.Controls.Add(Comprobantetxt);
-            panel4.Controls.Add(labelcaja);
-            panel4.Controls.Add(panel9);
-            panel4.Controls.Add(fechapedido);
-            panel4.Controls.Add(limpiarbtn);
-            panel4.Controls.Add(label11);
-            panel4.Controls.Add(guardarpedidobtn);
-            panel4.Location = new Point(518, 5);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(281, 217);
-            panel4.TabIndex = 2;
+            panel29.BackColor = SystemColors.WindowFrame;
+            panel29.Controls.Add(panelBloqueoNCF);
+            panel29.Controls.Add(tipoComp);
+            panel29.Controls.Add(label40);
+            panel29.Controls.Add(Comprobantetxt);
+            panel29.Controls.Add(labelcaja);
+            panel29.Controls.Add(panel9);
+            panel29.Controls.Add(fechapedido);
+            panel29.Controls.Add(limpiarbtn);
+            panel29.Controls.Add(label11);
+            panel29.Controls.Add(guardarpedidobtn);
+            panel29.Location = new Point(518, 5);
+            panel29.Name = "panel29";
+            panel29.Size = new Size(281, 253);
+            panel29.TabIndex = 2;
+            // 
+            // panelBloqueoNCF
+            // 
+            panelBloqueoNCF.BackColor = Color.Red;
+            panelBloqueoNCF.Location = new Point(6, 51);
+            panelBloqueoNCF.Name = "panelBloqueoNCF";
+            panelBloqueoNCF.Size = new Size(271, 3);
+            panelBloqueoNCF.TabIndex = 9;
+            panelBloqueoNCF.Visible = false;
             // 
             // tipoComp
             // 
@@ -587,7 +620,7 @@
             tipoComp.DropDownStyle = ComboBoxStyle.DropDownList;
             tipoComp.FormattingEnabled = true;
             tipoComp.Items.AddRange(new object[] { "B01", "B02" });
-            tipoComp.Location = new Point(95, 3);
+            tipoComp.Location = new Point(95, 37);
             tipoComp.Name = "tipoComp";
             tipoComp.Size = new Size(50, 29);
             tipoComp.TabIndex = 7;
@@ -598,7 +631,7 @@
             label40.AutoSize = true;
             label40.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label40.ForeColor = SystemColors.Control;
-            label40.Location = new Point(3, 7);
+            label40.Location = new Point(3, 41);
             label40.Name = "label40";
             label40.Size = new Size(45, 21);
             label40.TabIndex = 8;
@@ -607,7 +640,7 @@
             // Comprobantetxt
             // 
             Comprobantetxt.Enabled = false;
-            Comprobantetxt.Location = new Point(147, 3);
+            Comprobantetxt.Location = new Point(147, 37);
             Comprobantetxt.Name = "Comprobantetxt";
             Comprobantetxt.Size = new Size(128, 29);
             Comprobantetxt.TabIndex = 6;
@@ -618,7 +651,7 @@
             labelcaja.AutoSize = true;
             labelcaja.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             labelcaja.ForeColor = SystemColors.Control;
-            labelcaja.Location = new Point(3, 36);
+            labelcaja.Location = new Point(3, 77);
             labelcaja.Name = "labelcaja";
             labelcaja.Size = new Size(51, 21);
             labelcaja.TabIndex = 5;
@@ -628,12 +661,14 @@
             // 
             panel9.BackColor = Color.FromArgb(64, 64, 64);
             panel9.Controls.Add(labelsubtotal);
+            panel9.Controls.Add(itbisLBL);
             panel9.Controls.Add(labeltotal);
+            panel9.Controls.Add(label23);
             panel9.Controls.Add(label7);
             panel9.Controls.Add(label3);
-            panel9.Location = new Point(6, 151);
+            panel9.Location = new Point(6, 168);
             panel9.Name = "panel9";
-            panel9.Size = new Size(269, 54);
+            panel9.Size = new Size(269, 78);
             panel9.TabIndex = 1;
             // 
             // labelsubtotal
@@ -647,23 +682,45 @@
             labelsubtotal.TabIndex = 3;
             labelsubtotal.Text = "0";
             // 
+            // itbisLBL
+            // 
+            itbisLBL.AutoSize = true;
+            itbisLBL.Font = new Font("Segoe UI", 12F);
+            itbisLBL.ForeColor = SystemColors.Control;
+            itbisLBL.Location = new Point(60, 26);
+            itbisLBL.Name = "itbisLBL";
+            itbisLBL.Size = new Size(19, 21);
+            itbisLBL.TabIndex = 3;
+            itbisLBL.Text = "0";
+            // 
             // labeltotal
             // 
             labeltotal.AutoSize = true;
             labeltotal.Font = new Font("Segoe UI", 12F);
             labeltotal.ForeColor = SystemColors.Control;
-            labeltotal.Location = new Point(58, 28);
+            labeltotal.Location = new Point(58, 46);
             labeltotal.Name = "labeltotal";
             labeltotal.Size = new Size(19, 21);
             labeltotal.TabIndex = 3;
             labeltotal.Text = "0";
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label23.ForeColor = SystemColors.Control;
+            label23.Location = new Point(4, 26);
+            label23.Name = "label23";
+            label23.Size = new Size(52, 21);
+            label23.TabIndex = 3;
+            label23.Text = "ITBIS:";
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label7.ForeColor = SystemColors.Control;
-            label7.Location = new Point(4, 28);
+            label7.Location = new Point(4, 47);
             label7.Name = "label7";
             label7.Size = new Size(52, 21);
             label7.TabIndex = 3;
@@ -684,7 +741,7 @@
             // 
             fechapedido.Enabled = false;
             fechapedido.Format = DateTimePickerFormat.Short;
-            fechapedido.Location = new Point(147, 62);
+            fechapedido.Location = new Point(147, 2);
             fechapedido.Name = "fechapedido";
             fechapedido.Size = new Size(128, 29);
             fechapedido.TabIndex = 4;
@@ -694,7 +751,7 @@
             limpiarbtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             limpiarbtn.Image = Properties.Resources.nuevo;
             limpiarbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            limpiarbtn.Location = new Point(147, 95);
+            limpiarbtn.Location = new Point(147, 110);
             limpiarbtn.Name = "limpiarbtn";
             limpiarbtn.Size = new Size(128, 52);
             limpiarbtn.TabIndex = 0;
@@ -707,7 +764,7 @@
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label11.ForeColor = SystemColors.Control;
-            label11.Location = new Point(3, 66);
+            label11.Location = new Point(3, 6);
             label11.Name = "label11";
             label11.Size = new Size(126, 20);
             label11.TabIndex = 3;
@@ -719,7 +776,7 @@
             guardarpedidobtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             guardarpedidobtn.Image = Properties.Resources.guardar;
             guardarpedidobtn.ImageAlign = ContentAlignment.MiddleLeft;
-            guardarpedidobtn.Location = new Point(6, 95);
+            guardarpedidobtn.Location = new Point(6, 110);
             guardarpedidobtn.Name = "guardarpedidobtn";
             guardarpedidobtn.Size = new Size(128, 52);
             guardarpedidobtn.TabIndex = 0;
@@ -751,15 +808,14 @@
             tabPage1.Controls.Add(panelclientes);
             tabPage1.Controls.Add(panel2);
             tabPage1.Controls.Add(panel1);
-            tabPage1.Controls.Add(panel4);
+            tabPage1.Controls.Add(panel29);
             tabPage1.Controls.Add(panel3);
             tabPage1.Location = new Point(4, 30);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1916, 1001);
+            tabPage1.Size = new Size(804, 753);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Creación";
-            tabPage1.Click += tabPage1_Click;
             // 
             // notapanel
             // 
@@ -787,7 +843,7 @@
             btnAsignarAutomatico.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnAsignarAutomatico.Image = Properties.Resources.repartidor;
             btnAsignarAutomatico.ImageAlign = ContentAlignment.MiddleLeft;
-            btnAsignarAutomatico.Location = new Point(562, 244);
+            btnAsignarAutomatico.Location = new Point(561, 264);
             btnAsignarAutomatico.Name = "btnAsignarAutomatico";
             btnAsignarAutomatico.Size = new Size(204, 58);
             btnAsignarAutomatico.TabIndex = 1;
@@ -1180,7 +1236,7 @@
             tabPage6.Controls.Add(panelComanda);
             tabPage6.Location = new Point(4, 30);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new Size(1916, 1001);
+            tabPage6.Size = new Size(804, 753);
             tabPage6.TabIndex = 2;
             tabPage6.Text = "Comanda";
             // 
@@ -1295,7 +1351,6 @@
             tabPage2.Size = new Size(804, 753);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Pedidos";
-            tabPage2.Click += tabPage2_Click;
             // 
             // panelResenas
             // 
@@ -1304,12 +1359,11 @@
             panelResenas.Controls.Add(lblTituloResenas);
             panelResenas.Controls.Add(btnCerrarResenas);
             panelResenas.Controls.Add(dgvUltimasResenas);
-            panelResenas.Location = new Point(889, 92);
+            panelResenas.Location = new Point(810, 703);
             panelResenas.Name = "panelResenas";
             panelResenas.Size = new Size(781, 600);
             panelResenas.TabIndex = 38;
             panelResenas.Visible = false;
-            panelResenas.Paint += panel6_Paint;
             // 
             // lblTituloResenas
             // 
@@ -1416,7 +1470,6 @@
             txtPromedioResena.Size = new Size(42, 32);
             txtPromedioResena.TabIndex = 32;
             txtPromedioResena.Text = "4.7";
-            txtPromedioResena.TextChanged += textBox2_TextChanged_1;
             // 
             // lblPromedioResena
             // 
@@ -1429,7 +1482,6 @@
             lblPromedioResena.Size = new Size(231, 32);
             lblPromedioResena.TabIndex = 31;
             lblPromedioResena.Text = "Promedio Reseñas:";
-            lblPromedioResena.Click += label23_Click_2;
             // 
             // opcionesCarpeta
             // 
@@ -1485,7 +1537,7 @@
             detallepanelcompleto.BackColor = Color.Gray;
             detallepanelcompleto.Controls.Add(detallepagopanel);
             detallepanelcompleto.Controls.Add(devueltapanel);
-            detallepanelcompleto.Location = new Point(1744, 77);
+            detallepanelcompleto.Location = new Point(809, 3);
             detallepanelcompleto.Name = "detallepanelcompleto";
             detallepanelcompleto.Size = new Size(810, 680);
             detallepanelcompleto.TabIndex = 15;
@@ -2252,8 +2304,11 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
-            panel4.ResumeLayout(false);
-            panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            panel29.ResumeLayout(false);
+            panel29.PerformLayout();
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
             tabControl1.ResumeLayout(false);
@@ -2324,7 +2379,7 @@
         private TextBox txtidpedido;
         private TextBox txtnombrecompleto;
         private Label repartidorlabel;
-        private Panel panel4;
+        private Panel panel29;
         private Label labelcaja;
         private Panel panel9;
         private Label labelsubtotal;
@@ -2464,10 +2519,8 @@
         private TextBox txtVehiculoAsignado;
         private TextBox txtMotivoAsignacion;
         private Button btnAsignarAutomatico;
-        private Button button2;
         private Label label22;
         private ComboBox cmbZonaEntrega;
-        private Button button3;
         private TextBox txtPromedioResena;
         private Button button1;
         private Button button6;
@@ -2480,5 +2533,11 @@
         private Button btnCerrarResenas;
         private Label lblTituloResenas;
         private Panel panel8;
+        private Panel panelBloqueoNCF;
+        private PictureBox pictureBox7;
+        private PictureBox pictureBox6;
+        private PictureBox pictureBox4;
+        private Label itbisLBL;
+        private Label label23;
     }
 }

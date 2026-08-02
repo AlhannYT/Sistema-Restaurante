@@ -395,24 +395,6 @@ namespace Proyecto_restaurante
             empleados.Show();
         }
 
-        private void abrirTablet_Click(object sender, EventArgs e)
-        {
-            foreach (Form f in this.MdiChildren)
-            {
-                if (f is TabletSistema)
-                {
-                    f.BringToFront();
-                    return;
-                }
-            }
-            TabletSistema tablet = new TabletSistema();
-            tablet.IdUsuario = IdUsuarioActual;
-            tablet.NombreUsuario = usuarioActual;
-            tablet.Location = new Point(200, 50);
-            tablet.MdiParent = this;
-            tablet.Show();
-        }
-
         private void abrirtTV_Click(object sender, EventArgs e)
         {
             foreach (Form f in this.MdiChildren)

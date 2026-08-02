@@ -119,12 +119,14 @@
             txtprecioproducto = new TextBox();
             txtcodigoproducto = new TextBox();
             panel4 = new Panel();
+            panelBloqueoNCF = new Panel();
             tipoComp = new ComboBox();
             label40 = new Label();
-            labelcaja = new Label();
             panel9 = new Panel();
             labelsubtotal = new Label();
+            itbisLBL = new Label();
             labeltotal = new Label();
+            label25 = new Label();
             label7 = new Label();
             label3 = new Label();
             fechapedido = new DateTimePicker();
@@ -134,6 +136,7 @@
             Comprobantetxt = new TextBox();
             panel1 = new Panel();
             tipodoccmbx = new ComboBox();
+            labelcaja = new Label();
             rnc = new TextBox();
             numerotxt = new TextBox();
             pictureBox2 = new PictureBox();
@@ -1314,7 +1317,7 @@
             // 
             numCantidad.Enabled = false;
             numCantidad.Location = new Point(512, 11);
-            numCantidad.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numCantidad.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             numCantidad.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numCantidad.Name = "numCantidad";
             numCantidad.Size = new Size(76, 29);
@@ -1363,9 +1366,9 @@
             // panel4
             // 
             panel4.BackColor = SystemColors.WindowFrame;
+            panel4.Controls.Add(panelBloqueoNCF);
             panel4.Controls.Add(tipoComp);
             panel4.Controls.Add(label40);
-            panel4.Controls.Add(labelcaja);
             panel4.Controls.Add(panel9);
             panel4.Controls.Add(fechapedido);
             panel4.Controls.Add(limpiarbtn);
@@ -1377,13 +1380,22 @@
             panel4.Size = new Size(281, 211);
             panel4.TabIndex = 0;
             // 
+            // panelBloqueoNCF
+            // 
+            panelBloqueoNCF.BackColor = Color.Red;
+            panelBloqueoNCF.Location = new Point(6, 47);
+            panelBloqueoNCF.Name = "panelBloqueoNCF";
+            panelBloqueoNCF.Size = new Size(271, 3);
+            panelBloqueoNCF.TabIndex = 10;
+            panelBloqueoNCF.Visible = false;
+            // 
             // tipoComp
             // 
             tipoComp.BackColor = SystemColors.ActiveCaption;
             tipoComp.DropDownStyle = ComboBoxStyle.DropDownList;
             tipoComp.FormattingEnabled = true;
             tipoComp.Items.AddRange(new object[] { "B01", "B02" });
-            tipoComp.Location = new Point(119, 5);
+            tipoComp.Location = new Point(95, 34);
             tipoComp.Name = "tipoComp";
             tipoComp.Size = new Size(50, 29);
             tipoComp.TabIndex = 3;
@@ -1394,33 +1406,24 @@
             label40.AutoSize = true;
             label40.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label40.ForeColor = SystemColors.Control;
-            label40.Location = new Point(3, 9);
+            label40.Location = new Point(3, 38);
             label40.Name = "label40";
-            label40.Size = new Size(119, 21);
+            label40.Size = new Size(49, 21);
             label40.TabIndex = 5;
-            label40.Text = "Comprobante:";
-            // 
-            // labelcaja
-            // 
-            labelcaja.AutoSize = true;
-            labelcaja.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelcaja.ForeColor = SystemColors.Control;
-            labelcaja.Location = new Point(3, 39);
-            labelcaja.Name = "labelcaja";
-            labelcaja.Size = new Size(51, 21);
-            labelcaja.TabIndex = 5;
-            labelcaja.Text = "Caja: ";
+            label40.Text = "NCF: ";
             // 
             // panel9
             // 
             panel9.BackColor = Color.FromArgb(64, 64, 64);
             panel9.Controls.Add(labelsubtotal);
+            panel9.Controls.Add(itbisLBL);
             panel9.Controls.Add(labeltotal);
+            panel9.Controls.Add(label25);
             panel9.Controls.Add(label7);
             panel9.Controls.Add(label3);
-            panel9.Location = new Point(6, 153);
+            panel9.Location = new Point(6, 129);
             panel9.Name = "panel9";
-            panel9.Size = new Size(269, 53);
+            panel9.Size = new Size(269, 77);
             panel9.TabIndex = 1;
             // 
             // labelsubtotal
@@ -1428,29 +1431,51 @@
             labelsubtotal.AutoSize = true;
             labelsubtotal.Font = new Font("Segoe UI", 12F);
             labelsubtotal.ForeColor = SystemColors.Control;
-            labelsubtotal.Location = new Point(86, 4);
+            labelsubtotal.Location = new Point(86, 6);
             labelsubtotal.Name = "labelsubtotal";
             labelsubtotal.Size = new Size(19, 21);
             labelsubtotal.TabIndex = 3;
             labelsubtotal.Text = "0";
+            // 
+            // itbisLBL
+            // 
+            itbisLBL.AutoSize = true;
+            itbisLBL.Font = new Font("Segoe UI", 12F);
+            itbisLBL.ForeColor = SystemColors.Control;
+            itbisLBL.Location = new Point(57, 28);
+            itbisLBL.Name = "itbisLBL";
+            itbisLBL.Size = new Size(19, 21);
+            itbisLBL.TabIndex = 3;
+            itbisLBL.Text = "0";
             // 
             // labeltotal
             // 
             labeltotal.AutoSize = true;
             labeltotal.Font = new Font("Segoe UI", 12F);
             labeltotal.ForeColor = SystemColors.Control;
-            labeltotal.Location = new Point(58, 27);
+            labeltotal.Location = new Point(58, 50);
             labeltotal.Name = "labeltotal";
             labeltotal.Size = new Size(19, 21);
             labeltotal.TabIndex = 3;
             labeltotal.Text = "0";
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label25.ForeColor = SystemColors.Control;
+            label25.Location = new Point(4, 28);
+            label25.Name = "label25";
+            label25.Size = new Size(52, 21);
+            label25.TabIndex = 3;
+            label25.Text = "ITBIS:";
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label7.ForeColor = SystemColors.Control;
-            label7.Location = new Point(4, 27);
+            label7.Location = new Point(4, 50);
             label7.Name = "label7";
             label7.Size = new Size(52, 21);
             label7.TabIndex = 3;
@@ -1461,7 +1486,7 @@
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label3.ForeColor = SystemColors.Control;
-            label3.Location = new Point(4, 4);
+            label3.Location = new Point(4, 6);
             label3.Name = "label3";
             label3.Size = new Size(79, 21);
             label3.TabIndex = 3;
@@ -1471,7 +1496,7 @@
             // 
             fechapedido.Enabled = false;
             fechapedido.Format = DateTimePickerFormat.Short;
-            fechapedido.Location = new Point(147, 65);
+            fechapedido.Location = new Point(147, 2);
             fechapedido.Name = "fechapedido";
             fechapedido.Size = new Size(128, 29);
             fechapedido.TabIndex = 4;
@@ -1481,7 +1506,7 @@
             limpiarbtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             limpiarbtn.Image = Properties.Resources.nuevo;
             limpiarbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            limpiarbtn.Location = new Point(147, 97);
+            limpiarbtn.Location = new Point(147, 73);
             limpiarbtn.Name = "limpiarbtn";
             limpiarbtn.Size = new Size(128, 52);
             limpiarbtn.TabIndex = 0;
@@ -1494,7 +1519,7 @@
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label11.ForeColor = SystemColors.Control;
-            label11.Location = new Point(3, 69);
+            label11.Location = new Point(3, 6);
             label11.Name = "label11";
             label11.Size = new Size(126, 20);
             label11.TabIndex = 3;
@@ -1507,7 +1532,7 @@
             guardarordenbtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             guardarordenbtn.Image = Properties.Resources.guardar;
             guardarordenbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            guardarordenbtn.Location = new Point(6, 97);
+            guardarordenbtn.Location = new Point(6, 73);
             guardarordenbtn.Name = "guardarordenbtn";
             guardarordenbtn.Size = new Size(128, 52);
             guardarordenbtn.TabIndex = 0;
@@ -1518,9 +1543,9 @@
             // Comprobantetxt
             // 
             Comprobantetxt.Enabled = false;
-            Comprobantetxt.Location = new Point(170, 5);
+            Comprobantetxt.Location = new Point(147, 34);
             Comprobantetxt.Name = "Comprobantetxt";
-            Comprobantetxt.Size = new Size(105, 29);
+            Comprobantetxt.Size = new Size(128, 29);
             Comprobantetxt.TabIndex = 0;
             Comprobantetxt.TextAlign = HorizontalAlignment.Right;
             // 
@@ -1528,6 +1553,7 @@
             // 
             panel1.BackColor = Color.FromArgb(64, 64, 64);
             panel1.Controls.Add(tipodoccmbx);
+            panel1.Controls.Add(labelcaja);
             panel1.Controls.Add(rnc);
             panel1.Controls.Add(numerotxt);
             panel1.Controls.Add(pictureBox2);
@@ -1559,6 +1585,17 @@
             tipodoccmbx.Size = new Size(77, 29);
             tipodoccmbx.TabIndex = 3;
             tipodoccmbx.SelectedIndexChanged += tipodoccmbx_SelectedIndexChanged;
+            // 
+            // labelcaja
+            // 
+            labelcaja.AutoSize = true;
+            labelcaja.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelcaja.ForeColor = SystemColors.Control;
+            labelcaja.Location = new Point(132, 9);
+            labelcaja.Name = "labelcaja";
+            labelcaja.Size = new Size(51, 21);
+            labelcaja.TabIndex = 5;
+            labelcaja.Text = "Caja: ";
             // 
             // rnc
             // 
@@ -3031,5 +3068,8 @@
         private Panel opcionesCarpeta;
         private Button eliminarFacturas;
         private Button carpetaFactura;
+        private Panel panelBloqueoNCF;
+        private Label itbisLBL;
+        private Label label25;
     }
 }

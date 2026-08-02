@@ -935,7 +935,7 @@
             label17.BackColor = Color.Transparent;
             label17.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             label17.ForeColor = Color.White;
-            label17.Location = new Point(310, 77);
+            label17.Location = new Point(315, 77);
             label17.Name = "label17";
             label17.Size = new Size(28, 25);
             label17.TabIndex = 50;
@@ -1018,7 +1018,7 @@
             ITBIS.Items.AddRange(new object[] { "18", "16", "Excento" });
             ITBIS.Location = new Point(234, 75);
             ITBIS.Name = "ITBIS";
-            ITBIS.Size = new Size(70, 29);
+            ITBIS.Size = new Size(78, 29);
             ITBIS.TabIndex = 64;
             // 
             // categoriapanel

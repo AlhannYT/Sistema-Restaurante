@@ -70,7 +70,13 @@
             principalDireccion = new CheckBox();
             numPrincipalcmbx = new CheckBox();
             direccionEmpleado = new DataGridView();
+            nombreDir = new DataGridViewTextBoxColumn();
+            direccion = new DataGridViewTextBoxColumn();
+            principalDir = new DataGridViewTextBoxColumn();
             numeroEmpleado = new DataGridView();
+            nombre = new DataGridViewTextBoxColumn();
+            numero = new DataGridViewTextBoxColumn();
+            principal = new DataGridViewCheckBoxColumn();
             button7 = new Button();
             bajarDireccion = new Button();
             button6 = new Button();
@@ -92,14 +98,10 @@
             txtnombre = new TextBox();
             label14 = new Label();
             label17 = new Label();
-            label16 = new Label();
-            label4 = new Label();
-            label6 = new Label();
             label7 = new Label();
             label12 = new Label();
-            label15 = new Label();
-            label9 = new Label();
             toolTip1 = new ToolTip(components);
+            label4 = new Label();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)empleadoimg).BeginInit();
@@ -306,6 +308,7 @@
             tabPage2.Controls.Add(fechaingreso);
             tabPage2.Controls.Add(idpuestotxt);
             tabPage2.Controls.Add(puestotxt);
+            tabPage2.Controls.Add(label4);
             tabPage2.Controls.Add(label10);
             tabPage2.Controls.Add(buscarpuesto);
             tabPage2.Controls.Add(panel2);
@@ -321,13 +324,8 @@
             tabPage2.Controls.Add(txtnombre);
             tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(label17);
-            tabPage2.Controls.Add(label16);
-            tabPage2.Controls.Add(label4);
-            tabPage2.Controls.Add(label6);
             tabPage2.Controls.Add(label7);
             tabPage2.Controls.Add(label12);
-            tabPage2.Controls.Add(label15);
-            tabPage2.Controls.Add(label9);
             tabPage2.Location = new Point(4, 30);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
@@ -343,7 +341,7 @@
             puestopanel.Controls.Add(button5);
             puestopanel.Controls.Add(label5);
             puestopanel.Controls.Add(puestoconsulta);
-            puestopanel.Location = new Point(264, 163);
+            puestopanel.Location = new Point(264, 136);
             puestopanel.Name = "puestopanel";
             puestopanel.Size = new Size(227, 159);
             puestopanel.TabIndex = 100;
@@ -443,9 +441,9 @@
             rolcmbx.DropDownStyle = ComboBoxStyle.DropDownList;
             rolcmbx.FormattingEnabled = true;
             rolcmbx.Items.AddRange(new object[] { "Gerente", "Administrator", "Supervisor", "Cajero", "Mesero", "Repartidor", "Cocinero" });
-            rolcmbx.Location = new Point(19, 294);
+            rolcmbx.Location = new Point(59, 279);
             rolcmbx.Name = "rolcmbx";
-            rolcmbx.Size = new Size(172, 29);
+            rolcmbx.Size = new Size(132, 29);
             rolcmbx.TabIndex = 102;
             // 
             // tiposueldocmbx
@@ -453,7 +451,7 @@
             tiposueldocmbx.DropDownStyle = ComboBoxStyle.DropDownList;
             tiposueldocmbx.FormattingEnabled = true;
             tiposueldocmbx.Items.AddRange(new object[] { "Semanal", "Quincenal", "Mensual" });
-            tiposueldocmbx.Location = new Point(367, 74);
+            tiposueldocmbx.Location = new Point(144, 244);
             tiposueldocmbx.Name = "tiposueldocmbx";
             tiposueldocmbx.Size = new Size(87, 29);
             tiposueldocmbx.TabIndex = 102;
@@ -469,7 +467,7 @@
             // idpuestotxt
             // 
             idpuestotxt.Enabled = false;
-            idpuestotxt.Location = new Point(266, 129);
+            idpuestotxt.Location = new Point(268, 101);
             idpuestotxt.Name = "idpuestotxt";
             idpuestotxt.Size = new Size(31, 29);
             idpuestotxt.TabIndex = 97;
@@ -477,7 +475,7 @@
             // puestotxt
             // 
             puestotxt.Enabled = false;
-            puestotxt.Location = new Point(299, 129);
+            puestotxt.Location = new Point(301, 101);
             puestotxt.Name = "puestotxt";
             puestotxt.Size = new Size(155, 29);
             puestotxt.TabIndex = 98;
@@ -487,7 +485,8 @@
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label10.ForeColor = Color.White;
-            label10.Location = new Point(266, 107);
+            label10.ImageAlign = ContentAlignment.MiddleLeft;
+            label10.Location = new Point(268, 79);
             label10.Name = "label10";
             label10.Size = new Size(144, 21);
             label10.TabIndex = 96;
@@ -497,7 +496,7 @@
             // 
             buscarpuesto.ForeColor = Color.Black;
             buscarpuesto.Image = Properties.Resources.busqueda;
-            buscarpuesto.Location = new Point(458, 129);
+            buscarpuesto.Location = new Point(460, 101);
             buscarpuesto.Name = "buscarpuesto";
             buscarpuesto.Size = new Size(28, 29);
             buscarpuesto.TabIndex = 99;
@@ -562,6 +561,7 @@
             numerotxt.PlaceholderText = "Número";
             numerotxt.Size = new Size(113, 29);
             numerotxt.TabIndex = 79;
+            numerotxt.TextChanged += numerotxt_TextChanged;
             // 
             // label13
             // 
@@ -605,6 +605,7 @@
             direccionEmpleado.AllowUserToResizeRows = false;
             direccionEmpleado.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             direccionEmpleado.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            direccionEmpleado.Columns.AddRange(new DataGridViewColumn[] { nombreDir, direccion, principalDir });
             direccionEmpleado.Location = new Point(339, 71);
             direccionEmpleado.MultiSelect = false;
             direccionEmpleado.Name = "direccionEmpleado";
@@ -616,6 +617,24 @@
             direccionEmpleado.TabIndex = 74;
             direccionEmpleado.CellClick += direccionEmpleado_CellClick;
             // 
+            // nombreDir
+            // 
+            nombreDir.HeaderText = "Etiqueta";
+            nombreDir.Name = "nombreDir";
+            nombreDir.ReadOnly = true;
+            // 
+            // direccion
+            // 
+            direccion.HeaderText = "Dirección";
+            direccion.Name = "direccion";
+            direccion.ReadOnly = true;
+            // 
+            // principalDir
+            // 
+            principalDir.HeaderText = "Principal";
+            principalDir.Name = "principalDir";
+            principalDir.ReadOnly = true;
+            // 
             // numeroEmpleado
             // 
             numeroEmpleado.AllowUserToAddRows = false;
@@ -623,6 +642,7 @@
             numeroEmpleado.AllowUserToResizeRows = false;
             numeroEmpleado.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             numeroEmpleado.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            numeroEmpleado.Columns.AddRange(new DataGridViewColumn[] { nombre, numero, principal });
             numeroEmpleado.Location = new Point(9, 69);
             numeroEmpleado.MultiSelect = false;
             numeroEmpleado.Name = "numeroEmpleado";
@@ -633,6 +653,24 @@
             numeroEmpleado.Size = new Size(281, 129);
             numeroEmpleado.TabIndex = 74;
             numeroEmpleado.CellClick += numeroEmpleado_CellClick;
+            // 
+            // nombre
+            // 
+            nombre.HeaderText = "Etiqueta";
+            nombre.Name = "nombre";
+            nombre.ReadOnly = true;
+            // 
+            // numero
+            // 
+            numero.HeaderText = "Número";
+            numero.Name = "numero";
+            numero.ReadOnly = true;
+            // 
+            // principal
+            // 
+            principal.HeaderText = "Principal";
+            principal.Name = "principal";
+            principal.ReadOnly = true;
             // 
             // button7
             // 
@@ -778,16 +816,18 @@
             // emailtxt
             // 
             emailtxt.CharacterCasing = CharacterCasing.Upper;
-            emailtxt.Location = new Point(19, 239);
+            emailtxt.Location = new Point(19, 209);
             emailtxt.Name = "emailtxt";
-            emailtxt.Size = new Size(172, 29);
+            emailtxt.PlaceholderText = "Email";
+            emailtxt.Size = new Size(212, 29);
             emailtxt.TabIndex = 78;
             // 
             // txtcedula
             // 
             txtcedula.CharacterCasing = CharacterCasing.Upper;
-            txtcedula.Location = new Point(19, 74);
+            txtcedula.Location = new Point(19, 101);
             txtcedula.Name = "txtcedula";
+            txtcedula.PlaceholderText = "Cédula";
             txtcedula.Size = new Size(172, 29);
             txtcedula.TabIndex = 78;
             txtcedula.TextChanged += txtcedula_TextChanged;
@@ -795,32 +835,35 @@
             // txtapellido
             // 
             txtapellido.CharacterCasing = CharacterCasing.Upper;
-            txtapellido.Location = new Point(19, 184);
+            txtapellido.Location = new Point(19, 173);
             txtapellido.Name = "txtapellido";
-            txtapellido.Size = new Size(172, 29);
+            txtapellido.PlaceholderText = "Apellido(s)";
+            txtapellido.Size = new Size(212, 29);
             txtapellido.TabIndex = 77;
             // 
             // idUltimoEmpleado
             // 
             idUltimoEmpleado.Enabled = false;
-            idUltimoEmpleado.Location = new Point(51, 11);
+            idUltimoEmpleado.Location = new Point(31, 3);
             idUltimoEmpleado.Name = "idUltimoEmpleado";
             idUltimoEmpleado.Size = new Size(76, 29);
             idUltimoEmpleado.TabIndex = 81;
             // 
             // txtsueldo
             // 
-            txtsueldo.Location = new Point(266, 74);
+            txtsueldo.Location = new Point(19, 244);
             txtsueldo.Name = "txtsueldo";
-            txtsueldo.Size = new Size(98, 29);
+            txtsueldo.PlaceholderText = "Sueldo";
+            txtsueldo.Size = new Size(119, 29);
             txtsueldo.TabIndex = 76;
             // 
             // txtnombre
             // 
             txtnombre.CharacterCasing = CharacterCasing.Upper;
-            txtnombre.Location = new Point(19, 129);
+            txtnombre.Location = new Point(19, 137);
             txtnombre.Name = "txtnombre";
-            txtnombre.Size = new Size(172, 29);
+            txtnombre.PlaceholderText = "Nombre(s)";
+            txtnombre.Size = new Size(212, 29);
             txtnombre.TabIndex = 76;
             // 
             // label14
@@ -839,44 +882,11 @@
             label17.AutoSize = true;
             label17.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label17.ForeColor = SystemColors.Control;
-            label17.Location = new Point(19, 270);
+            label17.Location = new Point(19, 287);
             label17.Name = "label17";
             label17.Size = new Size(35, 21);
             label17.TabIndex = 82;
             label17.Text = "Rol";
-            // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label16.ForeColor = SystemColors.Control;
-            label16.Location = new Point(19, 217);
-            label16.Name = "label16";
-            label16.Size = new Size(53, 21);
-            label16.TabIndex = 82;
-            label16.Text = "Email";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label4.ForeColor = SystemColors.Control;
-            label4.Location = new Point(19, 52);
-            label4.Name = "label4";
-            label4.Size = new Size(63, 21);
-            label4.TabIndex = 82;
-            label4.Text = "Cédula";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label6.ForeColor = SystemColors.Control;
-            label6.Location = new Point(19, 162);
-            label6.Name = "label6";
-            label6.Size = new Size(94, 21);
-            label6.TabIndex = 84;
-            label6.Text = "Apellido(s)";
             // 
             // label7
             // 
@@ -894,33 +904,23 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label12.ForeColor = SystemColors.Control;
-            label12.Location = new Point(15, 15);
+            label12.Location = new Point(4, 7);
             label12.Name = "label12";
             label12.Size = new Size(27, 21);
             label12.TabIndex = 89;
             label12.Text = "ID";
             // 
-            // label15
+            // label4
             // 
-            label15.AutoSize = true;
-            label15.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label15.ForeColor = SystemColors.Control;
-            label15.Location = new Point(266, 52);
-            label15.Name = "label15";
-            label15.Size = new Size(63, 21);
-            label15.TabIndex = 88;
-            label15.Text = "Sueldo";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label9.ForeColor = SystemColors.Control;
-            label9.Location = new Point(19, 107);
-            label9.Name = "label9";
-            label9.Size = new Size(92, 21);
-            label9.TabIndex = 88;
-            label9.Text = "Nombre(s)";
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.White;
+            label4.ImageAlign = ContentAlignment.MiddleLeft;
+            label4.Location = new Point(19, 79);
+            label4.Name = "label4";
+            label4.Size = new Size(133, 21);
+            label4.TabIndex = 96;
+            label4.Text = "Datos Generales";
             // 
             // ConsEmpleados
             // 
@@ -987,12 +987,9 @@
         private TextBox txtapellido;
         private TextBox idUltimoEmpleado;
         private TextBox txtnombre;
-        private Label label4;
-        private Label label6;
         private Label label8;
         private Label label7;
         private Label label12;
-        private Label label9;
         private Panel panel5;
         private Label label19;
         private TextBox direcciontxt;
@@ -1022,13 +1019,18 @@
         private Label label14;
         private ComboBox tiposueldocmbx;
         private TextBox txtsueldo;
-        private Label label15;
         private Button button7;
         private Button button6;
         private TextBox emailtxt;
-        private Label label16;
         private ToolTip toolTip1;
         private ComboBox rolcmbx;
         private Label label17;
+        private DataGridViewTextBoxColumn nombreDir;
+        private DataGridViewTextBoxColumn direccion;
+        private DataGridViewTextBoxColumn principalDir;
+        private DataGridViewTextBoxColumn nombre;
+        private DataGridViewTextBoxColumn numero;
+        private DataGridViewCheckBoxColumn principal;
+        private Label label4;
     }
 }

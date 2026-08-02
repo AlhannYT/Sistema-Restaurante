@@ -807,21 +807,37 @@ namespace Proyecto_restaurante
             {
                 conexion.Open();
 
-                string query = @"
-                SELECT TOP 1 PorcentajeGanancia 
-                FROM ConfiguracionSistema";
+                string query = @"SELECT TOP 1 PorcentajeGanancia, GenerarNCF FROM ConfiguracionSistema";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
-                    object result = cmd.ExecuteScalar();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            if (!reader.IsDBNull(reader.GetOrdinal("PorcentajeGanancia")))
+                            {
+                                porcGanancia.Text = reader["PorcentajeGanancia"].ToString();
+                            }
+                            else
+                            {
+                                porcGanancia.Text = "0";
+                            }
 
-                    if (result != null && result != DBNull.Value)
-                    {
-                        porcGanancia.Text = result.ToString();
-                    }
-                    else
-                    {
-                        porcGanancia.Text = "0";
+                            if (!reader.IsDBNull(reader.GetOrdinal("GenerarNCF")))
+                            {
+                                generarNCF.Checked = Convert.ToBoolean(reader["GenerarNCF"]);
+                            }
+                            else
+                            {
+                                generarNCF.Checked = false;
+                            }
+                        }
+                        else
+                        {
+                            porcGanancia.Text = "0";
+                            generarNCF.Checked = false;
+                        }
                     }
                 }
             }
@@ -900,11 +916,12 @@ namespace Proyecto_restaurante
 
                     if (string.IsNullOrEmpty(IDModificar))
                     {
-                        string queryInsertar = "Update ConfiguracionSistema set PorcentajeGanancia = @PorcGanancia where IdConfiguracion = 1";
+                        string queryInsertar = "Update ConfiguracionSistema set PorcentajeGanancia = @PorcGanancia, GenerarNCF = @GenNCF";
 
                         using (SqlCommand insertarConfig = new SqlCommand(queryInsertar, conexion))
                         {
                             insertarConfig.Parameters.AddWithValue("@PorcGanancia", porcGanancia.Text);
+                            insertarConfig.Parameters.AddWithValue("@GenNCF", generarNCF.Checked ? 1 : 0);
 
                             int rowsAffected = insertarConfig.ExecuteNonQuery();
 

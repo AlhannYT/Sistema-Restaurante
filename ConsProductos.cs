@@ -79,6 +79,29 @@ namespace Proyecto_restaurante
                 }
             }
 
+            string ConsultaNCF = @"SELECT TOP 1 GenerarNCF FROM ConfiguracionSistema";
+
+            using (SqlConnection con = new SqlConnection(conexionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(ConsultaNCF, con))
+                {
+                    object resultado = cmd.ExecuteScalar();
+
+                    bool generarNCF = (resultado != null && resultado != DBNull.Value) ? Convert.ToBoolean(resultado) : false;
+
+                    if (!generarNCF)
+                    {
+                        ITBIS.Enabled = false;
+                        ITBIS.SelectedIndex = 2;
+                    }
+                    else
+                    {
+                        ITBIS.Enabled = true;
+                    }
+                }
+            }
+
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
@@ -175,7 +198,6 @@ namespace Proyecto_restaurante
                 codigobarrarandombtn.Enabled = true;
                 txtnombre_prod.Enabled = true;
                 txtprecio_compra.Enabled = true;
-                ITBIS.Enabled = true;
                 buscarcateg.Enabled = true;
                 unidadmedida.Enabled = true;
                 txtprecio_venta.Enabled = false;
@@ -197,7 +219,6 @@ namespace Proyecto_restaurante
                 codigobarrarandombtn.Enabled = true;
                 txtnombre_prod.Enabled = true;
                 txtprecio_compra.Enabled = true;
-                ITBIS.Enabled = true;
                 buscarcateg.Enabled = true;
                 unidadmedida.Enabled = true;
                 autoCalcular.Checked = true;
@@ -353,6 +374,7 @@ namespace Proyecto_restaurante
                     {
 
                         decimal valorItbis;
+                        decimal precioItbis = 0;
 
                         if (ITBIS.SelectedIndex == 3)
                         {
@@ -361,13 +383,14 @@ namespace Proyecto_restaurante
                         else
                         {
                             valorItbis = Convert.ToDecimal(ITBIS.SelectedItem.ToString());
+                            precioItbis = Convert.ToDecimal(txtprecio_venta.Text) * (valorItbis / 100);
                         }
 
                         string queryInsertar = @"
                         INSERT INTO ProductoVenta
-                        (Nombre, IdCategoria, IdProductoTipo, Activo, PrecioCompra, PrecioVenta, Itbis, CodigoBarra, IdUnidadMedida, Existencia)
+                        (Nombre, IdCategoria, IdProductoTipo, Activo, PrecioCompra, PrecioVenta, Itbis, CodigoBarra, IdUnidadMedida, Existencia, ItbisPrecio)
                         OUTPUT INSERTED.IdProducto
-                        VALUES (@Nombre, @IdCategoria, @IdProductoTipo, @Activo, @PrecioCompra, @PrecioVenta, @Itbis, @CodigoBarra, @IdUnidadMedida, @Existencia)";
+                        VALUES (@Nombre, @IdCategoria, @IdProductoTipo, @Activo, @PrecioCompra, @PrecioVenta, @Itbis, @CodigoBarra, @IdUnidadMedida, @Existencia, @ItbisPrecio)";
 
                         using (SqlCommand insertarCommand = new SqlCommand(queryInsertar, conexion))
                         {
@@ -380,7 +403,7 @@ namespace Proyecto_restaurante
                             insertarCommand.Parameters.AddWithValue("@IdUnidadMedida", Convert.ToInt32(unidadmedida.SelectedValue));
                             insertarCommand.Parameters.AddWithValue("@Existencia", 0);
                             insertarCommand.Parameters.AddWithValue("@Itbis", valorItbis);
-
+                            insertarCommand.Parameters.AddWithValue("@ItbisPrecio", precioItbis);
                             insertarCommand.Parameters.AddWithValue("@PrecioVenta",
                                 string.IsNullOrWhiteSpace(txtprecio_venta.Text)
                                 ? (object)DBNull.Value

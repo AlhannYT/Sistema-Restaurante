@@ -34,7 +34,7 @@
             usuarios = new Button();
             button2 = new Button();
             sistema = new Button();
-            archivoDGII = new Button();
+            confDGII = new Button();
             datosRestaurante = new Button();
             button7 = new Button();
             label1 = new Label();
@@ -175,6 +175,7 @@
             sistemaconfiguracion = new Panel();
             tabControl4 = new TabControl();
             tabPage9 = new TabPage();
+            generarNCF = new CheckBox();
             label41 = new Label();
             porcGanancia = new TextBox();
             tabPage10 = new TabPage();
@@ -201,6 +202,9 @@
             textBox4 = new TextBox();
             label35 = new Label();
             textBox2 = new TextBox();
+            itbisTransp = new RadioButton();
+            itbisbruto = new RadioButton();
+            label4 = new Label();
             barraizq.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -254,7 +258,7 @@
             barraizq.Controls.Add(usuarios);
             barraizq.Controls.Add(button2);
             barraizq.Controls.Add(sistema);
-            barraizq.Controls.Add(archivoDGII);
+            barraizq.Controls.Add(confDGII);
             barraizq.Controls.Add(datosRestaurante);
             barraizq.Controls.Add(button7);
             barraizq.Controls.Add(label1);
@@ -311,19 +315,19 @@
             sistema.UseVisualStyleBackColor = false;
             sistema.Click += button5_Click;
             // 
-            // archivoDGII
+            // confDGII
             // 
-            archivoDGII.Image = Properties.Resources.logodgii1;
-            archivoDGII.ImageAlign = ContentAlignment.MiddleRight;
-            archivoDGII.Location = new Point(7, 83);
-            archivoDGII.Margin = new Padding(2);
-            archivoDGII.Name = "archivoDGII";
-            archivoDGII.Size = new Size(202, 38);
-            archivoDGII.TabIndex = 15;
-            archivoDGII.Text = "Archivo DGII";
-            archivoDGII.TextAlign = ContentAlignment.MiddleLeft;
-            archivoDGII.UseVisualStyleBackColor = true;
-            archivoDGII.Click += archivoDGII_Click;
+            confDGII.Image = Properties.Resources.logodgii1;
+            confDGII.ImageAlign = ContentAlignment.MiddleRight;
+            confDGII.Location = new Point(7, 83);
+            confDGII.Margin = new Padding(2);
+            confDGII.Name = "confDGII";
+            confDGII.Size = new Size(202, 38);
+            confDGII.TabIndex = 15;
+            confDGII.Text = "DGII";
+            confDGII.TextAlign = ContentAlignment.MiddleLeft;
+            confDGII.UseVisualStyleBackColor = true;
+            confDGII.Click += archivoDGII_Click;
             // 
             // datosRestaurante
             // 
@@ -1970,6 +1974,10 @@
             // tabPage9
             // 
             tabPage9.BackColor = SystemColors.WindowFrame;
+            tabPage9.Controls.Add(itbisbruto);
+            tabPage9.Controls.Add(itbisTransp);
+            tabPage9.Controls.Add(generarNCF);
+            tabPage9.Controls.Add(label4);
             tabPage9.Controls.Add(label41);
             tabPage9.Controls.Add(porcGanancia);
             tabPage9.Location = new Point(4, 30);
@@ -1978,6 +1986,18 @@
             tabPage9.Size = new Size(637, 367);
             tabPage9.TabIndex = 0;
             tabPage9.Text = "Productos";
+            // 
+            // generarNCF
+            // 
+            generarNCF.AutoSize = true;
+            generarNCF.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            generarNCF.ForeColor = Color.White;
+            generarNCF.Location = new Point(19, 81);
+            generarNCF.Name = "generarNCF";
+            generarNCF.Size = new Size(317, 25);
+            generarNCF.TabIndex = 1;
+            generarNCF.Text = "Manejar Comprobantes Fiscales (NCF)";
+            generarNCF.UseVisualStyleBackColor = true;
             // 
             // label41
             // 
@@ -2251,6 +2271,43 @@
             textBox2.Size = new Size(311, 29);
             textBox2.TabIndex = 86;
             // 
+            // itbisTransp
+            // 
+            itbisTransp.AutoSize = true;
+            itbisTransp.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            itbisTransp.ForeColor = Color.White;
+            itbisTransp.Location = new Point(19, 164);
+            itbisTransp.Name = "itbisTransp";
+            itbisTransp.Size = new Size(147, 25);
+            itbisTransp.TabIndex = 104;
+            itbisTransp.TabStop = true;
+            itbisTransp.Text = "Transparentado";
+            itbisTransp.UseVisualStyleBackColor = true;
+            // 
+            // itbisbruto
+            // 
+            itbisbruto.AutoSize = true;
+            itbisbruto.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            itbisbruto.ForeColor = Color.White;
+            itbisbruto.Location = new Point(19, 195);
+            itbisbruto.Name = "itbisbruto";
+            itbisbruto.Size = new Size(70, 25);
+            itbisbruto.TabIndex = 104;
+            itbisbruto.TabStop = true;
+            itbisbruto.Text = "Bruto";
+            itbisbruto.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(19, 131);
+            label4.Name = "label4";
+            label4.Size = new Size(128, 21);
+            label4.TabIndex = 101;
+            label4.Text = "Manejo de Itbis";
+            // 
             // Configuracion
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2492,7 +2549,7 @@
         private CheckBox CrearOrdenReservado;
         private Button datosRestaurante;
         private ToolTip toolTip1;
-        private Button archivoDGII;
+        private Button confDGII;
         private Panel DGIIPanel;
         private Panel panel14;
         private Label label37;
@@ -2514,5 +2571,9 @@
         private CheckBox cancelarDoc;
         private Label label41;
         private TextBox porcGanancia;
+        private CheckBox generarNCF;
+        private RadioButton itbisbruto;
+        private RadioButton itbisTransp;
+        private Label label4;
     }
 }

@@ -25,6 +25,7 @@ namespace Proyecto_restaurante
         public string NombrePC;
         private int PedidoID;
         private int EditarEstado = 0;
+        public string comprobanteFinal;
         private decimal Total;
         private int TipoPago = 0;
         private decimal TotalPedido = 0m;
@@ -81,6 +82,37 @@ namespace Proyecto_restaurante
                 ON conf.IdCaja = c.IdCaja
             WHERE conf.NombrePC = @NombrePC";
 
+            string ConsultaNCF = @"SELECT TOP 1 GenerarNCF FROM ConfiguracionSistema";
+
+            using (SqlConnection con = new SqlConnection(conexionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(ConsultaNCF, con))
+                {
+                    object resultado = cmd.ExecuteScalar();
+
+                    bool generarNCF = (resultado != null && resultado != DBNull.Value) ? Convert.ToBoolean(resultado) : false;
+
+                    if (!generarNCF)
+                    {
+                        panelBloqueoNCF.Visible = true;
+                        panelBloqueoNCF.BringToFront();
+
+                        tipoComp.Enabled = false;
+                        tipoComp.SelectedIndex = -1;
+
+                        Comprobantetxt.Enabled = false;
+                        Comprobantetxt.Clear();
+                    }
+                    else
+                    {
+                        panelBloqueoNCF.Visible = false;
+
+                        tipoComp.Enabled = true;
+                        Comprobantetxt.Enabled = true;
+                    }
+                }
+            }
 
             using (SqlConnection con = new SqlConnection(conexionString))
             {
@@ -96,7 +128,6 @@ namespace Proyecto_restaurante
                     }
                     else
                     {
-                        //MessageBox.Show("No se encontraron pedidos.");
                         txtidpedido.Text = "1";
                     }
                 }
@@ -160,6 +191,18 @@ namespace Proyecto_restaurante
         private void Comprobantes()
         {
             if (cargandoOrden) return;
+
+            if (!tipoComp.Enabled || !Comprobantetxt.Enabled)
+            {
+                Comprobantetxt.Clear();
+                return;
+            }
+
+            if (tipoComp.SelectedIndex == -1)
+            {
+                Comprobantetxt.Clear();
+                return;
+            }
 
             int tipo = tipoComp.SelectedIndex == 0 ? 1 : 2;
 
@@ -357,31 +400,31 @@ namespace Proyecto_restaurante
             string zona = cmbZonaEntrega.Text;
 
             string query = @"
-    SELECT TOP 1
-        e.IdEmpleado,
-        p.NombreCompleto,
-        r.ZonaAsignada,
-        r.TipoVehiculo,
-        r.RapidezPct,
-        r.FamiliaridadPct,
-        r.CapacidadMaxima,
-        cfg.Prioridad
-    FROM dbo.Repartidor r
-    INNER JOIN dbo.Empleado e ON r.IdEmpleado = e.IdEmpleado
-    INNER JOIN dbo.Persona p ON e.IdPersona = p.IdPersona
-    INNER JOIN dbo.ConfigVehiculoDelivery cfg
-        ON r.TipoVehiculo = cfg.TipoVehiculo
-       AND @TotalComidas BETWEEN cfg.CantidadMin AND cfg.CantidadMax
-       AND cfg.Activo = 1
-    WHERE e.Activo = 1
-      AND p.Activo = 1
-      AND e.IdRolEmpleado = 6
-      AND r.CapacidadMaxima >= @TotalComidas
-    ORDER BY
-        CASE WHEN r.ZonaAsignada = @Zona THEN 0 ELSE 1 END,
-        cfg.Prioridad ASC,
-        r.RapidezPct DESC,
-        r.FamiliaridadPct DESC;";
+            SELECT TOP 1
+                e.IdEmpleado,
+                p.NombreCompleto,
+                r.ZonaAsignada,
+                r.TipoVehiculo,
+                r.RapidezPct,
+                r.FamiliaridadPct,
+                r.CapacidadMaxima,
+                cfg.Prioridad
+            FROM dbo.Repartidor r
+            INNER JOIN dbo.Empleado e ON r.IdEmpleado = e.IdEmpleado
+            INNER JOIN dbo.Persona p ON e.IdPersona = p.IdPersona
+            INNER JOIN dbo.ConfigVehiculoDelivery cfg
+                ON r.TipoVehiculo = cfg.TipoVehiculo
+               AND @TotalComidas BETWEEN cfg.CantidadMin AND cfg.CantidadMax
+               AND cfg.Activo = 1
+            WHERE e.Activo = 1
+              AND p.Activo = 1
+              AND e.IdRolEmpleado = 6
+              AND r.CapacidadMaxima >= @TotalComidas
+            ORDER BY
+                CASE WHEN r.ZonaAsignada = @Zona THEN 0 ELSE 1 END,
+                cfg.Prioridad ASC,
+                r.RapidezPct DESC,
+                r.FamiliaridadPct DESC;";
 
             using (SqlConnection con = new SqlConnection(conexionString))
             {
@@ -434,6 +477,7 @@ namespace Proyecto_restaurante
                 }
             }
         }
+
         private void limpiarbtn_Click(object sender, EventArgs e)
         {
 
@@ -497,6 +541,19 @@ namespace Proyecto_restaurante
                 return;
             }
 
+            bool generarNcfActivo = (tipoComp.Enabled && tipoComp.SelectedIndex != -1);
+
+            object valComprobante = DBNull.Value;
+
+            if (EditarEstado == 0 && generarNcfActivo)
+            {
+                comprobanteFinal = GenerarComprobante();
+                valComprobante = comprobanteFinal;
+            }
+
+            object valTipoComp = (tipoComp.Enabled && tipoComp.SelectedIndex != -1) ? tipoComp.Text : (object)DBNull.Value;
+            object valNCF = (Comprobantetxt.Enabled && !string.IsNullOrWhiteSpace(Comprobantetxt.Text)) ? Comprobantetxt.Text : (object)DBNull.Value;
+
             bool commitRealizado = false;
 
             using (SqlConnection conexion = new SqlConnection(conexionString))
@@ -512,10 +569,10 @@ namespace Proyecto_restaurante
                     {
                         string queryInsert = @"
                         INSERT INTO Pedido
-                        (Fecha, Origen, IdClientePersona, NombreCliente, Estado, EstadoDelivery, Total, Nota, Direccion, IdRepartidor, ZonaEntrega, VehiculoAsignado, MotivoAsignacion)
-                         VALUES
-                         (@Fecha, @Origen, @IdClientePersona, @NombreCliente, @Estado, @EstadoDelivery, @Total, @Nota, @Direccion, @Repartidor, @ZonaEntrega, @VehiculoAsignado, @MotivoAsignacion);
-                         SELECT SCOPE_IDENTITY();";
+                        (Fecha, Origen, IdClientePersona, NombreCliente, Estado, EstadoDelivery, Total, Nota, Direccion, IdRepartidor, ZonaEntrega, VehiculoAsignado, MotivoAsignacion, Comprobante) 
+                        VALUES 
+                        (@Fecha, @Origen, @IdClientePersona, @NombreCliente, @Estado, @EstadoDelivery, @Total, @Nota, @Direccion, @Repartidor, @ZonaEntrega, @VehiculoAsignado, @MotivoAsignacion, @NCF); 
+                        SELECT SCOPE_IDENTITY();";
 
                         SqlCommand cmdInsert = new SqlCommand(queryInsert, conexion, transaccion);
 
@@ -532,26 +589,35 @@ namespace Proyecto_restaurante
                         cmdInsert.Parameters.AddWithValue("@ZonaEntrega", cmbZonaEntrega.Text);
                         cmdInsert.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
                         cmdInsert.Parameters.AddWithValue("@MotivoAsignacion", txtMotivoAsignacion.Text);
+                        cmdInsert.Parameters.AddWithValue("@NCF", valNCF);
 
                         idPedidoGenerado = Convert.ToInt32(cmdInsert.ExecuteScalar());
-                    }
 
+
+                        if (generarNcfActivo)
+                        {
+                            ActualizarSecuencia(tipoComp.SelectedIndex == 0 ? 1 : 2);
+                        }
+                    }
                     else if (EditarEstado == 1)
                     {
                         idPedidoGenerado = PedidoID;
+
                         string queryUpdate = @"
-                        UPDATE Pedido SET
-                         Fecha = @Fecha,
-                         IdClientePersona = @IdClientePersona,
-                         NombreCliente = @NombreCliente,
-                         Total = @Total,
-                         Nota = @Nota,
-                          Direccion = @Direccion,
-                         IdRepartidor = @Repartidor,
-                        ZonaEntrega = @ZonaEntrega,
-                        VehiculoAsignado = @VehiculoAsignado,
-                        MotivoAsignacion = @MotivoAsignacion
-                        WHERE IdPedido = @IdPedido";
+                        UPDATE Pedido
+                        SET    fecha = @Fecha,
+                               idclientepersona = @IdClientePersona,
+                               nombrecliente = @NombreCliente,
+                               total = @Total,
+                               nota = @Nota,
+                               direccion = @Direccion,
+                               idrepartidor = @Repartidor,
+                               zonaentrega = @ZonaEntrega,
+                               vehiculoasignado = @VehiculoAsignado,
+                               motivoasignacion = @MotivoAsignacion,
+                               Comprobante = @NCF
+                        WHERE  idpedido = @IdPedido";
+
                         SqlCommand cmdUpdate = new SqlCommand(queryUpdate, conexion, transaccion);
 
                         cmdUpdate.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
@@ -565,6 +631,8 @@ namespace Proyecto_restaurante
                         cmdUpdate.Parameters.AddWithValue("@ZonaEntrega", cmbZonaEntrega.Text);
                         cmdUpdate.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
                         cmdUpdate.Parameters.AddWithValue("@MotivoAsignacion", txtMotivoAsignacion.Text);
+                        cmdUpdate.Parameters.AddWithValue("@NCF", valNCF);
+
                         cmdUpdate.ExecuteNonQuery();
 
                         SqlCommand cmdDel = new SqlCommand(
@@ -612,6 +680,40 @@ namespace Proyecto_restaurante
                     {
                         try { transaccion.Rollback(); } catch { }
                     }
+                }
+            }
+        }
+
+        private string GenerarComprobante()
+        {
+            string prefijo = "";
+
+            if (tipoComp.SelectedIndex == 0)
+                prefijo = "B01";
+            else if (tipoComp.SelectedIndex == 1)
+                prefijo = "B02";
+
+            string secuencia = Comprobantetxt.Text;
+
+            secuencia = int.Parse(secuencia).ToString("00000000");
+
+            return prefijo + secuencia;
+        }
+
+        private void ActualizarSecuencia(int tipo)
+        {
+            string sql = @"
+            UPDATE Comprobantes
+            SET SecuenciaActual = SecuenciaActual + 1
+            WHERE Tipo = @Tipo";
+
+            using (SqlConnection con = new SqlConnection(conexionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Tipo", tipo);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -1856,9 +1958,9 @@ namespace Proyecto_restaurante
                     con.Open();
 
                     string sqlPedido = @"
-                SELECT IdPedido, Fecha, NombreCliente, IdMesa, Total, Comprobante
-                FROM Pedido
-                WHERE IdPedido = @id";
+                    SELECT IdPedido, Fecha, NombreCliente, IdMesa, Total, Comprobante
+                    FROM Pedido
+                    WHERE IdPedido = @id";
 
                     SqlCommand cmd = new SqlCommand(sqlPedido, con);
                     cmd.Parameters.AddWithValue("@id", idPedido);
@@ -2062,7 +2164,6 @@ namespace Proyecto_restaurante
             {
                 con.Open();
 
-                // Si ya existe un link activo para ese pedido, lo reutiliza
                 string sqlExiste = @"
                     SELECT TOP 1 Token
                     FROM dbo.LinkResenaDelivery
@@ -2182,6 +2283,7 @@ namespace Proyecto_restaurante
                 }
             }
         }
+
         private void CargarUltimasResenas()
         {
             using (SqlConnection con = new SqlConnection(conexionString))
@@ -2235,54 +2337,14 @@ namespace Proyecto_restaurante
                 dgvUltimasResenas.Columns["FechaResena"].HeaderText = "Fecha";
         }
 
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             AsignarRepartidorAutomaticamente();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tabPage2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label23_Click_2(object sender, EventArgs e)
-        {
-
-        }
-
         private void button10_Click(object sender, EventArgs e)
         {
             panelResenas.Visible = false;
-        }
-
-        private void label23_Click_3(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel6_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void btnVerResenas_Click(object sender, EventArgs e)

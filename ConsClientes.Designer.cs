@@ -85,6 +85,12 @@
             label7 = new Label();
             label12 = new Label();
             label9 = new Label();
+            nombre = new DataGridViewTextBoxColumn();
+            numero = new DataGridViewTextBoxColumn();
+            principal = new DataGridViewCheckBoxColumn();
+            nombreDir = new DataGridViewTextBoxColumn();
+            direccion = new DataGridViewTextBoxColumn();
+            principalDir = new DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)tabladatos).BeginInit();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -483,6 +489,7 @@
             direccioncliente.AllowUserToResizeRows = false;
             direccioncliente.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             direccioncliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            direccioncliente.Columns.AddRange(new DataGridViewColumn[] { nombreDir, direccion, principalDir });
             direccioncliente.Location = new Point(339, 71);
             direccioncliente.MultiSelect = false;
             direccioncliente.Name = "direccioncliente";
@@ -500,6 +507,7 @@
             telefonocliente.AllowUserToResizeRows = false;
             telefonocliente.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             telefonocliente.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            telefonocliente.Columns.AddRange(new DataGridViewColumn[] { nombre, numero, principal });
             telefonocliente.Location = new Point(9, 69);
             telefonocliente.MultiSelect = false;
             telefonocliente.Name = "telefonocliente";
@@ -788,6 +796,42 @@
             label9.TabIndex = 18;
             label9.Text = "Nombre(s)";
             // 
+            // nombre
+            // 
+            nombre.HeaderText = "Etiqueta";
+            nombre.Name = "nombre";
+            nombre.ReadOnly = true;
+            // 
+            // numero
+            // 
+            numero.HeaderText = "Número";
+            numero.Name = "numero";
+            numero.ReadOnly = true;
+            // 
+            // principal
+            // 
+            principal.HeaderText = "Principal";
+            principal.Name = "principal";
+            principal.ReadOnly = true;
+            // 
+            // nombreDir
+            // 
+            nombreDir.HeaderText = "Etiqueta";
+            nombreDir.Name = "nombreDir";
+            nombreDir.ReadOnly = true;
+            // 
+            // direccion
+            // 
+            direccion.HeaderText = "Dirección";
+            direccion.Name = "direccion";
+            direccion.ReadOnly = true;
+            // 
+            // principalDir
+            // 
+            principalDir.HeaderText = "Principal";
+            principalDir.Name = "principalDir";
+            principalDir.ReadOnly = true;
+            // 
             // ConsClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -880,5 +924,11 @@
         private TextBox emailtxt;
         private Label label4;
         private Label label10;
+        private DataGridViewTextBoxColumn nombreDir;
+        private DataGridViewTextBoxColumn direccion;
+        private DataGridViewCheckBoxColumn principalDir;
+        private DataGridViewTextBoxColumn nombre;
+        private DataGridViewTextBoxColumn numero;
+        private DataGridViewCheckBoxColumn principal;
     }
 }

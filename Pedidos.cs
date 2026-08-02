@@ -54,6 +54,7 @@ namespace Proyecto_restaurante
         private decimal totalAcumulado = 0;
         private decimal subtotalAcumulado = 0;
         public string comprobanteFinal;
+        public int GenerarNCF = 0;
         bool cargandoOrden = false;
         bool cargandoGrupos = false;
 
@@ -79,6 +80,223 @@ namespace Proyecto_restaurante
         private List<CuentaItem> listaGrupos = new List<CuentaItem>();
 
         string conexionString = ConexionBD.ConexionSQL();
+
+        private void Pedidos_Load(object sender, EventArgs e)
+        {
+            fechapedido.Value = SistemaFecha.FechaActual;
+
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+
+            cajerolabel.Text = "     Cajero: " + NombreUsuario;
+
+            if (!cargandoOrden)
+                tipoComp.SelectedIndex = 1;
+
+            string ConsultaNCF = @"SELECT TOP 1 GenerarNCF FROM ConfiguracionSistema";
+
+            using (SqlConnection con = new SqlConnection(conexionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(ConsultaNCF, con))
+                {
+                    object resultado = cmd.ExecuteScalar();
+
+                    bool generarNCF = (resultado != null && resultado != DBNull.Value) ? Convert.ToBoolean(resultado) : false;
+
+                    if (!generarNCF)
+                    {
+                        panelBloqueoNCF.Visible = true;
+                        panelBloqueoNCF.BringToFront();
+
+                        tipoComp.Enabled = false;
+                        tipoComp.SelectedIndex = -1;
+
+                        Comprobantetxt.Enabled = false;
+                        Comprobantetxt.Clear();
+                        GenerarNCF = 0;
+                    }
+                    else
+                    {
+                        panelBloqueoNCF.Visible = false;
+
+                        tipoComp.Enabled = true;
+                        Comprobantetxt.Enabled = true;
+                        GenerarNCF = 1;
+                    }
+                }
+            }
+
+            mesasprincipal.Controls.Clear();
+
+            List<MesaInfo> mesas = new List<MesaInfo>();
+
+            using (SqlConnection cn = new SqlConnection(conexionString))
+            {
+                cn.Open();
+                SqlCommand cmd = new SqlCommand(@"SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal FROM Mesa", cn);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    mesas.Add(new MesaInfo
+                    {
+                        Id = Convert.ToInt32(dr["IdMesa"]),
+                        Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
+                        Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
+                        Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
+                        Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
+                        IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
+                        EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
+                    });
+                }
+            }
+
+            var individuales = mesas.Where(m => m.IdGrupo == 0).ToList();
+            foreach (var mesa in individuales)
+            {
+                var btn = CrearBotonMesa(
+                    mesa.Id,
+                    mesa.Numero,
+                    mesa.Capacidad,
+                    mesa.Ocupado,
+                    mesa.Reservado,
+                    new List<string>()
+                );
+                mesasprincipal.Controls.Add(btn);
+            }
+
+            var grupos = mesas
+            .Where(m => m.IdGrupo > 0)
+            .GroupBy(m => m.IdGrupo);
+
+            foreach (var grupo in grupos)
+            {
+                var principal = grupo.FirstOrDefault(m => m.EsPrincipal == 1) ?? grupo.First();
+
+                var secundarias = grupo
+                    .Where(m => m.Id != principal.Id)
+                    .ToList();
+
+                var unidas = secundarias
+                .Select(m => m.Numero)
+                .ToList();
+
+
+                int capacidadTotal = grupo.Sum(m => int.TryParse(m.Capacidad, out int c) ? c : 0);
+
+                var btn = CrearBotonMesa(
+                    principal.Id,
+                    principal.Numero,
+                    capacidadTotal.ToString(),
+                    principal.Ocupado,
+                    principal.Reservado,
+                    unidas
+                );
+
+                mesasprincipal.Controls.Add(btn);
+            }
+
+            string consultaID = "SELECT TOP 1 IdPedido FROM Pedido ORDER BY IdPedido DESC";
+
+            string busquedaCaja = @"
+            SELECT 
+                c.Nombre AS nombre_caja,
+                c.Numero AS numero_caja
+            FROM Configuracion conf
+            INNER JOIN Caja c
+                ON conf.IdCaja = c.IdCaja
+            WHERE conf.NombrePC = @NombrePC";
+
+            string PermisosSQL = @"
+            SELECT 
+                CambiarPrecio,
+                PrecioMinimo
+            FROM PermisosUsuario
+            WHERE IdUsuario = @IdUsuario;";
+
+            using (SqlConnection con = new SqlConnection(conexionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand(consultaID, con))
+                {
+                    object resultado = cmd.ExecuteScalar();
+
+                    if (resultado != null)
+                    {
+                        int nuevoId = Convert.ToInt32(resultado) + 1;
+                        txtidpedido.Text = nuevoId.ToString();
+                    }
+                    else
+                    {
+                        txtidpedido.Text = "1";
+                    }
+                }
+
+                using (SqlCommand cmdBusCaja = new SqlCommand(busquedaCaja, con))
+                {
+                    cmdBusCaja.Parameters.AddWithValue("@NombrePC", NombrePC);
+
+                    using (SqlDataReader reader = cmdBusCaja.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string nombreCaja = reader["nombre_caja"].ToString();
+                            labelcaja.Text = $"{nombreCaja}";
+                        }
+                        else
+                        {
+                            labelcaja.Text = "Caja no encontrada.";
+                        }
+                    }
+                }
+
+                using (SqlCommand cmdPermiso = new SqlCommand(PermisosSQL, con))
+                {
+                    cmdPermiso.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+
+                    using (SqlDataReader dr = cmdPermiso.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            CambiarPrecio = Convert.ToInt32(dr["CambiarPrecio"]) == 1;
+                            PrecioMinimo = Convert.ToInt32(dr["PrecioMinimo"]) == 1;
+                        }
+                    }
+
+                    txtprecioproducto.Enabled = CambiarPrecio;
+                }
+            }
+
+            if (detalleorden.ColumnCount == 0)
+            {
+                detalleorden.Columns.Add("cuenta", "Cuenta");
+                detalleorden.Columns.Add("codigoProducto", "Codigo");
+                detalleorden.Columns.Add("nombreProducto", "Nombre");
+                detalleorden.Columns.Add("precio", "Precio");
+                detalleorden.Columns.Add("ITBIS", "ITBIS");
+                detalleorden.Columns.Add("ITBIS2", "ITBIS %");
+                detalleorden.Columns.Add("cantidad", "Cantidad");
+                detalleorden.Columns.Add("subtotal", "Importe");
+
+                detalleorden.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+                detalleorden.Columns["cuenta"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                detalleorden.Columns["codigoProducto"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                
+                detalleorden.Columns["precio"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                detalleorden.Columns["ITBIS"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                detalleorden.Columns["ITBIS2"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                detalleorden.Columns["cantidad"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                detalleorden.Columns["subtotal"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                detalleorden.Columns["nombreProducto"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            NotifComanda();
+            Comprobantes();
+        }
 
         private void buscarclientebtn_Click(object sender, EventArgs e)
         {
@@ -148,6 +366,7 @@ namespace Proyecto_restaurante
                 pv.Nombre,
                 pv.PrecioVenta,
                 pv.Itbis,
+	            pv.ItbisPrecio,
                 pv.Existencia
             FROM ProductoVenta pv
             INNER JOIN ProductoTipo pt
@@ -163,7 +382,8 @@ namespace Proyecto_restaurante
             tablapanelproducto.Columns["CodigoBarra"].HeaderText = "Código";
             tablapanelproducto.Columns["Nombre"].HeaderText = "Nombre";
             tablapanelproducto.Columns["PrecioVenta"].HeaderText = "Venta";
-            tablapanelproducto.Columns["ITBIS"].HeaderText = "ITBIS";
+            tablapanelproducto.Columns["ItbisPrecio"].HeaderText = "ITBIS";
+            tablapanelproducto.Columns["ITBIS"].HeaderText = "ITBIS %";            
             tablapanelproducto.Columns["Existencia"].HeaderText = "Existencia";
         }
 
@@ -235,9 +455,6 @@ namespace Proyecto_restaurante
 
         private void guardarordenbtn_Click(object sender, EventArgs e)
         {
-            bool commitRealizado = false;
-            int idPedidoGenerado = 0;
-
             if (detalleorden.Rows.Cast<DataGridViewRow>().All(r => r.IsNewRow))
             {
                 MessageBox.Show("No puede guardar una orden sin productos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -250,10 +467,13 @@ namespace Proyecto_restaurante
                 return;
             }
 
-            if (EditarEstado == 0)
+            if (EditarEstado == 0 && GenerarNCF == 1)
             {
                 comprobanteFinal = GenerarComprobante();
             }
+
+            bool commitRealizado = false;
+            int idPedidoGenerado = 0;
 
             using (SqlConnection conexion = new SqlConnection(conexionString))
             {
@@ -271,22 +491,27 @@ namespace Proyecto_restaurante
                         (@Fecha, @IdMesa, @Origen, @IdClientePersona, @NombreCliente, @Estado, @Total, @Nota, @Comprobante, @Usuario);
                         SELECT SCOPE_IDENTITY();";
 
-                        SqlCommand cmdPedido = new SqlCommand(queryPedido, conexion, transaccion);
+                        using (SqlCommand cmdPedido = new SqlCommand(queryPedido, conexion, transaccion))
+                        {
+                            cmdPedido.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
+                            cmdPedido.Parameters.AddWithValue("@IdMesa", idMesaSeleccionada);
+                            cmdPedido.Parameters.AddWithValue("@Origen", "Local");
+                            cmdPedido.Parameters.AddWithValue("@IdClientePersona", Convert.ToInt32(IdClientePersonaST));
+                            cmdPedido.Parameters.AddWithValue("@NombreCliente", txtnombrecompleto.Text);
+                            cmdPedido.Parameters.AddWithValue("@Estado", "Pendiente");
+                            cmdPedido.Parameters.AddWithValue("@Total", Convert.ToDecimal(labeltotal.Text));
+                            cmdPedido.Parameters.AddWithValue("@Nota", notatxt.Text);
+                            cmdPedido.Parameters.AddWithValue("@Usuario", IdUsuario);
+                            cmdPedido.Parameters.AddWithValue("@Comprobante", comprobanteFinal);
 
-                        cmdPedido.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
-                        cmdPedido.Parameters.AddWithValue("@IdMesa", idMesaSeleccionada);
-                        cmdPedido.Parameters.AddWithValue("@Origen", "Local");
-                        cmdPedido.Parameters.AddWithValue("@IdClientePersona", Convert.ToInt32(IdClientePersonaST));
-                        cmdPedido.Parameters.AddWithValue("@NombreCliente", txtnombrecompleto.Text);
-                        cmdPedido.Parameters.AddWithValue("@Estado", "Pendiente");
-                        cmdPedido.Parameters.AddWithValue("@Total", Convert.ToDecimal(labeltotal.Text));
-                        cmdPedido.Parameters.AddWithValue("@Nota", notatxt.Text);
-                        cmdPedido.Parameters.AddWithValue("@Comprobante", comprobanteFinal);
-                        cmdPedido.Parameters.AddWithValue("@Usuario", IdUsuario);
+                            idPedidoGenerado = Convert.ToInt32(cmdPedido.ExecuteScalar());
+                        }
 
-                        idPedidoGenerado = Convert.ToInt32(cmdPedido.ExecuteScalar());
+                        if(GenerarNCF == 1)
+                        {
+                            ActualizarSecuencia(tipoComp.SelectedIndex == 0 ? 1 : 2);
+                        }
 
-                        ActualizarSecuencia(tipoComp.SelectedIndex == 0 ? 1 : 2);
                     }
                     else if (EditarEstado == 1)
                     {
@@ -294,83 +519,104 @@ namespace Proyecto_restaurante
 
                         string queryUpdatePedido = @"
                         UPDATE Pedido
-                        SET Fecha = @Fecha,
-                            IdMesa = @IdMesa,
-                            IdClientePersona = @IdClientePersona,
-                            NombreCliente = @NombreCliente,
-                            Total = @Total,
-                            Nota = @Nota
+                        SET Fecha = @Fecha, IdMesa = @IdMesa, IdClientePersona = @IdClientePersona, 
+                            NombreCliente = @NombreCliente, Total = @Total, Nota = @Nota
                         WHERE IdPedido = @IdPedido";
 
-                        SqlCommand cmdUpdate = new SqlCommand(queryUpdatePedido, conexion, transaccion);
+                        using (SqlCommand cmdUpdate = new SqlCommand(queryUpdatePedido, conexion, transaccion))
+                        {
+                            cmdUpdate.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
+                            cmdUpdate.Parameters.AddWithValue("@IdMesa", idMesaSeleccionada);
+                            cmdUpdate.Parameters.AddWithValue("@IdClientePersona", Convert.ToInt32(IdClientePersonaST));
+                            cmdUpdate.Parameters.AddWithValue("@NombreCliente", txtnombrecompleto.Text);
+                            cmdUpdate.Parameters.AddWithValue("@Total", Convert.ToDecimal(labeltotal.Text));
+                            cmdUpdate.Parameters.AddWithValue("@Nota", notatxt.Text);
+                            cmdUpdate.Parameters.AddWithValue("@IdPedido", PedidoID);
+                            cmdUpdate.Parameters.AddWithValue("@NCF", comprobanteFinal);
 
-                        cmdUpdate.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
-                        cmdUpdate.Parameters.AddWithValue("@IdMesa", idMesaSeleccionada);
-                        cmdUpdate.Parameters.AddWithValue("@IdClientePersona", Convert.ToInt32(IdClientePersonaST));
-                        cmdUpdate.Parameters.AddWithValue("@NombreCliente", txtnombrecompleto.Text);
-                        cmdUpdate.Parameters.AddWithValue("@Total", Convert.ToDecimal(labeltotal.Text));
-                        cmdUpdate.Parameters.AddWithValue("@Nota", notatxt.Text);
-                        cmdUpdate.Parameters.AddWithValue("@IdPedido", PedidoID);
-                        cmdUpdate.ExecuteNonQuery();
+                            cmdUpdate.ExecuteNonQuery();
+                        }
 
-                        SqlCommand cmdDeleteDetalle = new SqlCommand(
-                            "DELETE FROM DetallePedido WHERE IdPedido = @IdPedido",
-                            conexion, transaccion);
-                        cmdDeleteDetalle.Parameters.AddWithValue("@IdPedido", PedidoID);
-                        cmdDeleteDetalle.ExecuteNonQuery();
+                        using (SqlCommand cmdDeleteDetalle = new SqlCommand("DELETE FROM DetallePedido WHERE IdPedido = @IdPedido", conexion, transaccion))
+                        {
+                            cmdDeleteDetalle.Parameters.AddWithValue("@IdPedido", PedidoID);
+                            cmdDeleteDetalle.ExecuteNonQuery();
+                        }
 
-                        SqlCommand cmdDeleteComanda = new SqlCommand(
-                            "DELETE FROM Comanda WHERE IdPedido = @IdPedido AND Estado = 'Cocina'",
-                            conexion, transaccion);
-                        cmdDeleteComanda.Parameters.AddWithValue("@IdPedido", PedidoID);
-                        cmdDeleteComanda.ExecuteNonQuery();
+                        using (SqlCommand cmdDeleteComanda = new SqlCommand("DELETE FROM Comanda WHERE IdPedido = @IdPedido AND Estado = 'Cocina'", conexion, transaccion))
+                        {
+                            cmdDeleteComanda.Parameters.AddWithValue("@IdPedido", PedidoID);
+                            cmdDeleteComanda.ExecuteNonQuery();
+                        }
                     }
 
                     string queryDetalle = @"
-                    INSERT INTO DetallePedido (IdPedido, IdProducto, Cantidad, PrecioUnitario, Cuenta)
-                    VALUES (@IdPedido, @IdProducto, @Cantidad, @PrecioUnitario, @Cuenta);";
+                        INSERT INTO DetallePedido (IdPedido, IdProducto, Cantidad, PrecioUnitario, Itbis, Cuenta)
+                        VALUES (@IdPedido, @IdProducto, @Cantidad, @PrecioUnitario, @Itbis, @Cuenta);";
 
-                    foreach (DataGridViewRow fila in detalleorden.Rows)
+                    using (SqlCommand cmdDetalle = new SqlCommand(queryDetalle, conexion, transaccion))
                     {
-                        if (fila.IsNewRow) continue;
+                        cmdDetalle.Parameters.Add("@IdPedido", SqlDbType.Int);
+                        cmdDetalle.Parameters.Add("@IdProducto", SqlDbType.Int);
+                        cmdDetalle.Parameters.Add("@Cantidad", SqlDbType.Decimal);
+                        cmdDetalle.Parameters.Add("@PrecioUnitario", SqlDbType.Decimal);
+                        cmdDetalle.Parameters.Add("@Itbis", SqlDbType.Decimal);
+                        cmdDetalle.Parameters.Add("@Cuenta", SqlDbType.Decimal);
 
-                        SqlCommand cmdDetalle = new SqlCommand(queryDetalle, conexion, transaccion);
-                        cmdDetalle.Parameters.AddWithValue("@IdPedido", idPedidoGenerado);
-                        cmdDetalle.Parameters.AddWithValue("@IdProducto", Convert.ToInt32(fila.Cells["codigoProducto"].Value));
-                        cmdDetalle.Parameters.AddWithValue("@Cantidad", Convert.ToDecimal(fila.Cells["Cantidad"].Value));
-                        cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", Convert.ToDecimal(fila.Cells["Precio"].Value));
-                        cmdDetalle.Parameters.AddWithValue("@Cuenta", Convert.ToDecimal(fila.Cells["cuenta"].Value));
+                        foreach (DataGridViewRow fila in detalleorden.Rows)
+                        {
+                            if (fila.IsNewRow) continue;
 
-                        cmdDetalle.ExecuteNonQuery();
+                            cmdDetalle.Parameters["@IdPedido"].Value = idPedidoGenerado;
+                            cmdDetalle.Parameters["@IdProducto"].Value = Convert.ToInt32(fila.Cells["codigoProducto"].Value);
+                            cmdDetalle.Parameters["@Cantidad"].Value = Convert.ToDecimal(fila.Cells["Cantidad"].Value);
+                            cmdDetalle.Parameters["@PrecioUnitario"].Value = Convert.ToDecimal(fila.Cells["Precio"].Value);
+                            cmdDetalle.Parameters["@Itbis"].Value = Convert.ToDecimal(fila.Cells["ITBIS"].Value);
+                            cmdDetalle.Parameters["@Cuenta"].Value = Convert.ToDecimal(fila.Cells["cuenta"].Value);
+
+                            cmdDetalle.ExecuteNonQuery();
+                        }
                     }
 
                     string queryInsertarComanda = @"
-                    INSERT INTO Comanda (IdPedido, IdMesa, IdProducto, Cantidad, Estado, Cuenta)
-                    VALUES (@IdPedido, @IdMesa, @IdProducto, @Cantidad, @Estado, @Cuenta);";
+                        INSERT INTO Comanda (IdPedido, IdMesa, IdProducto, Cantidad, Estado, Cuenta)
+                        VALUES (@IdPedido, @IdMesa, @IdProducto, @Cantidad, @Estado, @Cuenta);";
 
-                    foreach (DataGridViewRow fila in detalleorden.Rows)
+                    using (SqlCommand cmdComanda = new SqlCommand(queryInsertarComanda, conexion, transaccion))
                     {
-                        if (fila.IsNewRow) continue;
+                        cmdComanda.Parameters.Add("@IdPedido", SqlDbType.Int);
+                        cmdComanda.Parameters.Add("@IdMesa", SqlDbType.Int);
+                        cmdComanda.Parameters.Add("@IdProducto", SqlDbType.Int);
+                        cmdComanda.Parameters.Add("@Cantidad", SqlDbType.Decimal);
+                        cmdComanda.Parameters.Add("@Cuenta", SqlDbType.Decimal);
+                        cmdComanda.Parameters.Add("@Estado", SqlDbType.VarChar, 50);
 
-                        SqlCommand cmdComanda = new SqlCommand(queryInsertarComanda, conexion, transaccion);
+                        foreach (DataGridViewRow fila in detalleorden.Rows)
+                        {
+                            if (fila.IsNewRow) continue;
 
-                        cmdComanda.Parameters.AddWithValue("@IdPedido", idPedidoGenerado);
-                        cmdComanda.Parameters.AddWithValue("@IdMesa", idMesaSeleccionada);
-                        cmdComanda.Parameters.AddWithValue("@IdProducto", Convert.ToInt32(fila.Cells["codigoProducto"].Value));
-                        cmdComanda.Parameters.AddWithValue("@Cantidad", Convert.ToDecimal(fila.Cells["Cantidad"].Value));
-                        cmdComanda.Parameters.AddWithValue("@Cuenta", Convert.ToDecimal(fila.Cells["cuenta"].Value));
-                        cmdComanda.Parameters.AddWithValue("@Estado", "Cocina");
+                            cmdComanda.Parameters["@IdPedido"].Value = idPedidoGenerado;
+                            cmdComanda.Parameters["@IdMesa"].Value = idMesaSeleccionada;
+                            cmdComanda.Parameters["@IdProducto"].Value = Convert.ToInt32(fila.Cells["codigoProducto"].Value);
+                            cmdComanda.Parameters["@Cantidad"].Value = Convert.ToDecimal(fila.Cells["Cantidad"].Value);
+                            cmdComanda.Parameters["@Cuenta"].Value = Convert.ToDecimal(fila.Cells["cuenta"].Value);
+                            cmdComanda.Parameters["@Estado"].Value = "Cocina";
 
-                        cmdComanda.ExecuteNonQuery();
+                            cmdComanda.ExecuteNonQuery();
+                        }
                     }
 
                     string queryMesa = "UPDATE Mesa SET Ocupado = 1 WHERE IdMesa = @IdMesa";
 
-                    foreach (int mesa in mesasDelGrupo)
+                    using (SqlCommand cmdMesa = new SqlCommand(queryMesa, conexion, transaccion))
                     {
-                        SqlCommand cmdMesa = new SqlCommand(queryMesa, conexion, transaccion);
-                        cmdMesa.Parameters.AddWithValue("@IdMesa", mesa);
-                        cmdMesa.ExecuteNonQuery();
+                        cmdMesa.Parameters.Add("@IdMesa", SqlDbType.Int);
+
+                        foreach (int mesa in mesasDelGrupo)
+                        {
+                            cmdMesa.Parameters["@IdMesa"].Value = mesa;
+                            cmdMesa.ExecuteNonQuery();
+                        }
                     }
 
                     transaccion.Commit();
@@ -430,6 +676,8 @@ namespace Proyecto_restaurante
                     cmd.ExecuteNonQuery();
                 }
             }
+
+            GenerarComprobante();
         }
 
         public void habilitarbotones()
@@ -592,6 +840,7 @@ namespace Proyecto_restaurante
         private void RecalcularTotales()
         {
             decimal subtotal = 0;
+            decimal itbis = 0;
             decimal total = 0;
 
             foreach (DataGridViewRow fila in detalleorden.Rows)
@@ -599,17 +848,20 @@ namespace Proyecto_restaurante
                 if (fila.IsNewRow) continue;
 
                 decimal precio = Convert.ToDecimal(fila.Cells["precio"].Value);
-                decimal itbis = Convert.ToDecimal(fila.Cells["ITBIS"].Value);
+                decimal itbisPorc = Convert.ToDecimal(fila.Cells["ITBIS"].Value);
                 int cantidad = Convert.ToInt32(fila.Cells["cantidad"].Value);
 
                 decimal sub = precio * cantidad;
-                decimal tot = sub + (sub * (itbis / 100));
+                decimal itb = sub * (itbisPorc / 100);
+                decimal tot = sub + (sub * (itbisPorc / 100));
 
                 subtotal += sub;
+                itbis += itb;
                 total += tot;
             }
 
             labelsubtotal.Text = subtotal.ToString("F2");
+            itbisLBL.Text = itbis.ToString("F2");
             labeltotal.Text = total.ToString("F2");
         }
 
@@ -693,6 +945,17 @@ namespace Proyecto_restaurante
         }
 
         private Button botonActivo = null;
+
+        public class MesaInfo
+        {
+            public int Id { get; set; }
+            public string Numero { get; set; }
+            public string Capacidad { get; set; }
+            public int Ocupado { get; set; }
+            public int Reservado { get; set; }
+            public int IdGrupo { get; set; }
+            public int EsPrincipal { get; set; }
+        }
 
         private void BtnMesa_Click(object sender, EventArgs e)
         {
@@ -820,188 +1083,6 @@ namespace Proyecto_restaurante
             return btn;
         }
 
-        public class MesaInfo
-        {
-            public int Id { get; set; }
-            public string Numero { get; set; }
-            public string Capacidad { get; set; }
-            public int Ocupado { get; set; }
-            public int Reservado { get; set; }
-            public int IdGrupo { get; set; }
-            public int EsPrincipal { get; set; }
-        }
-
-        private void Pedidos_Load(object sender, EventArgs e)
-        {
-            fechapedido.Value = SistemaFecha.FechaActual;
-
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-
-            cajerolabel.Text = "     Cajero: " + NombreUsuario;
-
-            if (!cargandoOrden)
-                tipoComp.SelectedIndex = 1;
-
-            mesasprincipal.Controls.Clear();
-
-            List<MesaInfo> mesas = new List<MesaInfo>();
-
-            using (SqlConnection cn = new SqlConnection(conexionString))
-            {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand(@"SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal FROM Mesa", cn);
-
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                while (dr.Read())
-                {
-                    mesas.Add(new MesaInfo
-                    {
-                        Id = Convert.ToInt32(dr["IdMesa"]),
-                        Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
-                        Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
-                        Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
-                        Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
-                        IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
-                        EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
-                    });
-                }
-            }
-
-            var individuales = mesas.Where(m => m.IdGrupo == 0).ToList();
-            foreach (var mesa in individuales)
-            {
-                var btn = CrearBotonMesa(
-                    mesa.Id,
-                    mesa.Numero,
-                    mesa.Capacidad,
-                    mesa.Ocupado,
-                    mesa.Reservado,
-                    new List<string>()
-                );
-                mesasprincipal.Controls.Add(btn);
-            }
-
-            var grupos = mesas
-            .Where(m => m.IdGrupo > 0)
-            .GroupBy(m => m.IdGrupo);
-
-            foreach (var grupo in grupos)
-            {
-                var principal = grupo.FirstOrDefault(m => m.EsPrincipal == 1) ?? grupo.First();
-
-                var secundarias = grupo
-                    .Where(m => m.Id != principal.Id)
-                    .ToList();
-
-                var unidas = secundarias
-                .Select(m => m.Numero)
-                .ToList();
-
-
-                int capacidadTotal = grupo.Sum(m => int.TryParse(m.Capacidad, out int c) ? c : 0);
-
-                var btn = CrearBotonMesa(
-                    principal.Id,
-                    principal.Numero,
-                    capacidadTotal.ToString(),
-                    principal.Ocupado,
-                    principal.Reservado,
-                    unidas
-                );
-
-                mesasprincipal.Controls.Add(btn);
-            }
-
-            string consultaID = "SELECT TOP 1 IdPedido FROM Pedido ORDER BY IdPedido DESC";
-
-            string busquedaCaja = @"
-            SELECT 
-                c.Nombre AS nombre_caja,
-                c.Numero AS numero_caja
-            FROM Configuracion conf
-            INNER JOIN Caja c
-                ON conf.IdCaja = c.IdCaja
-            WHERE conf.NombrePC = @NombrePC";
-
-            string PermisosSQL = @"
-            SELECT 
-                CambiarPrecio,
-                PrecioMinimo
-            FROM PermisosUsuario
-            WHERE IdUsuario = @IdUsuario;";
-
-            using (SqlConnection con = new SqlConnection(conexionString))
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(consultaID, con))
-                {
-                    object resultado = cmd.ExecuteScalar();
-
-                    if (resultado != null)
-                    {
-                        int nuevoId = Convert.ToInt32(resultado) + 1;
-                        txtidpedido.Text = nuevoId.ToString();
-                    }
-                    else
-                    {
-                        txtidpedido.Text = "1";
-                    }
-                }
-
-                using (SqlCommand cmdBusCaja = new SqlCommand(busquedaCaja, con))
-                {
-                    cmdBusCaja.Parameters.AddWithValue("@NombrePC", NombrePC);
-
-                    using (SqlDataReader reader = cmdBusCaja.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            string nombreCaja = reader["nombre_caja"].ToString();
-                            labelcaja.Text = $"{nombreCaja}";
-                        }
-                        else
-                        {
-                            labelcaja.Text = "Caja no encontrada.";
-                        }
-                    }
-                }
-
-                using (SqlCommand cmdPermiso = new SqlCommand(PermisosSQL, con))
-                {
-                    cmdPermiso.Parameters.AddWithValue("@IdUsuario", IdUsuario);
-
-                    using (SqlDataReader dr = cmdPermiso.ExecuteReader())
-                    {
-                        if (dr.Read())
-                        {
-                            CambiarPrecio = Convert.ToInt32(dr["CambiarPrecio"]) == 1;
-                            PrecioMinimo = Convert.ToInt32(dr["PrecioMinimo"]) == 1;
-                        }
-                    }
-
-                    txtprecioproducto.Enabled = CambiarPrecio;
-                }
-            }
-
-            if (detalleorden.ColumnCount == 0)
-            {
-                detalleorden.Columns.Add("cuenta", "Cuenta");
-                detalleorden.Columns.Add("codigoProducto", "Codigo");
-                detalleorden.Columns.Add("nombreProducto", "Nombre");
-                detalleorden.Columns.Add("precio", "Precio");
-                detalleorden.Columns.Add("ITBIS", "ITBIS");
-                detalleorden.Columns.Add("cantidad", "Cantidad");
-                detalleorden.Columns.Add("subtotal", "Importe");
-            }
-
-
-
-            NotifComanda();
-            Comprobantes();
-        }
-
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             buscar.Focus();
@@ -1010,27 +1091,35 @@ namespace Proyecto_restaurante
 
         private void Comprobantes()
         {
-            if (cargandoOrden) return;
-
-            int tipo = tipoComp.SelectedIndex == 0 ? 1 : 2;
-
-            string query = "SELECT TOP 1 SecuenciaActual FROM Comprobantes WHERE Tipo = @Tipo ORDER BY IdComprobante DESC";
-
-            using (SqlConnection con = new SqlConnection(conexionString))
+            if (GenerarNCF == 0)
             {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand(query, con))
+                Comprobantetxt.Text = "";
+                return;
+            }
+            else 
+            {
+                if (cargandoOrden) return;
+
+                int tipo = tipoComp.SelectedIndex == 0 ? 1 : 2;
+
+                string query = "SELECT TOP 1 SecuenciaActual FROM Comprobantes WHERE Tipo = @Tipo ORDER BY IdComprobante DESC";
+
+                using (SqlConnection con = new SqlConnection(conexionString))
                 {
-                    cmd.Parameters.AddWithValue("@Tipo", tipo);
+                    con.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Tipo", tipo);
 
-                    object resultado = cmd.ExecuteScalar();
+                        object resultado = cmd.ExecuteScalar();
 
-                    int nuevaSecuencia = 1;
+                        int nuevaSecuencia = 1;
 
-                    if (resultado != null && resultado != DBNull.Value)
-                        nuevaSecuencia = Convert.ToInt32(resultado) + 1;
+                        if (resultado != null && resultado != DBNull.Value)
+                            nuevaSecuencia = Convert.ToInt32(resultado) + 1;
 
-                    Comprobantetxt.Text = nuevaSecuencia.ToString("D8");
+                        Comprobantetxt.Text = nuevaSecuencia.ToString("D8");
+                    }
                 }
             }
         }
@@ -2444,6 +2533,7 @@ namespace Proyecto_restaurante
                     p.Nombre,
                     d.PrecioUnitario,
                     p.Itbis,
+		            p.ItbisPrecio,
                     d.Cantidad,
                     d.Cantidad * d.PrecioUnitario AS Importe
             FROM DetallePedido d
@@ -2466,12 +2556,15 @@ namespace Proyecto_restaurante
                         detalleorden.Rows[fila].Cells["codigoProducto"].Value = dr["IdProducto"];
                         detalleorden.Rows[fila].Cells["nombreProducto"].Value = dr["Nombre"];
                         detalleorden.Rows[fila].Cells["precio"].Value = dr["PrecioUnitario"];
-                        detalleorden.Rows[fila].Cells["ITBIS"].Value = dr["Itbis"];
+                        detalleorden.Rows[fila].Cells["ITBIS"].Value = dr["ItbisPrecio"];
+                        detalleorden.Rows[fila].Cells["ITBIS2"].Value = dr["Itbis"];
                         detalleorden.Rows[fila].Cells["cantidad"].Value = dr["Cantidad"];
                         detalleorden.Rows[fila].Cells["subtotal"].Value = dr["Importe"];
                     }
                 }
             }
+
+            RecalcularTotales();
         }
 
         private void FacturarMesa(int idMesa)
@@ -3073,7 +3166,10 @@ namespace Proyecto_restaurante
 
         private void tipoComp_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Comprobantes();
+            if (GenerarNCF == 1)
+            {
+                Comprobantes();
+            }
         }
 
         private void VerComanda_Click(object sender, EventArgs e)
