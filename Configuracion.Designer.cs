@@ -175,7 +175,10 @@
             sistemaconfiguracion = new Panel();
             tabControl4 = new TabControl();
             tabPage9 = new TabPage();
+            itbisBruto = new RadioButton();
+            itbisTransp = new RadioButton();
             generarNCF = new CheckBox();
+            label4 = new Label();
             label41 = new Label();
             porcGanancia = new TextBox();
             tabPage10 = new TabPage();
@@ -202,9 +205,6 @@
             textBox4 = new TextBox();
             label35 = new Label();
             textBox2 = new TextBox();
-            itbisTransp = new RadioButton();
-            itbisbruto = new RadioButton();
-            label4 = new Label();
             barraizq.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -1974,7 +1974,7 @@
             // tabPage9
             // 
             tabPage9.BackColor = SystemColors.WindowFrame;
-            tabPage9.Controls.Add(itbisbruto);
+            tabPage9.Controls.Add(itbisBruto);
             tabPage9.Controls.Add(itbisTransp);
             tabPage9.Controls.Add(generarNCF);
             tabPage9.Controls.Add(label4);
@@ -1987,6 +1987,32 @@
             tabPage9.TabIndex = 0;
             tabPage9.Text = "Productos";
             // 
+            // itbisBruto
+            // 
+            itbisBruto.AutoSize = true;
+            itbisBruto.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            itbisBruto.ForeColor = Color.White;
+            itbisBruto.Location = new Point(19, 195);
+            itbisBruto.Name = "itbisBruto";
+            itbisBruto.Size = new Size(70, 25);
+            itbisBruto.TabIndex = 104;
+            itbisBruto.TabStop = true;
+            itbisBruto.Text = "Bruto";
+            itbisBruto.UseVisualStyleBackColor = true;
+            // 
+            // itbisTransp
+            // 
+            itbisTransp.AutoSize = true;
+            itbisTransp.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            itbisTransp.ForeColor = Color.White;
+            itbisTransp.Location = new Point(19, 164);
+            itbisTransp.Name = "itbisTransp";
+            itbisTransp.Size = new Size(147, 25);
+            itbisTransp.TabIndex = 104;
+            itbisTransp.TabStop = true;
+            itbisTransp.Text = "Transparentado";
+            itbisTransp.UseVisualStyleBackColor = true;
+            // 
             // generarNCF
             // 
             generarNCF.AutoSize = true;
@@ -1998,6 +2024,18 @@
             generarNCF.TabIndex = 1;
             generarNCF.Text = "Manejar Comprobantes Fiscales (NCF)";
             generarNCF.UseVisualStyleBackColor = true;
+            generarNCF.CheckedChanged += generarNCF_CheckedChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(19, 131);
+            label4.Name = "label4";
+            label4.Size = new Size(128, 21);
+            label4.TabIndex = 101;
+            label4.Text = "Manejo de Itbis";
             // 
             // label41
             // 
@@ -2271,43 +2309,6 @@
             textBox2.Size = new Size(311, 29);
             textBox2.TabIndex = 86;
             // 
-            // itbisTransp
-            // 
-            itbisTransp.AutoSize = true;
-            itbisTransp.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            itbisTransp.ForeColor = Color.White;
-            itbisTransp.Location = new Point(19, 164);
-            itbisTransp.Name = "itbisTransp";
-            itbisTransp.Size = new Size(147, 25);
-            itbisTransp.TabIndex = 104;
-            itbisTransp.TabStop = true;
-            itbisTransp.Text = "Transparentado";
-            itbisTransp.UseVisualStyleBackColor = true;
-            // 
-            // itbisbruto
-            // 
-            itbisbruto.AutoSize = true;
-            itbisbruto.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            itbisbruto.ForeColor = Color.White;
-            itbisbruto.Location = new Point(19, 195);
-            itbisbruto.Name = "itbisbruto";
-            itbisbruto.Size = new Size(70, 25);
-            itbisbruto.TabIndex = 104;
-            itbisbruto.TabStop = true;
-            itbisbruto.Text = "Bruto";
-            itbisbruto.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label4.ForeColor = Color.White;
-            label4.Location = new Point(19, 131);
-            label4.Name = "label4";
-            label4.Size = new Size(128, 21);
-            label4.TabIndex = 101;
-            label4.Text = "Manejo de Itbis";
-            // 
             // Configuracion
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2572,7 +2573,7 @@
         private Label label41;
         private TextBox porcGanancia;
         private CheckBox generarNCF;
-        private RadioButton itbisbruto;
+        private RadioButton itbisBruto;
         private RadioButton itbisTransp;
         private Label label4;
     }

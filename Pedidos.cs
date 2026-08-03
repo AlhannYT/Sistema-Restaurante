@@ -26,60 +26,59 @@ namespace Proyecto_restaurante
             InitializeComponent();
         }
 
+        //Validaciones y conf Generales
+        bool permisoSi = false;
+        bool modoEntregar = false;
+        private int EditarEstado = 0;
+        private bool facturarDesdeMesa = false;
         private int cantidadProd = 0;
         private string pedidoActual;
         public string NombrePC;
-        public string NombreUsuario;
-        public int IdUsuario = 0;
-        private int Autorizar = 0;
-
-        private int IDMesa = 0;
-        private int idMesaSeleccionada = 0;
-        private int NumeroMesa = 0;
-        private int OcupadoMesa = 0;
-        private int ReservadoMesa = 0;
-        private int EditarEstado = 0;
-        private int CuentaSeparada = 0;
-        private int ModoElminar = 0;
-        private int OrdenGrupo = 0;
+        bool cargandoOrden = false;
+        bool cargandoGrupos = false;
+        string conexionString = ConexionBD.ConexionSQL();
         public int EliminarFila = 0;
         private int PedidoID;
         private decimal Total;
         private string IdClientePersonaST = "1"; //Al contado por defecto
 
-        decimal TotalPedido = 0m;
-        decimal TotalAplicado = 0m;
-        decimal TotalRestante = 0;
-
-        private decimal totalAcumulado = 0;
-        private decimal subtotalAcumulado = 0;
-        public string comprobanteFinal;
-        public int GenerarNCF = 0;
-        bool cargandoOrden = false;
-        bool cargandoGrupos = false;
-
+        //Permisos Usuario
+        public string NombreUsuario;
+        public int IdUsuario = 0;
+        private int Autorizar = 0;
         bool CambiarPrecio = false;
         bool PrecioMinimo = false;
 
-        bool permisoSi = false;
-        private int gruposMinimos = 1;
-
-        bool modoUnion = false;
-        bool modoSeparar = false;
-
-        bool modoEntregar = false;
-
-        private bool facturarDesdeMesa = false;
-
+        //Mesas
+        private int IDMesa = 0;
+        private int idMesaSeleccionada = 0;
+        private int NumeroMesa = 0;
+        private int OcupadoMesa = 0;
+        private int ReservadoMesa = 0;
         List<int> mesasDelGrupo = new List<int>();
-
         List<int> mesasSeleccionadasUnion = new List<int>();
-
         private List<Panel> ordenesSeleccionadas = new List<Panel>();
 
+        //Cuentas
+        private int CuentaSeparada = 0;
+        private int ModoElminar = 0;
+        private int OrdenGrupo = 0;
+        private int gruposMinimos = 1;
+        bool modoUnion = false;
+        bool modoSeparar = false;
         private List<CuentaItem> listaGrupos = new List<CuentaItem>();
 
-        string conexionString = ConexionBD.ConexionSQL();
+        //Totales para procesar el pago
+        decimal TotalPedido = 0m;
+        decimal TotalAplicado = 0m;
+        decimal TotalRestante = 0;
+        private decimal totalAcumulado = 0;
+        private decimal subtotalAcumulado = 0;
+        
+        //ITBIS
+        public int GenerarNCF = 0;
+        public int ManejoITBIS = 0; // 0 = Transparetado, 1 = Bruto
+        public string comprobanteFinal = "";
 
         private void Pedidos_Load(object sender, EventArgs e)
         {
@@ -121,7 +120,6 @@ namespace Proyecto_restaurante
                         panelBloqueoNCF.Visible = false;
 
                         tipoComp.Enabled = true;
-                        Comprobantetxt.Enabled = true;
                         GenerarNCF = 1;
                     }
                 }
@@ -782,7 +780,13 @@ namespace Proyecto_restaurante
                 return;
             }
 
-            if (!decimal.TryParse(txtiva.Text, out decimal itbis))
+            if (!decimal.TryParse(txtiva.Text, out decimal itbisPrec))
+            {
+                MessageBox.Show("ITBIS inválido.");
+                return;
+            }
+
+            if (!decimal.TryParse(txtiva.Text, out decimal itbisPorc))
             {
                 MessageBox.Show("ITBIS inválido.");
                 return;
@@ -797,28 +801,30 @@ namespace Proyecto_restaurante
             {
                 int grupoNumero = Convert.ToInt32(grupoCuenta.SelectedValue);
                 decimal sub = precio * cantidad;
-                decimal tot = sub + (sub * (itbis / 100));
+                decimal tot = sub + (sub * (itbisPorc / 100));
 
                 row.Cells[0].Value = grupoNumero;
                 row.Cells[1].Value = codigoProducto;
                 row.Cells[2].Value = nombreProducto;
                 row.Cells[3].Value = precio;
-                row.Cells[4].Value = itbis;
-                row.Cells[5].Value = cantidad;
-                row.Cells[6].Value = tot.ToString("N2");
+                row.Cells[4].Value = itbisPrec;
+                row.Cells[5].Value = itbisPorc;
+                row.Cells[6].Value = cantidad;
+                row.Cells[7].Value = tot.ToString("N2");
             }
             else
             {
                 decimal sub = precio * cantidad;
-                decimal tot = sub + (sub * (itbis / 100));
+                decimal tot = sub + (sub * (itbisPorc / 100));
 
                 row.Cells[0].Value = "0";
                 row.Cells[1].Value = codigoProducto;
                 row.Cells[2].Value = nombreProducto;
                 row.Cells[3].Value = precio;
-                row.Cells[4].Value = itbis;
-                row.Cells[5].Value = cantidad;
-                row.Cells[6].Value = tot.ToString("N2");
+                row.Cells[4].Value = itbisPrec;
+                row.Cells[5].Value = itbisPorc;
+                row.Cells[6].Value = cantidad;
+                row.Cells[7].Value = tot.ToString("N2");
             }
 
             detalleorden.Rows.Add(row);
@@ -848,7 +854,8 @@ namespace Proyecto_restaurante
                 if (fila.IsNewRow) continue;
 
                 decimal precio = Convert.ToDecimal(fila.Cells["precio"].Value);
-                decimal itbisPorc = Convert.ToDecimal(fila.Cells["ITBIS"].Value);
+                decimal itbisPrec = Convert.ToDecimal(fila.Cells["ITBIS"].Value);
+                decimal itbisPorc = Convert.ToDecimal(fila.Cells["ITBIS2"].Value);
                 int cantidad = Convert.ToInt32(fila.Cells["cantidad"].Value);
 
                 decimal sub = precio * cantidad;
@@ -1336,17 +1343,19 @@ namespace Proyecto_restaurante
                 detallePagoDT.Columns.Add("referencia", "Referencia");
                 detallePagoDT.Columns.Add("origen", "Origen");
                 detallePagoDT.Columns.Add("monto", "Aplicado");
-
-                TotalPedido = Convert.ToDecimal(Total);
-                TotalRestante = TotalPedido;
-                TotalAPagar.Text = TotalPedido.ToString("N2");
-                restante1txt.Text = TotalRestante.ToString("N2");
-                restante2txt.Text = TotalRestante.ToString("N2");
-                restante3txt.Text = TotalRestante.ToString("N2");
-                efectivotxt.Text = TotalPedido.ToString("N2");
-                tarjetaMonto.Text = TotalPedido.ToString("N2");
-                transfMonto.Text = TotalPedido.ToString("N2");
             }
+
+            detallePagoDT.Rows.Clear();
+
+            TotalPedido = Convert.ToDecimal(Total);
+            TotalRestante = TotalPedido;
+            TotalAPagar.Text = TotalPedido.ToString("N2");
+            restante1txt.Text = TotalRestante.ToString("N2");
+            restante2txt.Text = TotalRestante.ToString("N2");
+            restante3txt.Text = TotalRestante.ToString("N2");
+            efectivotxt.Text = TotalPedido.ToString("N2");
+            tarjetaMonto.Text = TotalPedido.ToString("N2");
+            transfMonto.Text = TotalPedido.ToString("N2");
         }
 
         private void FacturarPedido()
@@ -2354,7 +2363,7 @@ namespace Proyecto_restaurante
         {
             volverdetalle_Click(sender, e);
             detallepagopanel.Visible = true;
-            detallepagopanel.Location = new Point(476, 0);
+            detallepagopanel.Location = new Point(429, 1);
 
             devueltapanel.Visible = false;
             devueltapanel.Location = new Point(0, 0);
@@ -2410,12 +2419,7 @@ namespace Proyecto_restaurante
             {
                 cn.Open();
 
-                string sqlCOM = @"
-                SELECT TOP 1 IdPedido, Fecha, IdMesa, IdClientePersona, 
-                       NombreCliente, Total, Nota, Comprobante
-                FROM Pedido
-                WHERE IdMesa = @IdMesa AND Estado = 'Pendiente'
-                ORDER BY Fecha DESC;";
+                string sqlCOM = @"        SELECT TOP 1 IdPedido, Fecha, IdMesa, IdClientePersona,                NombreCliente, Total, Nota, Comprobante        FROM Pedido        WHERE IdMesa = @IdMesa AND Estado = 'Pendiente'        ORDER BY Fecha DESC;";
 
                 int idPedido = 0;
 
@@ -2447,7 +2451,7 @@ namespace Proyecto_restaurante
 
                         Comprobantetxt.Text = dr["Comprobante"] == DBNull.Value ? "" : dr["Comprobante"].ToString();
 
-                        MesaLabel.Text = $"     Mesa asignada: {NumeroMesa}";
+                        MesaLabel.Text = $"     Mesa asignada: {numMesa}";
                     }
                 }
 
@@ -2472,12 +2476,25 @@ namespace Proyecto_restaurante
 
                 cargandoGrupos = false;
 
-
                 if (grupoCuenta.Items.Count > 0)
                 {
                     grupoCuenta.SelectedIndex = 0;
-                    panelCuentaSeparada.Enabled = true;
-                    AvisoCuentaSeparada.Visible = true;
+
+                    if (cuentas.Any(c => c > 0))
+                    {
+                        panelCuentaSeparada.Enabled = true;
+                        AvisoCuentaSeparada.Visible = true;
+                    }
+                    else
+                    {
+                        panelCuentaSeparada.Enabled = false;
+                        AvisoCuentaSeparada.Visible = false;
+                    }
+                }
+                else
+                {
+                    panelCuentaSeparada.Enabled = false;
+                    AvisoCuentaSeparada.Visible = false;
                 }
 
                 tipoComp.SelectedIndex = -1;
@@ -2559,7 +2576,7 @@ namespace Proyecto_restaurante
                         detalleorden.Rows[fila].Cells["ITBIS"].Value = dr["ItbisPrecio"];
                         detalleorden.Rows[fila].Cells["ITBIS2"].Value = dr["Itbis"];
                         detalleorden.Rows[fila].Cells["cantidad"].Value = dr["Cantidad"];
-                        detalleorden.Rows[fila].Cells["subtotal"].Value = dr["Importe"];
+                        detalleorden.Rows[fila].Cells["subtotal"].Value = Math.Round(Convert.ToDecimal(dr["Importe"]), 2);
                     }
                 }
             }

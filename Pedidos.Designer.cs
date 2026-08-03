@@ -64,6 +64,8 @@
             panel18 = new Panel();
             panel17 = new Panel();
             mesasprincipal = new FlowLayoutPanel();
+            panel16 = new Panel();
+            label26 = new Label();
             panel15 = new Panel();
             label22 = new Label();
             label34 = new Label();
@@ -249,6 +251,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)flecharoja).BeginInit();
+            panel16.SuspendLayout();
             panel15.SuspendLayout();
             panelacciones.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ordenesNotif).BeginInit();
@@ -315,7 +318,7 @@
             tabPage6.Controls.Add(panel6);
             tabPage6.Location = new Point(4, 30);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new Size(804, 637);
+            tabPage6.Size = new Size(2692, 637);
             tabPage6.TabIndex = 2;
             tabPage6.Text = "Mesas";
             // 
@@ -597,6 +600,7 @@
             panel6.Controls.Add(panel18);
             panel6.Controls.Add(panel17);
             panel6.Controls.Add(mesasprincipal);
+            panel6.Controls.Add(panel16);
             panel6.Controls.Add(panel15);
             panel6.Controls.Add(label34);
             panel6.Controls.Add(panelacciones);
@@ -695,12 +699,31 @@
             mesasprincipal.Size = new Size(602, 500);
             mesasprincipal.TabIndex = 27;
             // 
+            // panel16
+            // 
+            panel16.Controls.Add(label26);
+            panel16.Location = new Point(614, 324);
+            panel16.Name = "panel16";
+            panel16.Size = new Size(178, 45);
+            panel16.TabIndex = 72;
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label26.ForeColor = SystemColors.Control;
+            label26.Location = new Point(10, 11);
+            label26.Name = "label26";
+            label26.Size = new Size(158, 32);
+            label26.TabIndex = 3;
+            label26.Text = "Seguimiento";
+            // 
             // panel15
             // 
             panel15.Controls.Add(label22);
-            panel15.Location = new Point(614, 397);
+            panel15.Location = new Point(614, 449);
             panel15.Name = "panel15";
-            panel15.Size = new Size(178, 97);
+            panel15.Size = new Size(178, 45);
             panel15.TabIndex = 72;
             // 
             // label22
@@ -708,7 +731,7 @@
             label22.AutoSize = true;
             label22.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label22.ForeColor = SystemColors.Control;
-            label22.Location = new Point(29, 62);
+            label22.Location = new Point(29, 11);
             label22.Name = "label22";
             label22.Size = new Size(120, 32);
             label22.TabIndex = 3;
@@ -747,7 +770,7 @@
             // ordenesNotif
             // 
             ordenesNotif.Image = Properties.Resources.circulo_pequeno;
-            ordenesNotif.Location = new Point(152, 218);
+            ordenesNotif.Location = new Point(150, 274);
             ordenesNotif.Name = "ordenesNotif";
             ordenesNotif.Size = new Size(18, 18);
             ordenesNotif.SizeMode = PictureBoxSizeMode.Zoom;
@@ -818,7 +841,7 @@
             // 
             VerComanda.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             VerComanda.Image = Properties.Resources.comer_plato;
-            VerComanda.Location = new Point(11, 222);
+            VerComanda.Location = new Point(11, 274);
             VerComanda.Name = "VerComanda";
             VerComanda.Size = new Size(157, 62);
             VerComanda.TabIndex = 0;
@@ -972,7 +995,7 @@
             tabPage1.Location = new Point(4, 30);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(804, 637);
+            tabPage1.Size = new Size(2692, 637);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Ordenar";
             // 
@@ -1545,6 +1568,7 @@
             Comprobantetxt.Enabled = false;
             Comprobantetxt.Location = new Point(147, 34);
             Comprobantetxt.Name = "Comprobantetxt";
+            Comprobantetxt.ReadOnly = true;
             Comprobantetxt.Size = new Size(128, 29);
             Comprobantetxt.TabIndex = 0;
             Comprobantetxt.TextAlign = HorizontalAlignment.Right;
@@ -2793,6 +2817,8 @@
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)flecharoja).EndInit();
+            panel16.ResumeLayout(false);
+            panel16.PerformLayout();
             panel15.ResumeLayout(false);
             panel15.PerformLayout();
             panelacciones.ResumeLayout(false);
@@ -3071,5 +3097,7 @@
         private Panel panelBloqueoNCF;
         private Label itbisLBL;
         private Label label25;
+        private Panel panel16;
+        private Label label26;
     }
 }

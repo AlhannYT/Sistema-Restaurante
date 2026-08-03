@@ -807,7 +807,7 @@ namespace Proyecto_restaurante
             {
                 conexion.Open();
 
-                string query = @"SELECT TOP 1 PorcentajeGanancia, GenerarNCF FROM ConfiguracionSistema";
+                string query = @"SELECT TOP 1 PorcentajeGanancia, GenerarNCF, ConfItbis FROM ConfiguracionSistema";
 
                 using (SqlCommand cmd = new SqlCommand(query, conexion))
                 {
@@ -824,19 +824,51 @@ namespace Proyecto_restaurante
                                 porcGanancia.Text = "0";
                             }
 
+                            bool manejaNCF = false;
                             if (!reader.IsDBNull(reader.GetOrdinal("GenerarNCF")))
                             {
-                                generarNCF.Checked = Convert.ToBoolean(reader["GenerarNCF"]);
+                                manejaNCF = Convert.ToBoolean(reader["GenerarNCF"]);
+                            }
+
+                            generarNCF.Checked = manejaNCF;
+
+                            if (manejaNCF)
+                            {
+                                itbisBruto.Enabled = true;
+                                itbisTransp.Enabled = true;
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("ConfItbis")))
+                                {
+                                    bool esItbisBruto = Convert.ToBoolean(reader["ConfItbis"]);
+
+                                    if (esItbisBruto)
+                                    {
+                                        itbisBruto.Checked = true;
+                                    }
+                                    else
+                                    {
+                                        itbisTransp.Checked = true;
+                                    }
+                                }
+                                else
+                                {
+                                    itbisTransp.Checked = true;
+                                }
                             }
                             else
                             {
-                                generarNCF.Checked = false;
+                                itbisBruto.Enabled = false;
+                                itbisTransp.Enabled = false;
+                                itbisTransp.Checked = true;
                             }
                         }
                         else
                         {
                             porcGanancia.Text = "0";
                             generarNCF.Checked = false;
+                            itbisBruto.Enabled = false;
+                            itbisTransp.Enabled = false;
+                            itbisTransp.Checked = true;
                         }
                     }
                 }
@@ -916,12 +948,13 @@ namespace Proyecto_restaurante
 
                     if (string.IsNullOrEmpty(IDModificar))
                     {
-                        string queryInsertar = "Update ConfiguracionSistema set PorcentajeGanancia = @PorcGanancia, GenerarNCF = @GenNCF";
+                        string queryInsertar = "Update ConfiguracionSistema set PorcentajeGanancia = @PorcGanancia, GenerarNCF = @GenNCF, ConfItbis = @TipoItbis";
 
                         using (SqlCommand insertarConfig = new SqlCommand(queryInsertar, conexion))
                         {
                             insertarConfig.Parameters.AddWithValue("@PorcGanancia", porcGanancia.Text);
                             insertarConfig.Parameters.AddWithValue("@GenNCF", generarNCF.Checked ? 1 : 0);
+                            insertarConfig.Parameters.AddWithValue("@TipoItbis", itbisBruto.Checked ? 1 : 0);
 
                             int rowsAffected = insertarConfig.ExecuteNonQuery();
 
@@ -995,6 +1028,21 @@ namespace Proyecto_restaurante
             else
             {
                 precminimo.Enabled = true;
+            }
+        }
+
+        private void generarNCF_CheckedChanged(object sender, EventArgs e)
+        {
+            if(generarNCF.Checked == false)
+            {
+                itbisTransp.Checked = true;
+                itbisTransp.Enabled = false;
+                itbisBruto.Checked = false;
+            }
+            else if (generarNCF.Checked == true)
+            {
+                itbisTransp.Enabled = true;
+                itbisBruto.Enabled = true;
             }
         }
     }
