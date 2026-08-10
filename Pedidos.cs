@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using PdfiumViewer;
 using PdfSharp.Drawing;
@@ -1763,13 +1763,15 @@ namespace Proyecto_restaurante
             using (SqlConnection con = new SqlConnection(conexionString))
             {
                 string sqlDetalle = @"
-                SELECT p.Nombre AS Producto, d.Cantidad, d.PrecioUnitario, 
-                        (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
-                        (d.Cantidad * d.Itbis) AS Itbis, 
-                        (d.Cantidad * (d.PrecioUnitario + d.Itbis)) AS Total 
+                SELECT p.Nombre AS Producto, 
+                       d.Cantidad, 
+                       d.PrecioUnitario, 
+                       (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
+                       (d.Cantidad * ISNULL(d.Itbis, 0)) AS Itbis, 
+                       ((d.Cantidad * d.PrecioUnitario) + (d.Cantidad * ISNULL(d.Itbis, 0))) AS Total 
                 FROM DetallePedido d 
                 INNER JOIN ProductoVenta p ON p.IdProducto = d.IdProducto 
-                WHERE d.IdPedido = @id AND d.Cuenta = @cuenta";
+                WHERE d.IdPedido = @id AND (ISNULL(d.Cuenta, 0) = @cuenta OR @cuenta = 0)";
 
                 using (SqlCommand cmd = new SqlCommand(sqlDetalle, con))
                 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,8 +44,90 @@ namespace Proyecto_restaurante
 
         private void cerrarbtn_Click(object sender, EventArgs e)
         {
-            DialogResult salir = MessageBox.Show("¿Desea Cerrar Sesión?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (salir == DialogResult.Yes)
+            Form dialog = new Form()
+            {
+                Width = 410,
+                Height = 165,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = "Confirmación",
+                StartPosition = FormStartPosition.CenterParent,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                BackColor = Color.White
+            };
+
+            Label textLabel = new Label()
+            {
+                Left = 20,
+                Top = 20,
+                Width = 350,
+                Text = "¿Qué desea hacer?",
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(33, 37, 41)
+            };
+
+            Button btnSalir = new Button()
+            {
+                Text = "Salir",
+                Left = 20,
+                Top = 65,
+                Width = 100,
+                Height = 35,
+                DialogResult = DialogResult.Yes,
+                BackColor = Color.FromArgb(220, 53, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnSalir.FlatAppearance.BorderSize = 0;
+
+            Button btnCambiar = new Button()
+            {
+                Text = "Cambiar Sesión",
+                Left = 130,
+                Top = 65,
+                Width = 130,
+                Height = 35,
+                DialogResult = DialogResult.No,
+                BackColor = Color.FromArgb(13, 110, 253),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnCambiar.FlatAppearance.BorderSize = 0;
+
+            Button btnNo = new Button()
+            {
+                Text = "Volver",
+                Left = 270,
+                Top = 65,
+                Width = 100,
+                Height = 35,
+                DialogResult = DialogResult.Cancel,
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnNo.FlatAppearance.BorderSize = 0;
+
+            dialog.Controls.Add(textLabel);
+            dialog.Controls.Add(btnSalir);
+            dialog.Controls.Add(btnCambiar);
+            dialog.Controls.Add(btnNo);
+
+            dialog.CancelButton = btnNo;
+
+            DialogResult resultado = dialog.ShowDialog(this);
+
+            if (resultado == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+            else if (resultado == DialogResult.No)
             {
                 inicio cerrarsesion = new inicio();
                 cerrarsesion.Show();

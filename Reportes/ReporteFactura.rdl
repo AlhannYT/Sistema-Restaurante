@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>cbb7e49e-9785-4ba7-817c-c3f8c3a2c4b0</rd:ReportID>
@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-07-31T03:43:17.7378682Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-08-09T23:06:37.3994931Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -74,22 +74,22 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>4.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>1.8cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.3cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.3cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.0cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.4cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -381,7 +381,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Subtotal.Value</Value>
+                                  <Value>=Format(Fields!Subtotal.Value, "N2")</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -411,7 +411,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Itbis.Value</Value>
+                                  <Value>=Format(Fields!Itbis.Value, "N2")</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -441,7 +441,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Total.Value</Value>
+                                  <Value>=Format(Fields!Total.Value, "N2")</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
@@ -489,7 +489,7 @@
             <Top>2.56328cm</Top>
             <Left>0.47308cm</Left>
             <Height>1.2cm</Height>
-            <Width>15cm</Width>
+            <Width>15.3cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -500,7 +500,7 @@
             <Top>2.35162cm</Top>
             <Left>0.47308cm</Left>
             <Height>0cm</Height>
-            <Width>15cm</Width>
+            <Width>15.8cm</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -557,7 +557,7 @@
         <Height>2.99202in</Height>
         <Style />
       </Body>
-      <Width>6.5in</Width>
+      <Width>7.21676in</Width>
       <Page>
         <PageHeader>
           <Height>2.54cm</Height>
@@ -608,10 +608,10 @@
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Line Name="Line2">
-              <Top>0.64513cm</Top>
+              <Top>0.17639cm</Top>
               <Left>0.47308cm</Left>
               <Height>0cm</Height>
-              <Width>15cm</Width>
+              <Width>15.8cm</Width>
               <Style>
                 <Border>
                   <Style>Solid</Style>
@@ -640,8 +640,8 @@
         </PageFooter>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
-        <LeftMargin>2cm</LeftMargin>
-        <RightMargin>2cm</RightMargin>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
         <TopMargin>2cm</TopMargin>
         <BottomMargin>2cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>

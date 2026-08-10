@@ -758,6 +758,7 @@
             BackgroundImage = Properties.Resources.tenedor1;
             BackgroundImageLayout = ImageLayout.Center;
             ClientSize = new Size(1266, 839);
+            ControlBox = false;
             Controls.Add(cambiarfechapanel);
             Controls.Add(deslizar);
             Controls.Add(sistemasPanel);
