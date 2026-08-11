@@ -74,7 +74,7 @@ namespace Proyecto_restaurante
         decimal TotalRestante = 0;
         private decimal totalAcumulado = 0;
         private decimal subtotalAcumulado = 0;
-        
+
         //ITBIS
         public int GenerarNCF = 0;
         public int ManejoITBIS = 0; // 0 = Transparetado, 1 = Bruto
@@ -92,15 +92,16 @@ namespace Proyecto_restaurante
             if (!cargandoOrden)
                 tipoComp.SelectedIndex = 1;
 
-            string ConsultaNCF = @"SELECT TOP 1 GenerarNCF FROM ConfiguracionSistema";
+            List<MesaInfo> mesas = new List<MesaInfo>();
 
             using (SqlConnection con = new SqlConnection(conexionString))
             {
                 con.Open();
+
+                string ConsultaNCF = @"SELECT TOP 1 GenerarNCF FROM ConfiguracionSistema";
                 using (SqlCommand cmd = new SqlCommand(ConsultaNCF, con))
                 {
                     object resultado = cmd.ExecuteScalar();
-
                     bool generarNCF = (resultado != null && resultado != DBNull.Value) ? Convert.ToBoolean(resultado) : false;
 
                     if (!generarNCF)
@@ -118,123 +119,48 @@ namespace Proyecto_restaurante
                     else
                     {
                         panelBloqueoNCF.Visible = false;
-
                         tipoComp.Enabled = true;
                         GenerarNCF = 1;
                     }
                 }
-            }
 
-            mesasprincipal.Controls.Clear();
-
-            List<MesaInfo> mesas = new List<MesaInfo>();
-
-            using (SqlConnection cn = new SqlConnection(conexionString))
-            {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand(@"SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal FROM Mesa", cn);
-
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                while (dr.Read())
+                using (SqlCommand cmd = new SqlCommand(@"SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal FROM Mesa", con))
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    mesas.Add(new MesaInfo
+                    while (dr.Read())
                     {
-                        Id = Convert.ToInt32(dr["IdMesa"]),
-                        Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
-                        Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
-                        Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
-                        Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
-                        IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
-                        EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
-                    });
+                        mesas.Add(new MesaInfo
+                        {
+                            Id = Convert.ToInt32(dr["IdMesa"]),
+                            Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
+                            Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
+                            Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
+                            Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
+                            IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
+                            EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
+                        });
+                    }
                 }
-            }
 
-            var individuales = mesas.Where(m => m.IdGrupo == 0).ToList();
-            foreach (var mesa in individuales)
-            {
-                var btn = CrearBotonMesa(
-                    mesa.Id,
-                    mesa.Numero,
-                    mesa.Capacidad,
-                    mesa.Ocupado,
-                    mesa.Reservado,
-                    new List<string>()
-                );
-                mesasprincipal.Controls.Add(btn);
-            }
-
-            var grupos = mesas
-            .Where(m => m.IdGrupo > 0)
-            .GroupBy(m => m.IdGrupo);
-
-            foreach (var grupo in grupos)
-            {
-                var principal = grupo.FirstOrDefault(m => m.EsPrincipal == 1) ?? grupo.First();
-
-                var secundarias = grupo
-                    .Where(m => m.Id != principal.Id)
-                    .ToList();
-
-                var unidas = secundarias
-                .Select(m => m.Numero)
-                .ToList();
-
-
-                int capacidadTotal = grupo.Sum(m => int.TryParse(m.Capacidad, out int c) ? c : 0);
-
-                var btn = CrearBotonMesa(
-                    principal.Id,
-                    principal.Numero,
-                    capacidadTotal.ToString(),
-                    principal.Ocupado,
-                    principal.Reservado,
-                    unidas
-                );
-
-                mesasprincipal.Controls.Add(btn);
-            }
-
-            string consultaID = "SELECT TOP 1 IdPedido FROM Pedido ORDER BY IdPedido DESC";
-
-            string busquedaCaja = @"
-            SELECT 
-                c.Nombre AS nombre_caja,
-                c.Numero AS numero_caja
-            FROM Configuracion conf
-            INNER JOIN Caja c
-                ON conf.IdCaja = c.IdCaja
-            WHERE conf.NombrePC = @NombrePC";
-
-            string PermisosSQL = @"
-            SELECT 
-                CambiarPrecio,
-                PrecioMinimo
-            FROM PermisosUsuario
-            WHERE IdUsuario = @IdUsuario;";
-
-            using (SqlConnection con = new SqlConnection(conexionString))
-            {
-                con.Open();
+                string consultaID = "SELECT ISNULL(MAX(IdPedido), 0) + 1 FROM Pedido";
                 using (SqlCommand cmd = new SqlCommand(consultaID, con))
                 {
                     object resultado = cmd.ExecuteScalar();
-
-                    if (resultado != null)
-                    {
-                        int nuevoId = Convert.ToInt32(resultado) + 1;
-                        txtidpedido.Text = nuevoId.ToString();
-                    }
-                    else
-                    {
-                        txtidpedido.Text = "1";
-                    }
+                    txtidpedido.Text = resultado != null ? resultado.ToString() : "1";
                 }
+
+                string busquedaCaja = @"
+                SELECT 
+                    c.Nombre AS nombre_caja,
+                    c.Numero AS numero_caja
+                FROM Configuracion conf
+                INNER JOIN Caja c
+                    ON conf.IdCaja = c.IdCaja
+                WHERE conf.NombrePC = @NombrePC";
 
                 using (SqlCommand cmdBusCaja = new SqlCommand(busquedaCaja, con))
                 {
-                    cmdBusCaja.Parameters.AddWithValue("@NombrePC", NombrePC);
+                    cmdBusCaja.Parameters.AddWithValue("@NombrePC", (object)NombrePC ?? DBNull.Value);
 
                     using (SqlDataReader reader = cmdBusCaja.ExecuteReader())
                     {
@@ -249,6 +175,13 @@ namespace Proyecto_restaurante
                         }
                     }
                 }
+
+                string PermisosSQL = @"
+                SELECT 
+                    CambiarPrecio,
+                    PrecioMinimo
+                FROM PermisosUsuario
+                WHERE IdUsuario = @IdUsuario;";
 
                 using (SqlCommand cmdPermiso = new SqlCommand(PermisosSQL, con))
                 {
@@ -267,6 +200,58 @@ namespace Proyecto_restaurante
                 }
             }
 
+            mesasprincipal.Controls.Clear();
+            mesasprincipal.SuspendLayout();
+
+            List<Control> listaBotones = new List<Control>();
+
+            var individuales = mesas.Where(m => m.IdGrupo == 0);
+            foreach (var mesa in individuales)
+            {
+                var btn = CrearBotonMesa(
+                    mesa.Id,
+                    mesa.Numero,
+                    mesa.Capacidad,
+                    mesa.Ocupado,
+                    mesa.Reservado,
+                    new List<string>()
+                );
+                listaBotones.Add(btn);
+            }
+
+            var grupos = mesas
+                .Where(m => m.IdGrupo > 0)
+                .GroupBy(m => m.IdGrupo);
+
+            foreach (var grupo in grupos)
+            {
+                var principal = grupo.FirstOrDefault(m => m.EsPrincipal == 1) ?? grupo.First();
+
+                var secundarias = grupo
+                    .Where(m => m.Id != principal.Id)
+                    .ToList();
+
+                var unidas = secundarias
+                    .Select(m => m.Numero)
+                    .ToList();
+
+                int capacidadTotal = grupo.Sum(m => int.TryParse(m.Capacidad, out int c) ? c : 0);
+
+                var btn = CrearBotonMesa(
+                    principal.Id,
+                    principal.Numero,
+                    capacidadTotal.ToString(),
+                    principal.Ocupado,
+                    principal.Reservado,
+                    unidas
+                );
+
+                listaBotones.Add(btn);
+            }
+
+            mesasprincipal.Controls.AddRange(listaBotones.ToArray());
+            mesasprincipal.ResumeLayout();
+
             if (detalleorden.ColumnCount == 0)
             {
                 detalleorden.Columns.Add("cuenta", "Cuenta");
@@ -282,7 +267,7 @@ namespace Proyecto_restaurante
 
                 detalleorden.Columns["cuenta"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 detalleorden.Columns["codigoProducto"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                
+
                 detalleorden.Columns["precio"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 detalleorden.Columns["ITBIS"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 detalleorden.Columns["ITBIS2"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -381,7 +366,7 @@ namespace Proyecto_restaurante
             tablapanelproducto.Columns["Nombre"].HeaderText = "Nombre";
             tablapanelproducto.Columns["PrecioVenta"].HeaderText = "Venta";
             tablapanelproducto.Columns["ItbisPrecio"].HeaderText = "ITBIS";
-            tablapanelproducto.Columns["ITBIS"].HeaderText = "ITBIS %";            
+            tablapanelproducto.Columns["ITBIS"].HeaderText = "ITBIS %";
             tablapanelproducto.Columns["Existencia"].HeaderText = "Existencia";
         }
 
@@ -505,7 +490,7 @@ namespace Proyecto_restaurante
                             idPedidoGenerado = Convert.ToInt32(cmdPedido.ExecuteScalar());
                         }
 
-                        if(GenerarNCF == 1)
+                        if (GenerarNCF == 1)
                         {
                             ActualizarSecuencia(tipoComp.SelectedIndex == 0 ? 1 : 2);
                         }
@@ -1103,7 +1088,7 @@ namespace Proyecto_restaurante
                 Comprobantetxt.Text = "";
                 return;
             }
-            else 
+            else
             {
                 if (cargandoOrden) return;
 
@@ -1201,6 +1186,7 @@ namespace Proyecto_restaurante
             rnc.Enabled = false;
             numerotxt.Enabled = false;
             detalleorden.Enabled = false;
+            tabControl1.SelectedIndex = 0;
 
             VerificarOrden();
             Pedidos_Load(sender, e);
@@ -1232,17 +1218,37 @@ namespace Proyecto_restaurante
 
         private void tabladatospedidos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow row = tabladatospedidos.Rows[e.RowIndex];
+            ActualizarPedidoSeleccionado();
+        }
 
-                PedidoID = Convert.ToInt32(row.Cells["IdPedido"].Value);
-                IDMesa = Convert.ToInt32(row.Cells["IdMesa"].Value);
+        private void tabladatospedidos_SelectionChanged(object sender, EventArgs e)
+        {
+            ActualizarPedidoSeleccionado();
+        }
+
+        private void ActualizarPedidoSeleccionado()
+        {
+            if (tabladatospedidos.CurrentRow != null && tabladatospedidos.CurrentRow.Index >= 0)
+            {
+                var row = tabladatospedidos.CurrentRow;
+                if (row.Cells["IdPedido"]?.Value != null && row.Cells["IdPedido"].Value != DBNull.Value)
+                {
+                    PedidoID = Convert.ToInt32(row.Cells["IdPedido"].Value);
+                }
+                if (row.Cells["IdMesa"]?.Value != null && row.Cells["IdMesa"].Value != DBNull.Value)
+                {
+                    IDMesa = Convert.ToInt32(row.Cells["IdMesa"].Value);
+                }
             }
         }
 
         private void facturarbtn_Click(object sender, EventArgs e)
         {
+            if (PedidoID <= 0)
+            {
+                ActualizarPedidoSeleccionado();
+            }
+
             if (PedidoID <= 0)
             {
                 MessageBox.Show("Seleccione un pedido válido.");
@@ -1692,6 +1698,11 @@ namespace Proyecto_restaurante
 
         private void imprimirbtn_Click(object sender, EventArgs e)
         {
+            if (PedidoID <= 0)
+            {
+                ActualizarPedidoSeleccionado();
+            }
+
             if (PedidoID > 0)
             {
                 try
@@ -1748,65 +1759,80 @@ namespace Proyecto_restaurante
                 GenerarFacturaPDF(idPedido, cuenta);
             }
         }
-        
 
-    private void GenerarFacturaPDF(int idPedido, int cuenta)
-    {
-        try
+        private void GenerarFacturaPDF(int idPedido, int cuenta)
         {
-            string folderPath = @"C:\SistemaArchivos\Facturas\";
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-
-            string filePath = Path.Combine(folderPath, cuenta == 0 ? $"Pedido_{idPedido}.pdf" : $"Pedido_{idPedido}_Cuenta_{cuenta}.pdf");
-
-            DataTable dtDetalle = new DataTable();
-            using (SqlConnection con = new SqlConnection(conexionString))
+            try
             {
-                string sqlDetalle = @"
-                SELECT p.Nombre AS Producto, 
-                       d.Cantidad, 
-                       d.PrecioUnitario, 
-                       (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
-                       (d.Cantidad * ISNULL(d.Itbis, 0)) AS Itbis, 
-                       ((d.Cantidad * d.PrecioUnitario) + (d.Cantidad * ISNULL(d.Itbis, 0))) AS Total 
-                FROM DetallePedido d 
-                INNER JOIN ProductoVenta p ON p.IdProducto = d.IdProducto 
-                WHERE d.IdPedido = @id AND (ISNULL(d.Cuenta, 0) = @cuenta OR @cuenta = 0)";
+                string folderPath = @"C:\SistemaArchivos\Facturas\";
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
-                using (SqlCommand cmd = new SqlCommand(sqlDetalle, con))
+                string filePath = Path.Combine(folderPath, cuenta == 0 ? $"Pedido_{idPedido}.pdf" : $"Pedido_{idPedido}_Cuenta_{cuenta}.pdf");
+
+                DataTable dtDetalle = new DataTable();
+                using (SqlConnection con = new SqlConnection(conexionString))
                 {
-                    cmd.Parameters.AddWithValue("@id", idPedido);
-                    cmd.Parameters.AddWithValue("@cuenta", cuenta);
+                    string sqlDetalle = @"
+                    SELECT p.Nombre AS Producto, 
+                           d.Cantidad, 
+                           d.PrecioUnitario, 
+                           (d.Cantidad * d.PrecioUnitario) AS Subtotal, 
+                           (d.Cantidad * ISNULL(d.Itbis, 0)) AS Itbis, 
+                           ((d.Cantidad * d.PrecioUnitario) + (d.Cantidad * ISNULL(d.Itbis, 0))) AS Total 
+                    FROM DetallePedido d 
+                    INNER JOIN ProductoVenta p ON p.IdProducto = d.IdProducto 
+                    WHERE d.IdPedido = @id AND (ISNULL(d.Cuenta, 0) = @cuenta OR @cuenta = 0)";
 
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    using (SqlCommand cmd = new SqlCommand(sqlDetalle, con))
                     {
-                        da.Fill(dtDetalle);
+                        cmd.Parameters.AddWithValue("@id", idPedido);
+                        cmd.Parameters.AddWithValue("@cuenta", cuenta);
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            da.Fill(dtDetalle);
+                        }
                     }
                 }
-            }
 
-            LocalReport reporte = new LocalReport();
+                DataTable dtRestaurante = new DataTable();
+                using (SqlConnection con = new SqlConnection(conexionString))
+                {
+                    string sqlRestaurante = @"SELECT rnc, nombre, telefono_principal as telefono, direccion, logo_rest as logo FROM DatosRestaurante";
 
-            string rutaReporte = System.IO.Path.Combine(Application.StartupPath, "Reportes", "ReporteFactura.rdl");
+                    using (SqlCommand cmd = new SqlCommand(sqlRestaurante, con))
+                    {
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            da.Fill(dtRestaurante);
+                        }
+                    }
+                }
 
-            if (!System.IO.File.Exists(rutaReporte))
-            {
-                MessageBox.Show("No se encontró el diseño del reporte en la ruta:\n" + rutaReporte, "Archivo no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                LocalReport reporte = new LocalReport();
 
-            reporte.ReportPath = rutaReporte;
+                string rutaReporte = System.IO.Path.Combine(Application.StartupPath, "Reportes", "ReporteFactura.rdl");
 
-            reporte.DataSources.Add(new ReportDataSource("DsFactura", dtDetalle));
+                if (!System.IO.File.Exists(rutaReporte))
+                {
+                    MessageBox.Show("No se encontró el diseño del reporte en la ruta:\n" + rutaReporte, "Archivo no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            byte[] pdfBytes = reporte.Render("PDF");
+                reporte.ReportPath = rutaReporte;
 
-            File.WriteAllBytes(filePath, pdfBytes);
+                reporte.DataSources.Add(new ReportDataSource("DsFactura", dtDetalle));
+                reporte.DataSources.Add(new ReportDataSource("DsDatosRestaurante", dtRestaurante));
 
-            using (FormVisorFactura visor = new FormVisorFactura(filePath))
-            {
-                visor.ShowDialog();
-            }
+                byte[] pdfBytes = reporte.Render("PDF");
+
+                File.WriteAllBytes(filePath, pdfBytes);
+
+                using (FormVisorFactura visor = new FormVisorFactura(filePath))
+                {
+                    visor.WindowState = FormWindowState.Maximized;
+                    visor.ShowDialog();
+                }
             }
             catch (Exception ex)
             {
@@ -1835,12 +1861,13 @@ namespace Proyecto_restaurante
                 this.Text = "Visor de Factura - " + System.IO.Path.GetFileName(rutaArchivo);
                 this.Size = new System.Drawing.Size(800, 900);
                 this.StartPosition = FormStartPosition.CenterParent;
+                this.WindowState = FormWindowState.Maximized;
                 this.Icon = SystemIcons.Information;
 
                 pdfViewer = new PdfViewer
                 {
                     Dock = DockStyle.Fill,
-                    ZoomMode = PdfViewerZoomMode.FitWidth
+                    ZoomMode = PdfViewerZoomMode.FitHeight
                 };
 
                 this.Controls.Add(pdfViewer);
@@ -3840,7 +3867,7 @@ namespace Proyecto_restaurante
 
         private void RecargarRestante()
         {
-            if(restante1txt.Text == "0.00" || restante2txt.Text == "0.00" || restante3txt.Text == "0.00")
+            if (restante1txt.Text == "0.00" || restante2txt.Text == "0.00" || restante3txt.Text == "0.00")
             {
                 efectivotxt.Clear();
                 tarjetaMonto.Clear();
@@ -3851,7 +3878,7 @@ namespace Proyecto_restaurante
                 aplicartransf.Enabled = false;
             }
             else
-            {   
+            {
                 aplicarefectivo.Enabled = true;
                 aplicartarjeta.Enabled = true;
                 aplicartransf.Enabled = true;

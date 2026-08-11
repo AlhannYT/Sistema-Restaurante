@@ -1,4 +1,4 @@
-﻿namespace Proyecto_restaurante
+namespace Proyecto_restaurante
 {
     partial class Pedidos
     {
@@ -2710,6 +2710,7 @@
             tabladatospedidos.Size = new Size(789, 446);
             tabladatospedidos.TabIndex = 5;
             tabladatospedidos.CellClick += tabladatospedidos_CellClick;
+            tabladatospedidos.SelectionChanged += tabladatospedidos_SelectionChanged;
             // 
             // panel10
             // 

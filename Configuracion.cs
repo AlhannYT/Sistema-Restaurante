@@ -1,4 +1,4 @@
-﻿using PdfSharp.Snippets.Drawing;
+using PdfSharp.Snippets.Drawing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +31,8 @@ namespace Proyecto_restaurante
         private string IDModificar;
         public int PersonaID;
         public int PermisosUsuarioID;
+
+        private byte[] imagenBytesRestaurante = null;
 
         string rutaOrigen = @"";
 
@@ -934,6 +936,182 @@ namespace Proyecto_restaurante
             datosPanel.Location = new Point(221, 4);
             datosPanel.BringToFront();
             datosPanel.Visible = true;
+            CargarDatosRestaurante();
+        }
+
+        private void RNCtxt_TextChanged(object sender, EventArgs e)
+        {
+            string posicion = RNCtxt.Text; posicion = posicion.Replace("-", "");
+
+            if (posicion.Length > 11)
+            {
+                posicion = posicion.Substring(0, 11);
+            }
+
+            if (posicion.Length > 3)
+            {
+                posicion = posicion.Insert(3, "-");
+            }
+            if (posicion.Length > 11)
+            {
+                posicion = posicion.Insert(11, "-");
+            }
+
+            RNCtxt.Text = posicion; RNCtxt.SelectionStart = RNCtxt.Text.Length;
+        }
+
+        private void CargarDatosRestaurante()
+        {
+            string conexionString = ConexionBD.ConexionSQL();
+            using (SqlConnection conexion = new SqlConnection(conexionString))
+            {
+                try
+                {
+                    conexion.Open();
+                    string sql = "SELECT TOP 1 rnc, nombre, telefono_principal, direccion, logo_rest FROM DatosRestaurante";
+                    using (SqlCommand cmd = new SqlCommand(sql, conexion))
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            RNCtxt.Text = dr["rnc"]?.ToString() ?? "";
+                            NombreRestTxt.Text = dr["nombre"]?.ToString() ?? "";
+                            TelefonoRestTxt.Text = dr["telefono_principal"]?.ToString() ?? "";
+                            DirecconRestTxt.Text = dr["direccion"]?.ToString() ?? "";
+
+                            if (dr["logo_rest"] != DBNull.Value && dr["logo_rest"] != null)
+                            {
+                                byte[] bytes = (byte[])dr["logo_rest"];
+                                if (bytes.Length > 0)
+                                {
+                                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream(bytes))
+                                    {
+                                        logorest.Image = Image.FromStream(ms);
+                                    }
+                                    imagenBytesRestaurante = bytes;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar los datos del restaurante: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void seleccionimagenRestbtn_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Archivos de Imagen (*.jpg; *.jpeg; *.png)|*.jpg;*.jpeg;*.png";
+                ofd.Title = "Seleccionar Logo del Restaurante";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (var fs = new System.IO.FileStream(ofd.FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            logorest.Image = Image.FromStream(fs);
+                        }
+                        imagenBytesRestaurante = System.IO.File.ReadAllBytes(ofd.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al cargar la imagen: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void GuardarDatosRest_Click(object sender, EventArgs e)
+        {
+            string rnc = RNCtxt.Text.Trim();
+            string nombre = NombreRestTxt.Text.Trim();
+            string telefono = TelefonoRestTxt.Text.Trim();
+            string direccion = DirecconRestTxt.Text.Trim();
+
+            if (string.IsNullOrEmpty(rnc) || string.IsNullOrEmpty(nombre))
+            {
+                MessageBox.Show("Por favor, ingrese al menos el RNC y el Nombre del Restaurante.", "Campos Requeridos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            byte[] logoBytes = imagenBytesRestaurante;
+            if (logoBytes == null && logorest.Image != null)
+            {
+                try
+                {
+                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                    {
+                        logorest.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        logoBytes = ms.ToArray();
+                    }
+                }
+                catch
+                {
+                    logoBytes = null;
+                }
+            }
+
+            string conexionString = ConexionBD.ConexionSQL();
+            using (SqlConnection conexion = new SqlConnection(conexionString))
+            {
+                try
+                {
+                    conexion.Open();
+
+                    string query = @"
+                    IF EXISTS (SELECT 1 FROM DatosRestaurante WHERE rnc = @rnc)
+                    BEGIN
+                        UPDATE DatosRestaurante 
+                        SET nombre = @nombre, 
+                            telefono_principal = @telefono, 
+                            direccion = @direccion,
+                            logo_rest = @logo_rest
+                        WHERE rnc = @rnc;
+                    END
+                    ELSE IF EXISTS (SELECT 1 FROM DatosRestaurante)
+                    BEGIN
+                        UPDATE TOP (1) DatosRestaurante 
+                        SET rnc = @rnc,
+                            nombre = @nombre, 
+                            telefono_principal = @telefono, 
+                            direccion = @direccion,
+                            logo_rest = @logo_rest;
+                    END
+                    ELSE
+                    BEGIN
+                        INSERT INTO DatosRestaurante (rnc, nombre, telefono_principal, direccion, logo_rest) 
+                        VALUES (@rnc, @nombre, @telefono, @direccion, @logo_rest);
+                    END";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@rnc", rnc);
+                        cmd.Parameters.AddWithValue("@nombre", nombre);
+                        cmd.Parameters.AddWithValue("@telefono", string.IsNullOrEmpty(telefono) ? (object)DBNull.Value : telefono);
+                        cmd.Parameters.AddWithValue("@direccion", string.IsNullOrEmpty(direccion) ? (object)DBNull.Value : direccion);
+                        cmd.Parameters.Add("@logo_rest", SqlDbType.VarBinary).Value = (object)logoBytes ?? DBNull.Value;
+
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            MessageBox.Show("¡Datos del restaurante guardados correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se pudieron guardar los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al guardar los datos del restaurante: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void procesarConfig_Click(object sender, EventArgs e)
@@ -1033,7 +1211,7 @@ namespace Proyecto_restaurante
 
         private void generarNCF_CheckedChanged(object sender, EventArgs e)
         {
-            if(generarNCF.Checked == false)
+            if (generarNCF.Checked == false)
             {
                 itbisTransp.Checked = true;
                 itbisTransp.Enabled = false;
@@ -1044,6 +1222,30 @@ namespace Proyecto_restaurante
                 itbisTransp.Enabled = true;
                 itbisBruto.Enabled = true;
             }
+        }
+
+        private void TelefonoRestTxt_TextChanged(object sender, EventArgs e)
+        {
+            string posNum = TelefonoRestTxt.Text;
+            posNum = posNum.Replace("-", "");
+
+            if (posNum.Length > 10)
+            {
+                posNum = posNum.Substring(0, 10);
+            }
+
+            if (posNum.Length > 3)
+            {
+                posNum = posNum.Insert(3, "-");
+            }
+
+            if (posNum.Length > 7)
+            {
+                posNum = posNum.Insert(7, "-");
+            }
+
+            TelefonoRestTxt.Text = posNum;
+            TelefonoRestTxt.SelectionStart = TelefonoRestTxt.Text.Length;
         }
     }
 }

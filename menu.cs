@@ -42,6 +42,98 @@ namespace Proyecto_restaurante
         const int WM_LBUTTONDOWN = 0x0201;
         const int WM_LBUTTONUP = 0x0202;
 
+        private void menu_Load(object sender, EventArgs e)
+        {
+            Color colorPanel = Color.Silver;
+
+            button5.Focus();
+            sistemas = 0;
+
+            if (cambiarfechapanel.Visible == true)
+            {
+                cambiarfechapanel.Visible = false;
+            }
+
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    conexion.Open();
+
+                    string query = "SELECT ColorPanel FROM Configuracion WHERE NombrePC = @NombrePC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@NombrePC", nombrePC);
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null && result != DBNull.Value && !string.IsNullOrWhiteSpace(result.ToString()))
+                        {
+                            string[] rgb = result.ToString().Split(',');
+                            if (rgb.Length == 3 &&
+                                int.TryParse(rgb[0].Trim(), out int r) &&
+                                int.TryParse(rgb[1].Trim(), out int g) &&
+                                int.TryParse(rgb[2].Trim(), out int b))
+                            {
+                                colorPanel = Color.FromArgb(r, g, b);
+                            }
+                        }
+                    }
+
+                    string queryRest = "SELECT TOP 1 nombre, direccion, logo_rest FROM DatosRestaurante";
+                    using (SqlCommand cmdRest = new SqlCommand(queryRest, conexion))
+                    using (SqlDataReader drRest = cmdRest.ExecuteReader())
+                    {
+                        if (drRest.Read())
+                        {
+                            if (drRest["nombre"] != DBNull.Value && drRest["nombre"] != null)
+                            {
+                                NombreLbl.Text = drRest["nombre"].ToString();
+                            }
+
+                            if (drRest["direccion"] != DBNull.Value && drRest["direccion"] != null)
+                            {
+                                DireccionLbl.Text = drRest["direccion"].ToString();
+                            }
+
+                            if (drRest["logo_rest"] != DBNull.Value && drRest["logo_rest"] != null)
+                            {
+                                byte[] bytesLogo = (byte[])drRest["logo_rest"];
+                                if (bytesLogo.Length > 0)
+                                {
+                                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream(bytesLogo))
+                                    {
+                                        LogoIMG.Image = Image.FromStream(ms);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar la configuración del menú: {ex.Message}",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (estadobarra == 1)
+            {
+                NombrePCtxt.Text = "PC: " + nombrePC.ToString();
+            }
+            else
+            {
+                NombrePCtxt.Text = "  ";
+            }
+
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+            this.WindowState = FormWindowState.Maximized;
+
+            deslizar.PerformClick();
+            this.CambiarColorMDI(colorPanel);
+        }
+
         private void cerrarbtn_Click(object sender, EventArgs e)
         {
             Form dialog = new Form()
@@ -145,69 +237,6 @@ namespace Proyecto_restaurante
                     break;
                 }
             }
-        }
-
-        private void menu_Load(object sender, EventArgs e)
-        {
-            Color colorPanel = Color.Silver;
-
-            button5.Focus();
-            sistemas = 0;
-
-            if (cambiarfechapanel.Visible == true)
-            {
-                cambiarfechapanel.Visible = false;
-            }
-
-            try
-            {
-                using (SqlConnection conexion = new SqlConnection(conexionString))
-                {
-                    conexion.Open();
-
-                    string query = "SELECT ColorPanel FROM Configuracion WHERE NombrePC = @NombrePC";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conexion))
-                    {
-                        cmd.Parameters.AddWithValue("@NombrePC", nombrePC);
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null && result != DBNull.Value && !string.IsNullOrWhiteSpace(result.ToString()))
-                        {
-                            string[] rgb = result.ToString().Split(',');
-                            if (rgb.Length == 3 &&
-                                int.TryParse(rgb[0].Trim(), out int r) &&
-                                int.TryParse(rgb[1].Trim(), out int g) &&
-                                int.TryParse(rgb[2].Trim(), out int b))
-                            {
-                                colorPanel = Color.FromArgb(r, g, b);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar el color del menú: {ex.Message}",
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (estadobarra == 1)
-            {
-                NombrePCtxt.Text = "PC: " + nombrePC.ToString();
-            }
-            else
-            {
-                NombrePCtxt.Text = "  ";
-            }
-
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            this.WindowState = FormWindowState.Maximized;
-            oculto.BackColor = colorPanel;
-
-            deslizar.PerformClick();
-            this.CambiarColorMDI(colorPanel);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -492,17 +521,6 @@ namespace Proyecto_restaurante
             TV.Show();
         }
 
-        private void recargarbtn_Click(object sender, EventArgs e)
-        {
-            menu_Load(sender, e);
-            recargarbtn.Visible = false;
-        }
-
-        private void oculto_MouseHover(object sender, EventArgs e)
-        {
-            recargarbtn.Visible = true;
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             foreach (Form f in this.MdiChildren)
@@ -608,7 +626,7 @@ namespace Proyecto_restaurante
         {
             if (estadobarra == 1)
             {
-                cambiarfechapanel.Location = new Point(667, 73);
+                cambiarfechapanel.Location = new Point(888, 73);
                 cambiarfechapanel.Visible = !cambiarfechapanel.Visible;
             }
             else
@@ -689,6 +707,11 @@ namespace Proyecto_restaurante
         {
             labelfecha_Click(sender, e);
             barraizq.Enabled = true;
+        }
+
+        private void cuadreCajabtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Opcion agregada para trabajarla en el futuro", "Cuadre de Caja", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

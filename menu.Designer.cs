@@ -48,9 +48,12 @@
             panel6 = new Panel();
             label7 = new Label();
             labelfecha = new Label();
+            DireccionLbl = new Label();
+            NombreLbl = new Label();
             label6 = new Label();
             labelhora = new Label();
-            pictureBox1 = new PictureBox();
+            LogoIMG = new PictureBox();
+            cuadreCajabtn = new Button();
             barraizq = new Panel();
             panel4 = new Panel();
             NombrePCtxt = new Label();
@@ -66,8 +69,6 @@
             creditoslabel = new Label();
             abrirtTV = new Button();
             label4 = new Label();
-            oculto = new Panel();
-            recargarbtn = new Button();
             toolTip1 = new ToolTip(components);
             deslizar = new Button();
             panel3 = new Panel();
@@ -83,10 +84,9 @@
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             barrasup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)LogoIMG).BeginInit();
             barraizq.SuspendLayout();
             panel4.SuspendLayout();
-            oculto.SuspendLayout();
             panel3.SuspendLayout();
             sistemasPanel.SuspendLayout();
             cambiarfechapanel.SuspendLayout();
@@ -110,7 +110,7 @@
             panel1.Controls.Add(cerrarbtn);
             panel1.Controls.Add(panel5);
             panel1.Controls.Add(usuariolabel);
-            panel1.Location = new Point(705, 4);
+            panel1.Location = new Point(913, 4);
             panel1.Margin = new Padding(2, 3, 2, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(318, 60);
@@ -149,7 +149,7 @@
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel2.BackColor = Color.FromArgb(0, 192, 0);
             panel2.Controls.Add(pictureBox2);
-            panel2.Location = new Point(636, 4);
+            panel2.Location = new Point(844, 4);
             panel2.Margin = new Padding(2, 3, 2, 3);
             panel2.Name = "panel2";
             panel2.Size = new Size(70, 61);
@@ -295,20 +295,24 @@
             barrasup.Controls.Add(panel6);
             barrasup.Controls.Add(label7);
             barrasup.Controls.Add(labelfecha);
+            barrasup.Controls.Add(DireccionLbl);
+            barrasup.Controls.Add(NombreLbl);
             barrasup.Controls.Add(label6);
             barrasup.Controls.Add(labelhora);
             barrasup.Controls.Add(panel1);
             barrasup.Controls.Add(panel2);
-            barrasup.Controls.Add(pictureBox1);
+            barrasup.Controls.Add(LogoIMG);
+            barrasup.Controls.Add(cuadreCajabtn);
             barrasup.Dock = DockStyle.Top;
             barrasup.Location = new Point(239, 0);
             barrasup.Margin = new Padding(2);
             barrasup.Name = "barrasup";
-            barrasup.Size = new Size(1027, 71);
+            barrasup.Size = new Size(1235, 71);
             barrasup.TabIndex = 18;
             // 
             // panel6
             // 
+            panel6.Anchor = AnchorStyles.Top;
             panel6.BackColor = SystemColors.WindowFrame;
             panel6.Location = new Point(329, 7);
             panel6.Name = "panel6";
@@ -317,6 +321,7 @@
             // 
             // label7
             // 
+            label7.Anchor = AnchorStyles.Top;
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label7.ForeColor = Color.White;
@@ -329,6 +334,7 @@
             // 
             // labelfecha
             // 
+            labelfecha.Anchor = AnchorStyles.Top;
             labelfecha.AutoSize = true;
             labelfecha.BackColor = Color.Gray;
             labelfecha.Cursor = Cursors.Hand;
@@ -345,8 +351,33 @@
             toolTip1.SetToolTip(labelfecha, "Cambiar Fecha");
             labelfecha.Click += labelfecha_Click;
             // 
+            // DireccionLbl
+            // 
+            DireccionLbl.AutoSize = true;
+            DireccionLbl.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            DireccionLbl.ForeColor = Color.White;
+            DireccionLbl.Location = new Point(80, 46);
+            DireccionLbl.Name = "DireccionLbl";
+            DireccionLbl.Size = new Size(111, 21);
+            DireccionLbl.TabIndex = 7;
+            DireccionLbl.Text = "DireccionRest";
+            DireccionLbl.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // NombreLbl
+            // 
+            NombreLbl.AutoSize = true;
+            NombreLbl.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            NombreLbl.ForeColor = Color.White;
+            NombreLbl.Location = new Point(80, 11);
+            NombreLbl.Name = "NombreLbl";
+            NombreLbl.Size = new Size(135, 30);
+            NombreLbl.TabIndex = 7;
+            NombreLbl.Text = "NombreRest";
+            NombreLbl.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // label6
             // 
+            label6.Anchor = AnchorStyles.Top;
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.White;
@@ -359,6 +390,7 @@
             // 
             // labelhora
             // 
+            labelhora.Anchor = AnchorStyles.Top;
             labelhora.AutoSize = true;
             labelhora.Font = new Font("Segoe UI", 15.75F);
             labelhora.ForeColor = Color.White;
@@ -369,18 +401,34 @@
             labelhora.Text = "Hora";
             labelhora.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // pictureBox1
+            // LogoIMG
             // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Dock = DockStyle.Left;
-            pictureBox1.Image = Properties.Resources.logo_completo;
-            pictureBox1.Location = new Point(0, 0);
-            pictureBox1.Margin = new Padding(2);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(326, 69);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 6;
-            pictureBox1.TabStop = false;
+            LogoIMG.BackColor = Color.Transparent;
+            LogoIMG.Dock = DockStyle.Left;
+            LogoIMG.Image = Properties.Resources.perfilcliente;
+            LogoIMG.Location = new Point(0, 0);
+            LogoIMG.Margin = new Padding(2);
+            LogoIMG.Name = "LogoIMG";
+            LogoIMG.Size = new Size(75, 69);
+            LogoIMG.SizeMode = PictureBoxSizeMode.StretchImage;
+            LogoIMG.TabIndex = 6;
+            LogoIMG.TabStop = false;
+            // 
+            // cuadreCajabtn
+            // 
+            cuadreCajabtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cuadreCajabtn.Cursor = Cursors.Hand;
+            cuadreCajabtn.Image = Properties.Resources.cajero;
+            cuadreCajabtn.ImageAlign = ContentAlignment.MiddleRight;
+            cuadreCajabtn.Location = new Point(533, 9);
+            cuadreCajabtn.Margin = new Padding(2);
+            cuadreCajabtn.Name = "cuadreCajabtn";
+            cuadreCajabtn.Size = new Size(138, 55);
+            cuadreCajabtn.TabIndex = 2;
+            cuadreCajabtn.Text = "Cuadre de caja";
+            cuadreCajabtn.TextAlign = ContentAlignment.MiddleLeft;
+            cuadreCajabtn.UseVisualStyleBackColor = true;
+            cuadreCajabtn.Click += cuadreCajabtn_Click;
             // 
             // barraizq
             // 
@@ -576,7 +624,7 @@
             creditoslabel.AutoSize = true;
             creditoslabel.BackColor = Color.Transparent;
             creditoslabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            creditoslabel.Location = new Point(743, 1);
+            creditoslabel.Location = new Point(951, 1);
             creditoslabel.Margin = new Padding(2, 0, 2, 0);
             creditoslabel.Name = "creditoslabel";
             creditoslabel.Size = new Size(280, 21);
@@ -611,33 +659,11 @@
             label4.TabIndex = 2;
             label4.Text = "Sistema TV";
             // 
-            // oculto
-            // 
-            oculto.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            oculto.Controls.Add(recargarbtn);
-            oculto.Location = new Point(1201, 74);
-            oculto.Name = "oculto";
-            oculto.Size = new Size(62, 50);
-            oculto.TabIndex = 21;
-            oculto.MouseHover += oculto_MouseHover;
-            // 
-            // recargarbtn
-            // 
-            recargarbtn.Image = Properties.Resources.actualizar;
-            recargarbtn.Location = new Point(29, 3);
-            recargarbtn.Name = "recargarbtn";
-            recargarbtn.Size = new Size(29, 29);
-            recargarbtn.TabIndex = 57;
-            recargarbtn.TabStop = false;
-            recargarbtn.UseVisualStyleBackColor = true;
-            recargarbtn.Visible = false;
-            recargarbtn.Click += recargarbtn_Click;
-            // 
             // deslizar
             // 
             deslizar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             deslizar.Image = Properties.Resources.flechaizquierdaroja;
-            deslizar.Location = new Point(1230, 767);
+            deslizar.Location = new Point(1438, 767);
             deslizar.Name = "deslizar";
             deslizar.Size = new Size(33, 44);
             deslizar.TabIndex = 26;
@@ -653,7 +679,7 @@
             panel3.Dock = DockStyle.Bottom;
             panel3.Location = new Point(239, 813);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1027, 26);
+            panel3.Size = new Size(1235, 26);
             panel3.TabIndex = 23;
             // 
             // label37
@@ -676,7 +702,7 @@
             sistemasPanel.BackColor = Color.FromArgb(64, 64, 64);
             sistemasPanel.Controls.Add(label4);
             sistemasPanel.Controls.Add(abrirtTV);
-            sistemasPanel.Location = new Point(1074, 767);
+            sistemasPanel.Location = new Point(1282, 767);
             sistemasPanel.Name = "sistemasPanel";
             sistemasPanel.Size = new Size(156, 45);
             sistemasPanel.TabIndex = 25;
@@ -689,12 +715,13 @@
             // 
             // cambiarfechapanel
             // 
+            cambiarfechapanel.Anchor = AnchorStyles.None;
             cambiarfechapanel.BackColor = Color.Gray;
             cambiarfechapanel.Controls.Add(cambiarFechaDTP);
             cambiarfechapanel.Controls.Add(cambiarFechaBtn);
             cambiarfechapanel.Controls.Add(labelcambiofecha);
             cambiarfechapanel.Controls.Add(button3);
-            cambiarfechapanel.Location = new Point(667, 73);
+            cambiarfechapanel.Location = new Point(665, 74);
             cambiarfechapanel.Name = "cambiarfechapanel";
             cambiarfechapanel.Size = new Size(258, 250);
             cambiarfechapanel.TabIndex = 28;
@@ -757,13 +784,12 @@
             BackColor = Color.Silver;
             BackgroundImage = Properties.Resources.tenedor1;
             BackgroundImageLayout = ImageLayout.Center;
-            ClientSize = new Size(1266, 839);
+            ClientSize = new Size(1474, 839);
             ControlBox = false;
             Controls.Add(cambiarfechapanel);
             Controls.Add(deslizar);
             Controls.Add(sistemasPanel);
             Controls.Add(panel3);
-            Controls.Add(oculto);
             Controls.Add(barrasup);
             Controls.Add(barraizq);
             DoubleBuffered = true;
@@ -784,12 +810,11 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             barrasup.ResumeLayout(false);
             barrasup.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)LogoIMG).EndInit();
             barraizq.ResumeLayout(false);
             barraizq.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            oculto.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             sistemasPanel.ResumeLayout(false);
@@ -822,13 +847,11 @@
         private Button button12;
         private Button button13;
         private Button button14;
-        private PictureBox pictureBox1;
+        private PictureBox LogoIMG;
         private Label label3;
         private Button reportesbtn;
         public Button abrirtTV;
         public Label label4;
-        private Panel oculto;
-        public Button recargarbtn;
         private Button button1;
         private ToolTip toolTip1;
         private Panel panel3;
@@ -848,5 +871,8 @@
         private Button cambiarFechaBtn;
         private Button button3;
         private Label labelcambiofecha;
+        private Button cuadreCajabtn;
+        private Label DireccionLbl;
+        private Label NombreLbl;
     }
 }

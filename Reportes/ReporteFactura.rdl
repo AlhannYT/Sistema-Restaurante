@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>cbb7e49e-9785-4ba7-817c-c3f8c3a2c4b0</rd:ReportID>
@@ -11,7 +11,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.1.30001.02</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-08-09T23:06:37.3994931Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-08-11T05:06:33.9288196Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -22,6 +22,14 @@
         <ConnectString>/* Local Connection */</ConnectString>
       </ConnectionProperties>
       <rd:DataSourceID>98c5d654-5766-4094-86ee-c2cc70061509</rd:DataSourceID>
+    </DataSource>
+    <DataSource Name="DsRestaurante">
+      <rd:SecurityType>DataBase</rd:SecurityType>
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>943097f9-f330-4c0f-aeaf-f3b3aaae9fab</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
@@ -65,6 +73,33 @@
         <rd:TableAdapterName />
       </rd:DataSetInfo>
     </DataSet>
+    <DataSet Name="DsDatosRestaurante">
+      <Query>
+        <DataSourceName>DsRestaurante</DataSourceName>
+        <CommandText>SELECT rnc, nombre, telefono_principal as telefono, direccion, logo_rest as logo FROM DatosRestaurante</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="rnc">
+          <Value>rnc</Value>
+        </Field>
+        <Field Name="nombre">
+          <rd:UserDefined>true</rd:UserDefined>
+          <DataField>nombre</DataField>
+        </Field>
+        <Field Name="telefonoprincipal">
+          <rd:UserDefined>true</rd:UserDefined>
+          <DataField>telefono</DataField>
+        </Field>
+        <Field Name="direccion">
+          <rd:UserDefined>true</rd:UserDefined>
+          <DataField>direccion</DataField>
+        </Field>
+        <Field Name="logoimagen">
+          <rd:UserDefined>true</rd:UserDefined>
+          <DataField>logo</DataField>
+        </Field>
+      </Fields>
+    </DataSet>
   </DataSets>
   <ReportSections>
     <ReportSection>
@@ -86,7 +121,7 @@
                   <Width>2.3cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.0cm</Width>
+                  <Width>2cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>2.4cm</Width>
@@ -553,6 +588,38 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox24">
+            <rd:DefaultName>Textbox24</rd:DefaultName>
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Factura de cliente</Value>
+                    <Style>
+                      <FontSize>16pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <Top>0.35788cm</Top>
+            <Left>0.47308cm</Left>
+            <Height>1.15562cm</Height>
+            <Width>5.96604cm</Width>
+            <ZIndex>3</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <Height>2.99202in</Height>
         <Style />
@@ -564,27 +631,28 @@
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
-            <Textbox Name="Textbox24">
-              <rd:DefaultName>Textbox24</rd:DefaultName>
+            <Textbox Name="nombre">
+              <rd:DefaultName>nombre</rd:DefaultName>
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Factura de cliente</Value>
+                      <Value>=First(Fields!nombre.Value, "DsDatosRestaurante")</Value>
                       <Style>
-                        <FontSize>16pt</FontSize>
+                        <FontSize>14pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                   </TextRuns>
                   <Style />
                 </Paragraph>
               </Paragraphs>
-              <Top>0.64919cm</Top>
-              <Left>0.47308cm</Left>
-              <Height>1.15562cm</Height>
-              <Width>5.96604cm</Width>
+              <Top>0.3937cm</Top>
+              <Left>3.03953cm</Left>
+              <Height>0.94396cm</Height>
+              <Width>14.02501cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -595,6 +663,52 @@
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
+            <Textbox Name="direccion">
+              <rd:DefaultName>direccion</rd:DefaultName>
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!direccion.Value, "DsDatosRestaurante")</Value>
+                      <Style />
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <Top>1.53141cm</Top>
+              <Left>3.03953cm</Left>
+              <Height>0.6cm</Height>
+              <Width>14.02501cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Image Name="logo">
+              <Source>Database</Source>
+              <Value>=First(Fields!logoimagen.Value, "DsDatosRestaurante")</Value>
+              <MIMEType>image/jpeg</MIMEType>
+              <Sizing>FitProportional</Sizing>
+              <Top>0.1905cm</Top>
+              <Left>0.3175cm</Left>
+              <Height>2.13141cm</Height>
+              <Width>2.3837cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+              </Style>
+            </Image>
           </ReportItems>
           <Style>
             <Border>

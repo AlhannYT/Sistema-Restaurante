@@ -1,4 +1,4 @@
-﻿namespace Proyecto_restaurante
+namespace Proyecto_restaurante
 {
     partial class Configuracion
     {
@@ -195,16 +195,24 @@
             rutaOrigentxt = new Label();
             buscarArchivo = new Button();
             datosPanel = new Panel();
+            panel11 = new Panel();
+            seleccionimagenRestbtn = new Button();
+            logorest = new PictureBox();
+            label44 = new Label();
+            label42 = new Label();
+            panel12 = new Panel();
+            label45 = new Label();
             panel17 = new Panel();
-            button20 = new Button();
-            button22 = new Button();
+            GuardarDatosRest = new Button();
             label43 = new Label();
             label36 = new Label();
-            textBox3 = new TextBox();
+            RNCtxt = new TextBox();
             label39 = new Label();
-            textBox4 = new TextBox();
+            TelefonoRestTxt = new TextBox();
+            label21 = new Label();
+            DirecconRestTxt = new TextBox();
             label35 = new Label();
-            textBox2 = new TextBox();
+            NombreRestTxt = new TextBox();
             barraizq.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -248,6 +256,9 @@
             DGIIPanel.SuspendLayout();
             panel14.SuspendLayout();
             datosPanel.SuspendLayout();
+            panel11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)logorest).BeginInit();
+            panel12.SuspendLayout();
             panel17.SuspendLayout();
             SuspendLayout();
             // 
@@ -2195,58 +2206,132 @@
             // 
             // datosPanel
             // 
+            datosPanel.Controls.Add(panel11);
+            datosPanel.Controls.Add(panel12);
             datosPanel.Controls.Add(panel17);
             datosPanel.Controls.Add(label43);
             datosPanel.Controls.Add(label36);
-            datosPanel.Controls.Add(textBox3);
+            datosPanel.Controls.Add(RNCtxt);
             datosPanel.Controls.Add(label39);
-            datosPanel.Controls.Add(textBox4);
+            datosPanel.Controls.Add(TelefonoRestTxt);
+            datosPanel.Controls.Add(label21);
+            datosPanel.Controls.Add(DirecconRestTxt);
             datosPanel.Controls.Add(label35);
-            datosPanel.Controls.Add(textBox2);
+            datosPanel.Controls.Add(NombreRestTxt);
             datosPanel.Location = new Point(2216, 580);
             datosPanel.Name = "datosPanel";
             datosPanel.Size = new Size(659, 570);
             datosPanel.TabIndex = 45;
             datosPanel.Visible = false;
             // 
+            // panel11
+            // 
+            panel11.BackColor = Color.Gray;
+            panel11.Controls.Add(seleccionimagenRestbtn);
+            panel11.Controls.Add(logorest);
+            panel11.Controls.Add(label44);
+            panel11.Controls.Add(label42);
+            panel11.Location = new Point(15, 80);
+            panel11.Name = "panel11";
+            panel11.Size = new Size(330, 179);
+            panel11.TabIndex = 93;
+            // 
+            // seleccionimagenRestbtn
+            // 
+            seleccionimagenRestbtn.BackColor = Color.Lime;
+            seleccionimagenRestbtn.ForeColor = Color.Black;
+            seleccionimagenRestbtn.Image = Properties.Resources.subir1;
+            seleccionimagenRestbtn.Location = new Point(140, 110);
+            seleccionimagenRestbtn.Name = "seleccionimagenRestbtn";
+            seleccionimagenRestbtn.Size = new Size(179, 56);
+            seleccionimagenRestbtn.TabIndex = 0;
+            seleccionimagenRestbtn.Text = "Buscar Imagen";
+            seleccionimagenRestbtn.TextAlign = ContentAlignment.BottomCenter;
+            seleccionimagenRestbtn.UseVisualStyleBackColor = false;
+            seleccionimagenRestbtn.Click += seleccionimagenRestbtn_Click;
+            // 
+            // logorest
+            // 
+            logorest.ErrorImage = Properties.Resources.perfilcliente;
+            logorest.Image = Properties.Resources.perfilcliente;
+            logorest.InitialImage = Properties.Resources.perfilcliente;
+            logorest.Location = new Point(9, 40);
+            logorest.Name = "logorest";
+            logorest.Size = new Size(125, 126);
+            logorest.SizeMode = PictureBoxSizeMode.StretchImage;
+            logorest.TabIndex = 27;
+            logorest.TabStop = false;
+            // 
+            // label44
+            // 
+            label44.AutoSize = true;
+            label44.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label44.ForeColor = Color.White;
+            label44.Location = new Point(9, 5);
+            label44.Name = "label44";
+            label44.Size = new Size(71, 32);
+            label44.TabIndex = 84;
+            label44.Text = "Logo";
+            // 
+            // label42
+            // 
+            label42.AutoSize = true;
+            label42.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label42.ForeColor = Color.White;
+            label42.Location = new Point(140, 64);
+            label42.Name = "label42";
+            label42.Size = new Size(179, 42);
+            label42.TabIndex = 84;
+            label42.Text = "(Este logo usa para las\r\nfacturas)";
+            // 
+            // panel12
+            // 
+            panel12.BackColor = Color.FromArgb(64, 64, 64);
+            panel12.Controls.Add(label45);
+            panel12.Location = new Point(15, 277);
+            panel12.Name = "panel12";
+            panel12.Size = new Size(629, 182);
+            panel12.TabIndex = 89;
+            // 
+            // label45
+            // 
+            label45.AutoSize = true;
+            label45.BackColor = Color.Transparent;
+            label45.Font = new Font("Segoe UI", 21.75F, FontStyle.Bold);
+            label45.ForeColor = Color.DimGray;
+            label45.Location = new Point(65, 71);
+            label45.Name = "label45";
+            label45.Size = new Size(499, 40);
+            label45.TabIndex = 40;
+            label45.Text = "Reservado para mas datos a futuro";
+            // 
             // panel17
             // 
             panel17.BackColor = Color.FromArgb(64, 64, 64);
-            panel17.Controls.Add(button20);
-            panel17.Controls.Add(button22);
-            panel17.Location = new Point(125, 445);
+            panel17.Controls.Add(GuardarDatosRest);
+            panel17.Location = new Point(223, 475);
             panel17.Name = "panel17";
-            panel17.Size = new Size(409, 74);
+            panel17.Size = new Size(212, 74);
             panel17.TabIndex = 89;
             // 
-            // button20
+            // GuardarDatosRest
             // 
-            button20.Image = Properties.Resources.guardar;
-            button20.ImageAlign = ContentAlignment.MiddleLeft;
-            button20.Location = new Point(12, 8);
-            button20.Name = "button20";
-            button20.Size = new Size(181, 58);
-            button20.TabIndex = 43;
-            button20.Text = "Guardar";
-            button20.UseVisualStyleBackColor = true;
-            // 
-            // button22
-            // 
-            button22.Image = Properties.Resources.nuevodoc;
-            button22.ImageAlign = ContentAlignment.MiddleLeft;
-            button22.Location = new Point(216, 8);
-            button22.Name = "button22";
-            button22.Size = new Size(181, 58);
-            button22.TabIndex = 44;
-            button22.Text = "Nuevo";
-            button22.UseVisualStyleBackColor = true;
+            GuardarDatosRest.Image = Properties.Resources.guardar;
+            GuardarDatosRest.ImageAlign = ContentAlignment.MiddleLeft;
+            GuardarDatosRest.Location = new Point(16, 8);
+            GuardarDatosRest.Name = "GuardarDatosRest";
+            GuardarDatosRest.Size = new Size(181, 58);
+            GuardarDatosRest.TabIndex = 43;
+            GuardarDatosRest.Text = "Guardar";
+            GuardarDatosRest.UseVisualStyleBackColor = true;
+            GuardarDatosRest.Click += GuardarDatosRest_Click;
             // 
             // label43
             // 
             label43.AutoSize = true;
             label43.Font = new Font("Segoe UI", 21.75F, FontStyle.Bold);
             label43.ForeColor = SystemColors.Control;
-            label43.Location = new Point(173, 35);
+            label43.Location = new Point(174, 12);
             label43.Name = "label43";
             label43.Size = new Size(311, 40);
             label43.TabIndex = 39;
@@ -2257,57 +2342,82 @@
             label36.AutoSize = true;
             label36.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label36.ForeColor = Color.White;
-            label36.Location = new Point(174, 184);
+            label36.Location = new Point(353, 80);
             label36.Name = "label36";
             label36.Size = new Size(43, 21);
             label36.TabIndex = 84;
             label36.Text = "RNC";
             // 
-            // textBox3
+            // RNCtxt
             // 
-            textBox3.Font = new Font("Segoe UI", 12F);
-            textBox3.Location = new Point(174, 209);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(311, 29);
-            textBox3.TabIndex = 86;
+            RNCtxt.CharacterCasing = CharacterCasing.Upper;
+            RNCtxt.Font = new Font("Segoe UI", 12F);
+            RNCtxt.Location = new Point(353, 109);
+            RNCtxt.Name = "RNCtxt";
+            RNCtxt.Size = new Size(118, 29);
+            RNCtxt.TabIndex = 86;
+            RNCtxt.TextChanged += RNCtxt_TextChanged;
             // 
             // label39
             // 
             label39.AutoSize = true;
             label39.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label39.ForeColor = Color.White;
-            label39.Location = new Point(174, 332);
+            label39.Location = new Point(479, 84);
             label39.Name = "label39";
-            label39.Size = new Size(77, 21);
+            label39.Size = new Size(149, 21);
             label39.TabIndex = 84;
-            label39.Text = "Teléfono";
+            label39.Text = "Teléfono Principal";
             // 
-            // textBox4
+            // TelefonoRestTxt
             // 
-            textBox4.Font = new Font("Segoe UI", 12F);
-            textBox4.Location = new Point(174, 357);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(311, 29);
-            textBox4.TabIndex = 86;
+            TelefonoRestTxt.CharacterCasing = CharacterCasing.Upper;
+            TelefonoRestTxt.Font = new Font("Segoe UI", 12F);
+            TelefonoRestTxt.Location = new Point(479, 109);
+            TelefonoRestTxt.Name = "TelefonoRestTxt";
+            TelefonoRestTxt.Size = new Size(165, 29);
+            TelefonoRestTxt.TabIndex = 86;
+            TelefonoRestTxt.TextChanged += TelefonoRestTxt_TextChanged;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label21.ForeColor = Color.White;
+            label21.Location = new Point(353, 207);
+            label21.Name = "label21";
+            label21.Size = new Size(83, 21);
+            label21.TabIndex = 84;
+            label21.Text = "Dirección";
+            // 
+            // DirecconRestTxt
+            // 
+            DirecconRestTxt.CharacterCasing = CharacterCasing.Upper;
+            DirecconRestTxt.Font = new Font("Segoe UI", 12F);
+            DirecconRestTxt.Location = new Point(353, 230);
+            DirecconRestTxt.Name = "DirecconRestTxt";
+            DirecconRestTxt.Size = new Size(291, 29);
+            DirecconRestTxt.TabIndex = 86;
             // 
             // label35
             // 
             label35.AutoSize = true;
             label35.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label35.ForeColor = Color.White;
-            label35.Location = new Point(174, 258);
+            label35.Location = new Point(353, 144);
             label35.Name = "label35";
             label35.Size = new Size(73, 21);
             label35.TabIndex = 84;
             label35.Text = "Nombre";
             // 
-            // textBox2
+            // NombreRestTxt
             // 
-            textBox2.Font = new Font("Segoe UI", 12F);
-            textBox2.Location = new Point(174, 283);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(311, 29);
-            textBox2.TabIndex = 86;
+            NombreRestTxt.CharacterCasing = CharacterCasing.Upper;
+            NombreRestTxt.Font = new Font("Segoe UI", 12F);
+            NombreRestTxt.Location = new Point(353, 169);
+            NombreRestTxt.Name = "NombreRestTxt";
+            NombreRestTxt.Size = new Size(291, 29);
+            NombreRestTxt.TabIndex = 86;
             // 
             // Configuracion
             // 
@@ -2395,6 +2505,11 @@
             panel14.ResumeLayout(false);
             datosPanel.ResumeLayout(false);
             datosPanel.PerformLayout();
+            panel11.ResumeLayout(false);
+            panel11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)logorest).EndInit();
+            panel12.ResumeLayout(false);
+            panel12.PerformLayout();
             panel17.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -2556,19 +2671,19 @@
         private Label label37;
         private Panel datosPanel;
         private Panel panel17;
-        private Button button20;
+        private Button GuardarDatosRest;
         private Button button22;
         private Label label43;
         private Button ImportarArchivo;
         private Label label36;
-        private TextBox textBox3;
+        private TextBox RNCtxt;
         private Label label35;
-        private TextBox textBox2;
+        private TextBox NombreRestTxt;
         private Label rutaOrigentxt;
         private Label label40;
         private Button buscarArchivo;
         private Label label39;
-        private TextBox textBox4;
+        private TextBox TelefonoRestTxt;
         private CheckBox cancelarDoc;
         private Label label41;
         private TextBox porcGanancia;
@@ -2576,5 +2691,14 @@
         private RadioButton itbisBruto;
         private RadioButton itbisTransp;
         private Label label4;
+        private Label label21;
+        private TextBox DirecconRestTxt;
+        private Panel panel11;
+        private Button seleccionimagenRestbtn;
+        private PictureBox logorest;
+        private Label label44;
+        private Label label42;
+        private Panel panel12;
+        private Label label45;
     }
 }
