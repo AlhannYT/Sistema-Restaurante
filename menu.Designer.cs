@@ -35,7 +35,7 @@
             cerrarbtn = new Button();
             panel5 = new Panel();
             panel2 = new Panel();
-            pictureBox2 = new PictureBox();
+            ImagenUsuario = new PictureBox();
             button2 = new Button();
             button5 = new Button();
             button6 = new Button();
@@ -82,7 +82,7 @@
             button3 = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ImagenUsuario).BeginInit();
             barrasup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)LogoIMG).BeginInit();
             barraizq.SuspendLayout();
@@ -148,23 +148,23 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel2.BackColor = Color.FromArgb(0, 192, 0);
-            panel2.Controls.Add(pictureBox2);
+            panel2.Controls.Add(ImagenUsuario);
             panel2.Location = new Point(844, 4);
             panel2.Margin = new Padding(2, 3, 2, 3);
             panel2.Name = "panel2";
             panel2.Size = new Size(70, 61);
             panel2.TabIndex = 4;
             // 
-            // pictureBox2
+            // ImagenUsuario
             // 
-            pictureBox2.Image = Properties.Resources.perfil_blanco;
-            pictureBox2.Location = new Point(2, 2);
-            pictureBox2.Margin = new Padding(2, 3, 2, 3);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(66, 57);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 0;
-            pictureBox2.TabStop = false;
+            ImagenUsuario.Image = Properties.Resources.perfil_blanco;
+            ImagenUsuario.Location = new Point(2, 2);
+            ImagenUsuario.Margin = new Padding(2, 3, 2, 3);
+            ImagenUsuario.Name = "ImagenUsuario";
+            ImagenUsuario.Size = new Size(66, 57);
+            ImagenUsuario.SizeMode = PictureBoxSizeMode.Zoom;
+            ImagenUsuario.TabIndex = 0;
+            ImagenUsuario.TabStop = false;
             // 
             // button2
             // 
@@ -420,7 +420,7 @@
             cuadreCajabtn.Cursor = Cursors.Hand;
             cuadreCajabtn.Image = Properties.Resources.cajero;
             cuadreCajabtn.ImageAlign = ContentAlignment.MiddleRight;
-            cuadreCajabtn.Location = new Point(533, 9);
+            cuadreCajabtn.Location = new Point(567, 9);
             cuadreCajabtn.Margin = new Padding(2);
             cuadreCajabtn.Name = "cuadreCajabtn";
             cuadreCajabtn.Size = new Size(138, 55);
@@ -807,7 +807,7 @@
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ImagenUsuario).EndInit();
             barrasup.ResumeLayout(false);
             barrasup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)LogoIMG).EndInit();
@@ -827,7 +827,7 @@
         public Label usuariolabel;
         private Panel panel2;
         private Button cerrarbtn;
-        private PictureBox pictureBox2;
+        private PictureBox ImagenUsuario;
         private Button button2;
         private Button button5;
         private Button button6;

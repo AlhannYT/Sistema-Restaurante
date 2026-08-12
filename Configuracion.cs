@@ -391,25 +391,41 @@ namespace Proyecto_restaurante
                     idusuariopermiso.Text = fila.Cells["IdUsuario"].Value.ToString();
                     usuariologin.Text = fila.Cells["Login"].Value.ToString();
 
-                    string rutaImagenes = @"C:\SistemaArchivos\Empleados\";
-                    string rutaImagenEmpleado = Path.Combine(rutaImagenes, idEmpleado + ".jpg");
-
                     if (usuarioimg.Image != null)
                     {
                         usuarioimg.Image.Dispose();
                         usuarioimg.Image = null;
                     }
 
-                    if (File.Exists(rutaImagenEmpleado))
+                    using (SqlConnection conexion = new SqlConnection(conexionString))
                     {
-                        using (FileStream fs = new FileStream(rutaImagenEmpleado, FileMode.Open, FileAccess.Read))
+                        try
                         {
-                            usuarioimg.Image = Image.FromStream(fs);
+                            conexion.Open();
+                            string query = "SELECT ImagenEmpleado FROM Empleado WHERE IdEmpleado = @IdEmpleado";
+                            using (SqlCommand cmd = new SqlCommand(query, conexion))
+                            {
+                                cmd.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+                                object result = cmd.ExecuteScalar();
+
+                                if (result != null && result != DBNull.Value && ((byte[])result).Length > 0)
+                                {
+                                    byte[] bytes = (byte[])result;
+                                    using (MemoryStream ms = new MemoryStream(bytes))
+                                    {
+                                        usuarioimg.Image = Image.FromStream(ms);
+                                    }
+                                }
+                                else
+                                {
+                                    usuarioimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
-                        usuarioimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                        catch
+                        {
+                            usuarioimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                        }
                     }
                 }
             }

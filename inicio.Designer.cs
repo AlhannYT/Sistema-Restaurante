@@ -67,7 +67,6 @@
             borrarconex = new Button();
             button5 = new Button();
             button4 = new Button();
-            pictureBox2 = new PictureBox();
             usuarioimagen = new PictureBox();
             contraimagen = new PictureBox();
             autorizar = new Panel();
@@ -86,7 +85,6 @@
             conexionpanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtsql).BeginInit();
             conexiones.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)usuarioimagen).BeginInit();
             ((System.ComponentModel.ISupportInitialize)contraimagen).BeginInit();
             autorizar.SuspendLayout();
@@ -97,7 +95,7 @@
             // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Image = Properties.Resources.comidapedido2;
-            pictureBox1.Location = new Point(293, 54);
+            pictureBox1.Location = new Point(208, 54);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(142, 132);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -515,17 +513,6 @@
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
-            // pictureBox2
-            // 
-            pictureBox2.BackColor = Color.Transparent;
-            pictureBox2.Image = Properties.Resources.textocentrado;
-            pictureBox2.Location = new Point(123, 73);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(175, 95);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 0;
-            pictureBox2.TabStop = false;
-            // 
             // usuarioimagen
             // 
             usuarioimagen.Image = Properties.Resources.persona2;
@@ -647,7 +634,6 @@
             panelSesion.Controls.Add(contraimagen);
             panelSesion.Controls.Add(usuarioimagen);
             panelSesion.Controls.Add(recordarchk);
-            panelSesion.Controls.Add(pictureBox2);
             panelSesion.Controls.Add(pictureBox1);
             panelSesion.Controls.Add(iniciolabel);
             panelSesion.Controls.Add(passView);
@@ -690,7 +676,6 @@
             conexionpanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)txtsql).EndInit();
             conexiones.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)usuarioimagen).EndInit();
             ((System.ComponentModel.ISupportInitialize)contraimagen).EndInit();
             autorizar.ResumeLayout(false);
@@ -732,7 +717,6 @@
         private Button button6;
         private Button borrarconex;
         private CheckBox recordarchk;
-        private PictureBox pictureBox2;
         private PictureBox alerta;
         private PictureBox usuarioimagen;
         private PictureBox contraimagen;

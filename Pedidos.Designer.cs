@@ -240,6 +240,7 @@ namespace Proyecto_restaurante
             facturadochk = new CheckBox();
             toolTip1 = new ToolTip(components);
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            panel22 = new Panel();
             tabControl1.SuspendLayout();
             tabPage6.SuspendLayout();
             panelComanda.SuspendLayout();
@@ -318,7 +319,7 @@ namespace Proyecto_restaurante
             tabPage6.Controls.Add(panel6);
             tabPage6.Location = new Point(4, 30);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new Size(2692, 637);
+            tabPage6.Size = new Size(804, 637);
             tabPage6.TabIndex = 2;
             tabPage6.Text = "Mesas";
             // 
@@ -995,7 +996,7 @@ namespace Proyecto_restaurante
             tabPage1.Location = new Point(4, 30);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(2692, 637);
+            tabPage1.Size = new Size(804, 637);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Ordenar";
             // 
@@ -2577,6 +2578,7 @@ namespace Proyecto_restaurante
             // panel7
             // 
             panel7.BackColor = SystemColors.WindowFrame;
+            panel7.Controls.Add(panel22);
             panel7.Controls.Add(label8);
             panel7.Controls.Add(label9);
             panel7.Controls.Add(fecini);
@@ -2785,6 +2787,15 @@ namespace Proyecto_restaurante
             facturadochk.Text = "Facturado";
             facturadochk.UseVisualStyleBackColor = true;
             facturadochk.CheckedChanged += facturadochk_CheckedChanged;
+            // 
+            // panel22
+            // 
+            panel22.Anchor = AnchorStyles.Top;
+            panel22.BackColor = Color.FromArgb(64, 64, 64);
+            panel22.Location = new Point(299, 10);
+            panel22.Name = "panel22";
+            panel22.Size = new Size(7, 55);
+            panel22.TabIndex = 11;
             // 
             // Pedidos
             // 
@@ -3100,5 +3111,6 @@ namespace Proyecto_restaurante
         private Label label25;
         private Panel panel16;
         private Label label26;
+        private Panel panel22;
     }
 }

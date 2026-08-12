@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
@@ -35,6 +36,55 @@ namespace Proyecto_restaurante
 
         string conexionString = ConexionBD.ConexionSQL();
 
+        private void ConsEmpleados_Load(object sender, EventArgs e)
+        {
+            string conexionString = ConexionBD.ConexionSQL();
+
+            try
+            {
+                string consultaEmpleados = @"
+                SELECT 
+                    e.IdEmpleado,
+                    p.NombreCompleto,
+                    pd.Numero AS Cedula
+                FROM Empleado e
+                LEFT JOIN Persona p ON e.IdPersona = p.IdPersona
+                LEFT JOIN PersonaDocumento pd ON p.IdPersona = pd.IdPersona
+                WHERE e.Activo = 1 AND p.Activo = 1;";
+
+                using (SqlDataAdapter adaptador = new SqlDataAdapter(consultaEmpleados, conexionString))
+                {
+                    DataTable dt = new DataTable();
+                    adaptador.Fill(dt);
+                    tabladatos.DataSource = dt;
+                }
+
+                string consultaUltimoID = "SELECT ISNULL(MAX(IdEmpleado) + 1, 0) FROM Empleado";
+
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    conexion.Open();
+                    using (SqlCommand cmd = new SqlCommand(consultaUltimoID, conexion))
+                    {
+                        object resultado = cmd.ExecuteScalar();
+
+                        if (resultado != null && resultado != DBNull.Value)
+                        {
+                            idUltimoEmpleado.Text = resultado.ToString();
+                        }
+                        else
+                        {
+                            idUltimoEmpleado.Text = "?";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al cargar los datos: {ex.Message}");
+            }
+        }
+
         private void guardarbtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtnombre.Text) || string.IsNullOrEmpty(txtapellido.Text) ||
@@ -43,6 +93,16 @@ namespace Proyecto_restaurante
             {
                 MessageBox.Show("Error: No deje campos vacíos.");
                 return;
+            }
+
+            byte[] imagenBytes = null;
+            if (imagenempleado.Image != null)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    imagenempleado.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    imagenBytes = ms.ToArray();
+                }
             }
 
             using (SqlConnection conexion = new SqlConnection(conexionString))
@@ -70,8 +130,8 @@ namespace Proyecto_restaurante
                         }
 
                         string nuevoEmpleado = @"
-                        INSERT INTO Empleado (IdPersona, IdPuesto, FechaIngreso, Activo, Sueldo, TipoSueldo, IdRolempleado)
-                        VALUES (@IdPersona, @IdPuesto, @FechaIngreso, @Activo, @Sueldo, @TipoSueldo, @IdRol)";
+                        INSERT INTO Empleado (IdPersona, IdPuesto, FechaIngreso, Activo, Sueldo, TipoSueldo, IdRolempleado, ImagenEmpleado)
+                        VALUES (@IdPersona, @IdPuesto, @FechaIngreso, @Activo, @Sueldo, @TipoSueldo, @IdRol, @ImagenEmpleado)";
 
                         using (SqlCommand insertarEmpleado = new SqlCommand(nuevoEmpleado, conexion, trans))
                         {
@@ -79,9 +139,10 @@ namespace Proyecto_restaurante
                             insertarEmpleado.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(idpuestotxt.Text));
                             insertarEmpleado.Parameters.AddWithValue("@Sueldo", Convert.ToDecimal(txtsueldo.Text));
                             insertarEmpleado.Parameters.AddWithValue("@FechaIngreso", fechaingreso.Value);
-                            insertarEmpleado.Parameters.AddWithValue("@TipoSueldo", Convert.ToInt32(tiposueldocmbx.SelectedValue));
-                            insertarEmpleado.Parameters.AddWithValue("@IdRol", Convert.ToInt32(rolcmbx.SelectedValue));
+                            insertarEmpleado.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex : 0);
+                            insertarEmpleado.Parameters.AddWithValue("@IdRol", rolcmbx.SelectedIndex >= 0 ? rolcmbx.SelectedIndex : 0);
                             insertarEmpleado.Parameters.AddWithValue("@Activo", estadochk.Checked ? 1 : 0);
+                            insertarEmpleado.Parameters.Add("@ImagenEmpleado", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
 
                             insertarEmpleado.ExecuteNonQuery();
                         }
@@ -167,7 +228,8 @@ namespace Proyecto_restaurante
                         string actualizarEmpleado = @"
                         UPDATE Empleado 
                         SET IdPuesto = @IdPuesto, Sueldo = @Sueldo, FechaIngreso = @FechaIngreso, 
-                            TipoSueldo = @TipoSueldo, Activo = @Activo, IdRolempleado = @IdRol 
+                            TipoSueldo = @TipoSueldo, Activo = @Activo, IdRolempleado = @IdRol, 
+                            ImagenEmpleado = @ImagenEmpleado 
                         WHERE IdEmpleado = @IdEmpleado";
 
                         using (SqlCommand actualizarCommand = new SqlCommand(actualizarEmpleado, conexion, trans))
@@ -176,9 +238,10 @@ namespace Proyecto_restaurante
                             actualizarCommand.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(idpuestotxt.Text));
                             actualizarCommand.Parameters.AddWithValue("@Sueldo", Convert.ToDecimal(txtsueldo.Text));
                             actualizarCommand.Parameters.AddWithValue("@FechaIngreso", fechaingreso.Value);
-                            actualizarCommand.Parameters.AddWithValue("@TipoSueldo", Convert.ToInt32(tiposueldocmbx.SelectedValue));
-                            actualizarCommand.Parameters.AddWithValue("@IdRol", Convert.ToInt32(rolcmbx.SelectedValue));
+                            actualizarCommand.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex : 0);
+                            actualizarCommand.Parameters.AddWithValue("@IdRol", rolcmbx.SelectedIndex >= 0 ? rolcmbx.SelectedIndex : 0);
                             actualizarCommand.Parameters.AddWithValue("@Activo", estadochk.Checked ? 1 : 0);
+                            actualizarCommand.Parameters.Add("@ImagenEmpleado", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
                             actualizarCommand.ExecuteNonQuery();
                         }
 
@@ -295,55 +358,6 @@ namespace Proyecto_restaurante
             }
         }
 
-        private void ConsEmpleados_Load(object sender, EventArgs e)
-        {
-            string conexionString = ConexionBD.ConexionSQL();
-
-            try
-            {
-                string consultaEmpleados = @"
-                SELECT 
-                    e.IdEmpleado,
-                    p.NombreCompleto,
-                    pd.Numero AS Cedula
-                FROM Empleado e
-                LEFT JOIN Persona p ON e.IdPersona = p.IdPersona
-                LEFT JOIN PersonaDocumento pd ON p.IdPersona = pd.IdPersona
-                WHERE e.Activo = 1 AND p.Activo = 1;";
-
-                using (SqlDataAdapter adaptador = new SqlDataAdapter(consultaEmpleados, conexionString))
-                {
-                    DataTable dt = new DataTable();
-                    adaptador.Fill(dt);
-                    tabladatos.DataSource = dt;
-                }
-
-                string consultaUltimoID = "SELECT ISNULL(MAX(IdEmpleado) + 1, 0) FROM Empleado";
-
-                using (SqlConnection conexion = new SqlConnection(conexionString))
-                {
-                    conexion.Open();
-                    using (SqlCommand cmd = new SqlCommand(consultaUltimoID, conexion))
-                    {
-                        object resultado = cmd.ExecuteScalar();
-
-                        if (resultado != null && resultado != DBNull.Value)
-                        {
-                            idUltimoEmpleado.Text = resultado.ToString();
-                        }
-                        else
-                        {
-                            idUltimoEmpleado.Text = "?";
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ocurrió un error al cargar los datos: {ex.Message}");
-            }
-        }
-
         private void puestoconsulta_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             puestoconsulta_CellClick(sender, e);
@@ -379,20 +393,6 @@ namespace Proyecto_restaurante
             txtcedula.Focus();
             EmpleadoID = 0;
             PersonaID = 0;
-
-            //if (numeroEmpleado.ColumnCount == 0)
-            //{
-            //    numeroEmpleado.Columns.Add("nombre", "Etiqueta");
-            //    numeroEmpleado.Columns.Add("numero", "Número");
-            //    numeroEmpleado.Columns.Add("principal", "Principal");
-            //}
-
-            //if (direccionEmpleado.ColumnCount == 0)
-            //{
-            //    direccionEmpleado.Columns.Add("nombre", "Etiqueta");
-            //    direccionEmpleado.Columns.Add("direccion", "Dirección");
-            //    direccionEmpleado.Columns.Add("principal", "Principal");
-            //}
         }
 
         private void puestoconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -429,6 +429,7 @@ namespace Proyecto_restaurante
             estadochk.Checked = true;
             numeroEmpleado.Rows.Clear();
             direccionEmpleado.Rows.Clear();
+            imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
         }
 
         private void seleccionimagenbtn_Click(object sender, EventArgs e)
@@ -440,34 +441,17 @@ namespace Proyecto_restaurante
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string idCliente = idUltimoEmpleado.Text;
-                    string destinoCarpeta = @"C:\SistemaArchivos\Empleados\";
-                    string extension = Path.GetExtension(openFileDialog.FileName);
-                    string nuevaRuta = Path.Combine(destinoCarpeta, idCliente + extension);
-
                     try
                     {
-                        imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
-
-                        if (File.Exists(nuevaRuta))
+                        byte[] bytes = File.ReadAllBytes(openFileDialog.FileName);
+                        using (MemoryStream ms = new MemoryStream(bytes))
                         {
-                            string tempFileName = Path.Combine(destinoCarpeta, Path.GetRandomFileName());
-                            File.Move(nuevaRuta, tempFileName);
-
-                            File.Delete(tempFileName);
+                            imagenempleado.Image = Image.FromStream(ms);
                         }
-
-                        File.Copy(openFileDialog.FileName, nuevaRuta, true);
-
-                        imagenempleado.Image = Image.FromFile(nuevaRuta);
-
-                        MessageBox.Show("Imagen asociada al producto con éxito.");
-                        limpiarbtn.Enabled = false;
-
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al copiar la imagen: " + ex.Message);
+                        MessageBox.Show("Error al cargar la imagen: " + ex.Message);
                     }
                 }
             }
@@ -480,16 +464,35 @@ namespace Proyecto_restaurante
                 DataGridViewRow fila = tabladatos.Rows[e.RowIndex];
                 int idEmpleado = Convert.ToInt32(fila.Cells["IdEmpleado"].Value);
 
-                string rutaImagenes = @"C:\SistemaArchivos\Empleados\";
-                string rutaImagenCliente = Path.Combine(rutaImagenes, idEmpleado + ".jpg");
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    try
+                    {
+                        conexion.Open();
+                        string query = "SELECT ImagenEmpleado FROM Empleado WHERE IdEmpleado = @IdEmpleado";
+                        using (SqlCommand cmd = new SqlCommand(query, conexion))
+                        {
+                            cmd.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+                            object result = cmd.ExecuteScalar();
 
-                if (File.Exists(rutaImagenCliente))
-                {
-                    empleadoimg.Image = Image.FromFile(rutaImagenCliente);
-                }
-                else
-                {
-                    empleadoimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                            if (result != null && result != DBNull.Value && ((byte[])result).Length > 0)
+                            {
+                                byte[] bytes = (byte[])result;
+                                using (MemoryStream ms = new MemoryStream(bytes))
+                                {
+                                    empleadoimg.Image = Image.FromStream(ms);
+                                }
+                            }
+                            else
+                            {
+                                empleadoimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        empleadoimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                    }
                 }
             }
         }
@@ -624,12 +627,20 @@ namespace Proyecto_restaurante
                 SELECT 
                     e.IdEmpleado,
                     e.IdPersona,
+                    e.IdPuesto,
+                    pu.Nombre AS NombrePuesto,
+                    e.Sueldo,
+                    e.FechaIngreso,
+                    e.TipoSueldo,
+                    e.IdRolempleado,
+                    e.ImagenEmpleado,
                     p.Nombre,
                     p.Apellido,
                     p.Email,
                     p.Activo
                 FROM Empleado e
                 INNER JOIN Persona p ON e.IdPersona = p.IdPersona
+                LEFT JOIN Puesto pu ON e.IdPuesto = pu.IdPuesto
                 WHERE e.IdEmpleado = @IdEmpleado";
 
                 SqlCommand cmd = new SqlCommand(query, conexion);
@@ -650,6 +661,61 @@ namespace Proyecto_restaurante
                 txtapellido.Text = dr["Apellido"].ToString();
                 emailtxt.Text = dr["Email"].ToString();
                 estadochk.Checked = Convert.ToBoolean(dr["Activo"]);
+
+                idpuestotxt.Text = dr["IdPuesto"] != DBNull.Value ? dr["IdPuesto"].ToString() : "";
+                puestotxt.Text = dr["NombrePuesto"] != DBNull.Value ? dr["NombrePuesto"].ToString() : "";
+                txtsueldo.Text = dr["Sueldo"] != DBNull.Value ? dr["Sueldo"].ToString() : "";
+
+                if (dr["FechaIngreso"] != DBNull.Value)
+                {
+                    fechaingreso.Value = Convert.ToDateTime(dr["FechaIngreso"]);
+                }
+
+                if (dr["TipoSueldo"] != DBNull.Value)
+                {
+                    int indexTipo = Convert.ToInt32(dr["TipoSueldo"]);
+                    if (indexTipo >= 0 && indexTipo < tiposueldocmbx.Items.Count)
+                        tiposueldocmbx.SelectedIndex = indexTipo;
+                    else
+                        tiposueldocmbx.SelectedIndex = -1;
+                }
+                else
+                {
+                    tiposueldocmbx.SelectedIndex = -1;
+                }
+
+                if (dr["IdRolempleado"] != DBNull.Value)
+                {
+                    int indexRol = Convert.ToInt32(dr["IdRolempleado"]);
+                    if (indexRol >= 0 && indexRol < rolcmbx.Items.Count)
+                        rolcmbx.SelectedIndex = indexRol;
+                    else
+                        rolcmbx.SelectedIndex = -1;
+                }
+                else
+                {
+                    rolcmbx.SelectedIndex = -1;
+                }
+
+                if (dr["ImagenEmpleado"] != DBNull.Value && dr["ImagenEmpleado"] != null)
+                {
+                    byte[] bytes = (byte[])dr["ImagenEmpleado"];
+                    if (bytes.Length > 0)
+                    {
+                        using (MemoryStream ms = new MemoryStream(bytes))
+                        {
+                            imagenempleado.Image = Image.FromStream(ms);
+                        }
+                    }
+                    else
+                    {
+                        imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                    }
+                }
+                else
+                {
+                    imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                }
 
                 dr.Close();
 

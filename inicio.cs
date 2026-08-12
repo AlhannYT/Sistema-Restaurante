@@ -22,6 +22,119 @@ namespace Proyecto_restaurante
         public string UsuarioAdmin = "A";
         public string PassAdmin = "A";
 
+        private void inicio_Load(object sender, EventArgs e)
+        {
+            string rutaBase = @"C:\SistemaArchivos";
+
+            string rutaReportes = @"C:\SistemaArchivos\Reportes";
+
+            string rutaConexion = Path.Combine(rutaBase, "Conexion", "ConexionesSQL.txt");
+
+            string[] carpetas = {
+                "Conexion",
+                "Configuracion",
+                "Empleados",
+                "Facturas",
+                "Productos",
+                "Proveedor",
+                "DGIITXT",
+                "Usuarios"
+            };
+
+            string[] carpetasReportes = {
+                "Ventas",
+                "PlatosVendidos",
+                "Stock",
+                "Compras",
+                "Clientes",
+                "Proveedores",
+                "Empleados"
+            };
+
+            try
+            {
+                if (!Directory.Exists(rutaBase))
+                    Directory.CreateDirectory(rutaBase);
+
+                if (!Directory.Exists(rutaReportes))
+                    Directory.CreateDirectory(rutaReportes);
+
+                foreach (string carpeta in carpetas)
+                {
+                    string rutaCompleta = Path.Combine(rutaBase, carpeta);
+                    if (!Directory.Exists(rutaCompleta))
+                        Directory.CreateDirectory(rutaCompleta);
+                }
+
+                foreach (string carpetaRep in carpetasReportes)
+                {
+                    string rutaRepCompleta = Path.Combine(rutaReportes, carpetaRep);
+                    if (!Directory.Exists(rutaRepCompleta))
+                        Directory.CreateDirectory(rutaRepCompleta);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al crear las carpetas requeridas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (!File.Exists(rutaConexion))
+            {
+                iniciobtn.Enabled = false;
+
+                AvisoDBIMG.Visible = true;
+
+                System.Windows.Forms.Timer timerParpadeo = new System.Windows.Forms.Timer();
+                timerParpadeo.Interval = 400;
+                int contador = 0;
+
+                timerParpadeo.Tick += (s, args) =>
+                {
+                    AvisoDBIMG.Visible = !AvisoDBIMG.Visible;
+                    contador++;
+
+                    if (contador >= 10)
+                    {
+                        timerParpadeo.Stop();
+                        alerta.Visible = true;
+                    }
+                };
+
+                timerParpadeo.Start();
+            }
+            else
+            {
+                AvisoDBIMG.Visible = false;
+                iniciobtn.Enabled = true;
+            }
+
+            try
+            {
+                if (File.Exists(rutaUsuario))
+                {
+                    string usuarioGuardado = File.ReadAllText(rutaUsuario).Trim();
+
+                    if (!string.IsNullOrEmpty(usuarioGuardado))
+                    {
+                        txtusuario.Text = usuarioGuardado;
+                        recordarchk.Checked = true;
+                        recordarchk.BackColor = Color.LightGreen;
+                        txtpass.Focus();
+                    }
+                }
+                else
+                {
+                    txtusuario.Text = string.Empty;
+                    recordarchk.BackColor = SystemColors.Window;
+                    recordarchk.Checked = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo leer el usuario recordado: " + ex.Message);
+            }
+        }
+
         private void iniciobtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtusuario.Text) || string.IsNullOrEmpty(txtpass.Text))
@@ -382,121 +495,7 @@ namespace Proyecto_restaurante
             {
                 MessageBox.Show("No se pudo eliminar la conexión. Verifica los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void inicio_Load(object sender, EventArgs e)
-        {
-            string rutaBase = @"C:\SistemaArchivos";
-
-            string rutaReportes = @"C:\SistemaArchivos\Reportes";
-
-            string rutaConexion = Path.Combine(rutaBase, "Conexion", "ConexionesSQL.txt");
-
-            string[] carpetas = {
-                "Clientes",
-                "Conexion",
-                "Configuracion",
-                "Empleados",
-                "Facturas",
-                "Productos",
-                "Proveedor",
-                "DGIITXT",
-                "Usuarios"
-            };
-
-            string[] carpetasReportes = {
-                "Ventas",
-                "PlatosVendidos",
-                "Stock",
-                "Compras",
-                "Clientes",
-                "Proveedores",
-                "Empleados"
-            };
-
-            try
-            {
-                if (!Directory.Exists(rutaBase))
-                    Directory.CreateDirectory(rutaBase);
-
-                if (!Directory.Exists(rutaReportes))
-                    Directory.CreateDirectory(rutaReportes);
-
-                foreach (string carpeta in carpetas)
-                {
-                    string rutaCompleta = Path.Combine(rutaBase, carpeta);
-                    if (!Directory.Exists(rutaCompleta))
-                        Directory.CreateDirectory(rutaCompleta);
-                }
-
-                foreach (string carpetaRep in carpetasReportes)
-                {
-                    string rutaRepCompleta = Path.Combine(rutaReportes, carpetaRep);
-                    if (!Directory.Exists(rutaRepCompleta))
-                        Directory.CreateDirectory(rutaRepCompleta);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al crear las carpetas requeridas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (!File.Exists(rutaConexion))
-            {
-                iniciobtn.Enabled = false;
-
-                AvisoDBIMG.Visible = true;
-
-                System.Windows.Forms.Timer timerParpadeo = new System.Windows.Forms.Timer();
-                timerParpadeo.Interval = 400;
-                int contador = 0;
-
-                timerParpadeo.Tick += (s, args) =>
-                {
-                    AvisoDBIMG.Visible = !AvisoDBIMG.Visible;
-                    contador++;
-
-                    if (contador >= 10)
-                    {
-                        timerParpadeo.Stop();
-                        alerta.Visible = true;
-                    }
-                };
-
-                timerParpadeo.Start();
-            }
-            else
-            {
-                AvisoDBIMG.Visible = false;
-                iniciobtn.Enabled = true;
-            }
-
-            try
-            {
-                if (File.Exists(rutaUsuario))
-                {
-                    string usuarioGuardado = File.ReadAllText(rutaUsuario).Trim();
-
-                    if (!string.IsNullOrEmpty(usuarioGuardado))
-                    {
-                        txtusuario.Text = usuarioGuardado;
-                        recordarchk.Checked = true;
-                        recordarchk.BackColor = Color.LightGreen;
-                        txtpass.Focus();
-                    }
-                }
-                else
-                {
-                    txtusuario.Text = string.Empty;
-                    recordarchk.BackColor = SystemColors.Window;
-                    recordarchk.Checked = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("No se pudo leer el usuario recordado: " + ex.Message);
-            }
-        }
+        }        
 
         private void inicio_Shown(object sender, EventArgs e)
         {
@@ -533,8 +532,6 @@ namespace Proyecto_restaurante
             string contraseña = contservidortxt.Text;
 
             string conexion = $"Server={servidor};Database=master;User Id={usuario};Password={contraseña};TrustServerCertificate=True;";
-
-            //string nombreDB = "GloriaRestaurant";
 
             try
             {
