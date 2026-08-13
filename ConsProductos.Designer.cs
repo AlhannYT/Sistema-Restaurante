@@ -44,6 +44,8 @@
             tabControl1 = new TabControl();
             consulta = new TabPage();
             panel2 = new Panel();
+            filtrobebida = new CheckBox();
+            filtroadicion = new CheckBox();
             filtroingredientes = new CheckBox();
             filtroplatos = new CheckBox();
             filtrotodos = new CheckBox();
@@ -109,6 +111,8 @@
             button4 = new Button();
             label9 = new Label();
             categoriaconsulta = new DataGridView();
+            label22 = new Label();
+            fechaultimacompralbl = new Label();
             ((System.ComponentModel.ISupportInitialize)tabladatos).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)imagenproducto).BeginInit();
@@ -154,7 +158,7 @@
             label12.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label12.ForeColor = SystemColors.Control;
             label12.Image = Properties.Resources.busqueda1;
-            label12.Location = new Point(359, 59);
+            label12.Location = new Point(271, 59);
             label12.Name = "label12";
             label12.Size = new Size(18, 21);
             label12.TabIndex = 38;
@@ -183,11 +187,11 @@
             // txtbuscador
             // 
             txtbuscador.CharacterCasing = CharacterCasing.Upper;
-            txtbuscador.ForeColor = SystemColors.ScrollBar;
+            txtbuscador.ForeColor = Color.Black;
             txtbuscador.Location = new Point(8, 55);
             txtbuscador.Name = "txtbuscador";
             txtbuscador.PlaceholderText = "Buscar Producto";
-            txtbuscador.Size = new Size(374, 29);
+            txtbuscador.Size = new Size(284, 29);
             txtbuscador.TabIndex = 1;
             // 
             // agregar
@@ -217,6 +221,8 @@
             // panel1
             // 
             panel1.BackColor = Color.Gray;
+            panel1.Controls.Add(fechaultimacompralbl);
+            panel1.Controls.Add(label22);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(imagenproducto);
             panel1.Location = new Point(667, 246);
@@ -233,7 +239,7 @@
             label2.Name = "label2";
             label2.Size = new Size(155, 64);
             label2.TabIndex = 46;
-            label2.Text = "Informacion\r\n    General";
+            label2.Text = "Información\r\n    General";
             // 
             // imagenproducto
             // 
@@ -305,15 +311,45 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(64, 64, 64);
+            panel2.Controls.Add(filtrobebida);
+            panel2.Controls.Add(filtroadicion);
             panel2.Controls.Add(filtroingredientes);
             panel2.Controls.Add(filtroplatos);
             panel2.Controls.Add(filtrotodos);
             panel2.Controls.Add(filtro);
             panel2.Controls.Add(label15);
-            panel2.Location = new Point(385, 53);
+            panel2.Location = new Point(298, 53);
             panel2.Name = "panel2";
-            panel2.Size = new Size(244, 32);
+            panel2.Size = new Size(331, 32);
             panel2.TabIndex = 47;
+            // 
+            // filtrobebida
+            // 
+            filtrobebida.AutoSize = true;
+            filtrobebida.Cursor = Cursors.Hand;
+            filtrobebida.Font = new Font("Segoe UI", 13F);
+            filtrobebida.Image = Properties.Resources.gotita_de_botella;
+            filtrobebida.Location = new Point(238, 2);
+            filtrobebida.Name = "filtrobebida";
+            filtrobebida.Size = new Size(41, 29);
+            filtrobebida.TabIndex = 0;
+            filtrobebida.Text = "  ";
+            filtrobebida.UseVisualStyleBackColor = true;
+            filtrobebida.CheckedChanged += filtrobebida_CheckedChanged;
+            // 
+            // filtroadicion
+            // 
+            filtroadicion.AutoSize = true;
+            filtroadicion.Cursor = Cursors.Hand;
+            filtroadicion.Font = new Font("Segoe UI", 13F);
+            filtroadicion.Image = Properties.Resources.capa_mas;
+            filtroadicion.Location = new Point(188, 2);
+            filtroadicion.Name = "filtroadicion";
+            filtroadicion.Size = new Size(41, 29);
+            filtroadicion.TabIndex = 0;
+            filtroadicion.Text = "  ";
+            filtroadicion.UseVisualStyleBackColor = true;
+            filtroadicion.CheckedChanged += filtroadicion_CheckedChanged;
             // 
             // filtroingredientes
             // 
@@ -321,7 +357,7 @@
             filtroingredientes.Cursor = Cursors.Hand;
             filtroingredientes.Font = new Font("Segoe UI", 13F);
             filtroingredientes.Image = Properties.Resources.saleroblanco;
-            filtroingredientes.Location = new Point(145, 2);
+            filtroingredientes.Location = new Point(138, 2);
             filtroingredientes.Name = "filtroingredientes";
             filtroingredientes.Size = new Size(41, 29);
             filtroingredientes.TabIndex = 0;
@@ -335,7 +371,7 @@
             filtroplatos.Cursor = Cursors.Hand;
             filtroplatos.Font = new Font("Segoe UI", 13F);
             filtroplatos.Image = Properties.Resources.cuchilloblanco;
-            filtroplatos.Location = new Point(90, 2);
+            filtroplatos.Location = new Point(88, 2);
             filtroplatos.Name = "filtroplatos";
             filtroplatos.Size = new Size(41, 29);
             filtroplatos.TabIndex = 0;
@@ -367,7 +403,7 @@
             filtro.Cursor = Cursors.Hand;
             filtro.Font = new Font("Segoe UI", 13F);
             filtro.Image = Properties.Resources.sicheck;
-            filtro.Location = new Point(200, 2);
+            filtro.Location = new Point(288, 2);
             filtro.Name = "filtro";
             filtro.Size = new Size(41, 29);
             filtro.TabIndex = 0;
@@ -1092,6 +1128,28 @@
             categoriaconsulta.CellClick += categoriaconsulta_CellClick;
             categoriaconsulta.CellDoubleClick += categoriaconsulta_CellDoubleClick;
             // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            label22.ForeColor = Color.White;
+            label22.Location = new Point(7, 247);
+            label22.Name = "label22";
+            label22.Size = new Size(151, 25);
+            label22.TabIndex = 47;
+            label22.Text = "Ultima Compra:";
+            // 
+            // fechaultimacompralbl
+            // 
+            fechaultimacompralbl.AutoSize = true;
+            fechaultimacompralbl.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            fechaultimacompralbl.ForeColor = Color.White;
+            fechaultimacompralbl.Location = new Point(7, 275);
+            fechaultimacompralbl.Name = "fechaultimacompralbl";
+            fechaultimacompralbl.Size = new Size(52, 21);
+            fechaultimacompralbl.TabIndex = 47;
+            fechaultimacompralbl.Text = "fecha";
+            // 
             // ConsProductos
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1214,5 +1272,9 @@
         private Panel panel8;
         private Panel panel7;
         private Panel panel5;
+        private CheckBox filtroadicion;
+        private CheckBox filtrobebida;
+        private Label fechaultimacompralbl;
+        private Label label22;
     }
 }

@@ -79,6 +79,62 @@ namespace Proyecto_restaurante
         public int GenerarNCF = 0;
         public int ManejoITBIS = 0; // 0 = Transparetado, 1 = Bruto
         public string comprobanteFinal = "";
+        bool cargandoSalas = false;
+
+        private void CargarSalas()
+        {
+            cargandoSalas = true;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(conexionString))
+                {
+                    con.Open();
+                    string sql = @"
+                        SELECT 
+                            IdSala,
+                            Nombre,
+                            Piso,
+                            Nombre + ' (P' + CAST(Piso AS varchar(10)) + ')' AS TextoSala
+                        FROM Sala
+                        WHERE Activo = 1
+                        ORDER BY IdSala ASC";
+
+                    using (SqlDataAdapter da = new SqlDataAdapter(sql, con))
+                    {
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+
+                        DataRow drTodas = dt.NewRow();
+                        drTodas["IdSala"] = 0;
+                        drTodas["Nombre"] = "Todas las salas";
+                        drTodas["Piso"] = 0;
+                        drTodas["TextoSala"] = "Todas las salas";
+                        dt.Rows.InsertAt(drTodas, 0);
+
+                        salacmbx.DataSource = dt;
+                        salacmbx.DisplayMember = "TextoSala";
+                        salacmbx.ValueMember = "IdSala";
+
+                        if (salacmbx.Items.Count > 0)
+                            salacmbx.SelectedIndex = 0;
+                    }
+                }
+            }
+            catch
+            {
+                // Manejo silencioso si ocurre algún inconveniente temporal
+            }
+            finally
+            {
+                cargandoSalas = false;
+            }
+        }
+
+        private void salacmbx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cargandoSalas) return;
+            Pedidos_Load(sender, e);
+        }
 
         private void Pedidos_Load(object sender, EventArgs e)
         {
@@ -88,6 +144,13 @@ namespace Proyecto_restaurante
             this.MaximizeBox = false;
 
             cajerolabel.Text = "     Cajero: " + NombreUsuario;
+
+            if (salacmbx != null && salacmbx.DataSource == null)
+            {
+                CargarSalas();
+                salacmbx.SelectedIndexChanged -= salacmbx_SelectedIndexChanged;
+                salacmbx.SelectedIndexChanged += salacmbx_SelectedIndexChanged;
+            }
 
             if (!cargandoOrden)
                 tipoComp.SelectedIndex = 1;
@@ -124,21 +187,35 @@ namespace Proyecto_restaurante
                     }
                 }
 
-                using (SqlCommand cmd = new SqlCommand(@"SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal FROM Mesa", con))
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                int idSalaFiltro = 0;
+                if (salacmbx != null && salacmbx.SelectedValue != null)
                 {
-                    while (dr.Read())
+                    int.TryParse(salacmbx.SelectedValue.ToString(), out idSalaFiltro);
+                }
+
+                string queryMesas = @"
+                    SELECT IdMesa, Numero, Capacidad, Ocupado, Reservado, IdGrupo, EsPrincipal 
+                    FROM Mesa 
+                    WHERE (@IdSala = 0 OR IdSala = @IdSala)";
+
+                using (SqlCommand cmd = new SqlCommand(queryMesas, con))
+                {
+                    cmd.Parameters.AddWithValue("@IdSala", idSalaFiltro);
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        mesas.Add(new MesaInfo
+                        while (dr.Read())
                         {
-                            Id = Convert.ToInt32(dr["IdMesa"]),
-                            Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
-                            Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
-                            Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
-                            Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
-                            IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
-                            EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
-                        });
+                            mesas.Add(new MesaInfo
+                            {
+                                Id = Convert.ToInt32(dr["IdMesa"]),
+                                Numero = dr["Numero"] == DBNull.Value ? "?" : dr["Numero"].ToString(),
+                                Capacidad = dr["Capacidad"] == DBNull.Value ? "0" : dr["Capacidad"].ToString(),
+                                Reservado = dr["Reservado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Reservado"]),
+                                Ocupado = dr["Ocupado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Ocupado"]),
+                                IdGrupo = dr["IdGrupo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdGrupo"]),
+                                EsPrincipal = dr["EsPrincipal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["EsPrincipal"])
+                            });
+                        }
                     }
                 }
 
@@ -249,7 +326,11 @@ namespace Proyecto_restaurante
                 listaBotones.Add(btn);
             }
 
+            mesasprincipal.SizeChanged -= Mesasprincipal_SizeChanged;
+            mesasprincipal.SizeChanged += Mesasprincipal_SizeChanged;
+
             mesasprincipal.Controls.AddRange(listaBotones.ToArray());
+            AjustarTamanioBotonesMesa();
             mesasprincipal.ResumeLayout();
 
             if (detalleorden.ColumnCount == 0)
@@ -966,7 +1047,8 @@ namespace Proyecto_restaurante
                 if (!mesasSeleccionadasUnion.Contains(idMesa))
                 {
                     mesasSeleccionadasUnion.Add(idMesa);
-                    btn.BackColor = Color.Gold;
+                    btn.BackColor = Color.FromArgb(217, 119, 6);
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(251, 191, 36);
                 }
                 else
                 {
@@ -981,7 +1063,8 @@ namespace Proyecto_restaurante
                 if (!mesasSeleccionadasUnion.Contains(idMesa))
                 {
                     mesasSeleccionadasUnion.Add(idMesa);
-                    btn.BackColor = Color.OrangeRed;
+                    btn.BackColor = Color.FromArgb(234, 88, 12);
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(251, 146, 60);
                 }
                 else
                 {
@@ -998,7 +1081,8 @@ namespace Proyecto_restaurante
             }
 
             botonActivo = btn;
-            btn.BackColor = Color.DodgerBlue;
+            btn.BackColor = Color.FromArgb(2, 132, 199);
+            btn.FlatAppearance.BorderColor = Color.FromArgb(56, 189, 248);
             idMesaSeleccionada = idMesa;
             NumeroMesa = Convert.ToInt32(numMesa);
 
@@ -1029,31 +1113,69 @@ namespace Proyecto_restaurante
             }
         }
 
+        private void Mesasprincipal_SizeChanged(object sender, EventArgs e)
+        {
+            AjustarTamanioBotonesMesa();
+        }
+
+        private void AjustarTamanioBotonesMesa()
+        {
+            if (mesasprincipal == null || mesasprincipal.Controls.Count == 0) return;
+
+            int columnas = 3;
+            int marginHorizontal = 12; // 6px padding left + 6px right per control margin
+            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth + 6;
+            int anchoUtil = mesasprincipal.ClientSize.Width - scrollbarWidth;
+
+            if (anchoUtil <= 0) return;
+
+            int nuevoAncho = (anchoUtil / columnas) - marginHorizontal;
+            if (nuevoAncho < 120) nuevoAncho = 120;
+
+            mesasprincipal.SuspendLayout();
+            foreach (Control ctrl in mesasprincipal.Controls)
+            {
+                if (ctrl is Button)
+                {
+                    ctrl.Width = nuevoAncho;
+                }
+            }
+            mesasprincipal.ResumeLayout();
+        }
+
         private void RestaurarColor(Button btn, int ocupado, int reservado)
         {
+            if (btn == null) return;
+            btn.ForeColor = Color.White;
             if (reservado == 1)
-                btn.BackColor = Color.MediumPurple;
+            {
+                btn.BackColor = Color.FromArgb(142, 68, 173); // Purple
+                btn.FlatAppearance.BorderColor = Color.FromArgb(187, 143, 206);
+            }
             else if (ocupado == 1)
-                btn.BackColor = Color.LightCoral;
+            {
+                btn.BackColor = Color.FromArgb(192, 57, 43); // Crimson Red
+                btn.FlatAppearance.BorderColor = Color.FromArgb(236, 112, 99);
+            }
             else
-                btn.BackColor = Color.LightGreen;
+            {
+                btn.BackColor = Color.FromArgb(30, 132, 73); // Emerald Green
+                btn.FlatAppearance.BorderColor = Color.FromArgb(82, 190, 128);
+            }
         }
 
         private Button CrearBotonMesa(int id, string numero, string capacidad, int ocupado, int reservado, List<string> unidas)
         {
             Button btn = new Button();
-            btn.Width = 150;
-            btn.Height = 100;
-            btn.Margin = new Padding(10);
+            btn.Height = 110;
+            btn.Margin = new Padding(6);
             btn.TextAlign = ContentAlignment.MiddleCenter;
-            btn.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            btn.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderSize = 2;
+            btn.Cursor = Cursors.Hand;
 
-            if (reservado == 1)
-                btn.BackColor = Color.MediumPurple;
-            else if (ocupado == 1)
-                btn.BackColor = Color.LightCoral;
-            else
-                btn.BackColor = Color.LightGreen;
+            RestaurarColor(btn, ocupado, reservado);
 
             btn.Tag = new
             {
@@ -1064,12 +1186,14 @@ namespace Proyecto_restaurante
                 ListaMesas = unidas
             };
 
-            string textoUnidas = unidas.Count > 0 ? string.Join(", ", unidas) : "-";
+            string estadoTexto = reservado == 1 ? "● RESERVADA" : (ocupado == 1 ? "● OCUPADA" : "● LIBRE");
+            string textoUnidas = unidas.Count > 0 ? string.Join(", ", unidas) : "Sin unir";
 
             btn.Text =
-                $"Mesa #{numero}\n" +
-                $"Unidas: {textoUnidas}\n" +
-                $"Capacidad: {capacidad}";
+                $"MESA #{numero}\n" +
+                $"{estadoTexto}\n" +
+                $"Capacidad: {capacidad} pers.\n" +
+                $"Unidas: {textoUnidas}";
 
             btn.Click += BtnMesa_Click;
             return btn;

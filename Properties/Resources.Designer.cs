@@ -533,6 +533,16 @@ namespace Proyecto_restaurante.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap capa_mas {
+            get {
+                object obj = ResourceManager.GetObject("capa-mas", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap carpeta_abierta {
             get {
                 object obj = ResourceManager.GetObject("carpeta-abierta", resourceCulture);
@@ -1206,6 +1216,16 @@ namespace Proyecto_restaurante.Properties {
         internal static System.Drawing.Bitmap gorra {
             get {
                 object obj = ResourceManager.GetObject("gorra", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap gotita_de_botella {
+            get {
+                object obj = ResourceManager.GetObject("gotita-de-botella", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

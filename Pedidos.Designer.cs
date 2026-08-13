@@ -55,6 +55,7 @@ namespace Proyecto_restaurante
             pictureBox4 = new PictureBox();
             label36 = new Label();
             panel6 = new Panel();
+            salacmbx = new ComboBox();
             panel11 = new Panel();
             flecharoja = new PictureBox();
             label37 = new Label();
@@ -222,6 +223,7 @@ namespace Proyecto_restaurante
             txtbusquedafactura = new TextBox();
             label10 = new Label();
             panel7 = new Panel();
+            panel22 = new Panel();
             label8 = new Label();
             label9 = new Label();
             fecini = new DateTimePicker();
@@ -240,7 +242,6 @@ namespace Proyecto_restaurante
             facturadochk = new CheckBox();
             toolTip1 = new ToolTip(components);
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            panel22 = new Panel();
             tabControl1.SuspendLayout();
             tabPage6.SuspendLayout();
             panelComanda.SuspendLayout();
@@ -592,6 +593,7 @@ namespace Proyecto_restaurante
             // panel6
             // 
             panel6.BackColor = Color.FromArgb(64, 64, 64);
+            panel6.Controls.Add(salacmbx);
             panel6.Controls.Add(panel11);
             panel6.Controls.Add(flecharoja);
             panel6.Controls.Add(label37);
@@ -614,6 +616,16 @@ namespace Proyecto_restaurante
             panel6.Name = "panel6";
             panel6.Size = new Size(798, 629);
             panel6.TabIndex = 2;
+            // 
+            // salacmbx
+            // 
+            salacmbx.DropDownStyle = ComboBoxStyle.DropDownList;
+            salacmbx.Font = new Font("Segoe UI", 12F);
+            salacmbx.FormattingEnabled = true;
+            salacmbx.Location = new Point(338, 65);
+            salacmbx.Name = "salacmbx";
+            salacmbx.Size = new Size(128, 29);
+            salacmbx.TabIndex = 194;
             // 
             // panel11
             // 
@@ -713,7 +725,7 @@ namespace Proyecto_restaurante
             label26.AutoSize = true;
             label26.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label26.ForeColor = SystemColors.Control;
-            label26.Location = new Point(10, 11);
+            label26.Location = new Point(10, 9);
             label26.Name = "label26";
             label26.Size = new Size(158, 32);
             label26.TabIndex = 3;
@@ -732,7 +744,7 @@ namespace Proyecto_restaurante
             label22.AutoSize = true;
             label22.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label22.ForeColor = SystemColors.Control;
-            label22.Location = new Point(29, 11);
+            label22.Location = new Point(29, 9);
             label22.Name = "label22";
             label22.Size = new Size(120, 32);
             label22.TabIndex = 3;
@@ -745,7 +757,7 @@ namespace Proyecto_restaurante
             label34.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label34.ForeColor = SystemColors.Control;
             label34.Image = Properties.Resources.busqueda;
-            label34.Location = new Point(441, 69);
+            label34.Location = new Point(311, 69);
             label34.Name = "label34";
             label34.Size = new Size(18, 21);
             label34.TabIndex = 71;
@@ -896,7 +908,7 @@ namespace Proyecto_restaurante
             buscarmesatxt.Location = new Point(6, 65);
             buscarmesatxt.Name = "buscarmesatxt";
             buscarmesatxt.PlaceholderText = "Buscar Mesa";
-            buscarmesatxt.Size = new Size(457, 29);
+            buscarmesatxt.Size = new Size(327, 29);
             buscarmesatxt.TabIndex = 8;
             // 
             // label5
@@ -2592,6 +2604,15 @@ namespace Proyecto_restaurante
             panel7.Size = new Size(792, 74);
             panel7.TabIndex = 0;
             // 
+            // panel22
+            // 
+            panel22.Anchor = AnchorStyles.Top;
+            panel22.BackColor = Color.FromArgb(64, 64, 64);
+            panel22.Location = new Point(299, 10);
+            panel22.Name = "panel22";
+            panel22.Size = new Size(7, 55);
+            panel22.TabIndex = 11;
+            // 
             // label8
             // 
             label8.AutoSize = true;
@@ -2787,15 +2808,6 @@ namespace Proyecto_restaurante
             facturadochk.Text = "Facturado";
             facturadochk.UseVisualStyleBackColor = true;
             facturadochk.CheckedChanged += facturadochk_CheckedChanged;
-            // 
-            // panel22
-            // 
-            panel22.Anchor = AnchorStyles.Top;
-            panel22.BackColor = Color.FromArgb(64, 64, 64);
-            panel22.Location = new Point(299, 10);
-            panel22.Name = "panel22";
-            panel22.Size = new Size(7, 55);
-            panel22.TabIndex = 11;
             // 
             // Pedidos
             // 
@@ -3112,5 +3124,6 @@ namespace Proyecto_restaurante
         private Panel panel16;
         private Label label26;
         private Panel panel22;
+        private ComboBox salacmbx;
     }
 }
