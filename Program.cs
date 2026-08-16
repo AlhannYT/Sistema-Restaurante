@@ -8,13 +8,22 @@ namespace Proyecto_restaurante
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            // Inicializa la configuración visual y DPI de la aplicación
             ApplicationConfiguration.Initialize();
-            Application.Run(new inicio());
+
+            // 1. Iniciar el servidor PHP en segundo plano
+            ServidorWebManager.Iniciar();
+
+            try
+            {
+                // 2. Ejecutar tu formulario inicial
+                Application.Run(new inicio());
+            }
+            finally
+            {
+                // 3. Al cerrar la aplicación por completo, apagar el proceso PHP
+                ServidorWebManager.Detener();
+            }
         }
     }
 }

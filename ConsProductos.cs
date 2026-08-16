@@ -227,6 +227,7 @@ namespace Proyecto_restaurante
                 limpiarbtn.Enabled = true;
 
                 seleccionpanel.Enabled = false;
+                seleccionpanel.Visible = false;
 
                 ingredientesconsulta.DataSource = null;
 
@@ -243,11 +244,13 @@ namespace Proyecto_restaurante
                 unidadmedida.Enabled = true;
                 autoCalcular.Checked = true;
                 autoCalcular.Enabled = true;
+                buscarIngredienteReceta.Enabled = true;
 
                 guardarbtn.Enabled = true;
                 limpiarbtn.Enabled = true;
 
                 seleccionpanel.Enabled = true;
+                seleccionpanel.Visible = true;
                 txtprecio_venta.Enabled = true;
 
                 using (SqlConnection conexion = new SqlConnection(conexionString))
@@ -456,50 +459,66 @@ namespace Proyecto_restaurante
                     codigobarrarandombtn.Enabled = true;
                     txtnombre_prod.Enabled = true;
                     txtprecio_compra.Enabled = true;
-                    txtprecio_venta.Enabled = true;
                     buscarcateg.Enabled = true;
                     unidadmedida.Enabled = true;
                     guardarbtn.Enabled = true;
                     limpiarbtn.Enabled = true;
-                    seleccionpanel.Enabled = true;
 
-                    // Cargar receta del producto si aplica
-                    if (recetaingredientes.Columns.Count == 0)
+                    if (ingrediente == 1)
                     {
-                        recetaingredientes.Columns.Add("ID", "ID");
-                        recetaingredientes.Columns.Add("Ingrediente", "Ingrediente");
-                        recetaingredientes.Columns.Add("Medida", "Medida");
-                        recetaingredientes.Columns.Add("Costo", "Costo");
-                        recetaingredientes.Columns.Add("Cantidad", "Cantidad");
+                        txtprecio_venta.Enabled = false;
+                        autoCalcular.Checked = false;
+                        autoCalcular.Enabled = false;
+                        seleccionpanel.Enabled = false;
+                        seleccionpanel.Visible = false;
+                        recetaingredientes.Rows.Clear();
+                        ingredientesconsulta.DataSource = null;
                     }
-
-                    recetaingredientes.Rows.Clear();
-                    string queryReceta = @"
-                        SELECT 
-                            R.IdIngrediente,
-                            P.Nombre AS Ingrediente,
-                            UM.Nombre AS Medida,
-                            P.PrecioCompra AS Costo,
-                            R.Cantidad
-                        FROM Receta R
-                        INNER JOIN ProductoVenta P ON R.IdIngrediente = P.IdProducto
-                        INNER JOIN UnidadMedida UM ON R.IdUnidadMedida = UM.IdUnidadMedida
-                        WHERE R.IdProducto = @IdProducto AND R.Activo = 1";
-
-                    using (SqlCommand cmdR = new SqlCommand(queryReceta, conexion))
+                    else
                     {
-                        cmdR.Parameters.AddWithValue("@IdProducto", idProd);
-                        using (SqlDataReader drR = cmdR.ExecuteReader())
+                        txtprecio_venta.Enabled = true;
+                        autoCalcular.Enabled = true;
+                        seleccionpanel.Enabled = true;
+                        seleccionpanel.Visible = true;
+
+                        // Cargar receta del producto si aplica
+                        if (recetaingredientes.Columns.Count == 0)
                         {
-                            while (drR.Read())
+                            recetaingredientes.Columns.Add("ID", "ID");
+                            recetaingredientes.Columns.Add("Ingrediente", "Ingrediente");
+                            recetaingredientes.Columns.Add("Medida", "Medida");
+                            recetaingredientes.Columns.Add("Costo", "Costo");
+                            recetaingredientes.Columns.Add("Cantidad", "Cantidad");
+                        }
+
+                        recetaingredientes.Rows.Clear();
+                        string queryReceta = @"
+                            SELECT 
+                                R.IdIngrediente,
+                                P.Nombre AS Ingrediente,
+                                UM.Nombre AS Medida,
+                                P.PrecioCompra AS Costo,
+                                R.Cantidad
+                            FROM Receta R
+                            INNER JOIN ProductoVenta P ON R.IdIngrediente = P.IdProducto
+                            INNER JOIN UnidadMedida UM ON R.IdUnidadMedida = UM.IdUnidadMedida
+                            WHERE R.IdProducto = @IdProducto AND R.Activo = 1";
+
+                        using (SqlCommand cmdR = new SqlCommand(queryReceta, conexion))
+                        {
+                            cmdR.Parameters.AddWithValue("@IdProducto", idProd);
+                            using (SqlDataReader drR = cmdR.ExecuteReader())
                             {
-                                recetaingredientes.Rows.Add(
-                                    drR["IdIngrediente"].ToString(),
-                                    drR["Ingrediente"].ToString(),
-                                    drR["Medida"].ToString(),
-                                    drR["Costo"] != DBNull.Value ? Convert.ToDecimal(drR["Costo"]).ToString("N2") : "0",
-                                    drR["Cantidad"] != DBNull.Value ? Convert.ToDecimal(drR["Cantidad"]).ToString("N2") : "1"
-                                );
+                                while (drR.Read())
+                                {
+                                    recetaingredientes.Rows.Add(
+                                        drR["IdIngrediente"].ToString(),
+                                        drR["Ingrediente"].ToString(),
+                                        drR["Medida"].ToString(),
+                                        drR["Costo"] != DBNull.Value ? Convert.ToDecimal(drR["Costo"]).ToString("N2") : "0",
+                                        drR["Cantidad"] != DBNull.Value ? Convert.ToDecimal(drR["Cantidad"]).ToString("N2") : "1"
+                                    );
+                                }
                             }
                         }
                     }
@@ -763,8 +782,6 @@ namespace Proyecto_restaurante
             txtprecio_venta.Clear();
             idcategoriatxt.Clear();
             categoriatxt.Clear();
-            categoriaconsultatxt.Clear();
-            idconsultatxt.Clear();
 
             idprodreceta.Clear();
             nombreprodreceta.Clear();
@@ -801,6 +818,7 @@ namespace Proyecto_restaurante
             unidadmedida.Enabled = false;
             guardarbtn.Enabled = false;
             seleccionpanel.Enabled = false;
+            seleccionpanel.Visible = false;
 
             ActualizarUltimoID();
         }
@@ -889,29 +907,19 @@ namespace Proyecto_restaurante
                 categoriaconsulta.Columns["Nombre"].HeaderText = "Nombre";
 
                 buscarcateg.Image = Proyecto_restaurante.Properties.Resources.cancelar1;
-                categoriapanel.Location = new Point(432, 112);
+                categoriapanel.Location = new Point(263, 175);
                 categoriapanel.BringToFront();
                 categoriapanel.Visible = true;
-                imagenpanel.Visible = false;
                 buscarcatedt = 0;
             }
             else
             {
-                imagenpanel.Visible = true;
-                imagenpanel.BringToFront();
                 buscarcateg.Image = Proyecto_restaurante.Properties.Resources.busqueda1;
                 categoriapanel.Visible = false;
-                categoriapanel.Location = new Point(227, 245);
+                categoriapanel.Location = new Point(263, 175);
 
                 buscarcatedt = 1;
             }
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            idcategoriatxt.Text = idconsultatxt.Text;
-            categoriatxt.Text = categoriaconsultatxt.Text;
-            buscarcateg_Click(sender, e);
         }
 
         private void ConfigurarColumnasTabla()
@@ -1102,8 +1110,9 @@ namespace Proyecto_restaurante
 
         private void categoriaconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            idconsultatxt.Text = categoriaconsulta.SelectedCells[0].Value.ToString();
-            categoriaconsultatxt.Text = categoriaconsulta.SelectedCells[1].Value.ToString();
+            idcategoriatxt.Text = categoriaconsulta.SelectedCells[0].Value.ToString();
+            categoriatxt.Text = categoriaconsulta.SelectedCells[1].Value.ToString();
+            buscarcateg_Click(sender, e);
         }
 
         private void ingredientesconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -1235,9 +1244,7 @@ namespace Proyecto_restaurante
 
         private void categoriaconsulta_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            button4.PerformClick();
-        }
 
-        
+        }
     }
 }

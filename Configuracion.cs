@@ -189,11 +189,8 @@ namespace Proyecto_restaurante
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void CargarUsuarios()
         {
-            usuariospanel.Location = new Point(221, 4);
-            usuariospanel.BringToFront();
-
             string conexionString = ConexionBD.ConexionSQL();
             string consulta = @"
             SELECT 
@@ -223,18 +220,45 @@ namespace Proyecto_restaurante
             usuariospanel.Visible = true;
         }
 
-        private void guardarbtn_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
+        {
+            usuariospanel.Location = new Point(221, 4);
+            usuariospanel.BringToFront();
+            CargarUsuarios();
+        }
+
+        private void LimpiarCamposUsuario()
+        {
+            idclientetxt.Clear();
+            idempleadotxt.Clear();
+            nombreempleadotxt.Clear();
+            txtRegistroUsuario.Clear();
+            txtRegistroPass.Clear();
+            txtconfirmarpass.Clear();
+            estadoempleadochk.Checked = true;
+            PersonaID = 0;
+            buscarempleado.Enabled = true;
+            empleadopanel.Visible = false;
+        }
+
+        private void limpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarCamposUsuario();
+            txtRegistroUsuario.Focus();
+        }
+
+        private void guardarusuariobtn_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(idempleadotxt.Text) || string.IsNullOrEmpty(nombreempleadotxt.Text) ||
-        string.IsNullOrEmpty(txtRegistroUsuario.Text) || string.IsNullOrEmpty(txtRegistroPass.Text) || string.IsNullOrEmpty(txtconfirmarpass.Text))
+            string.IsNullOrEmpty(txtRegistroUsuario.Text) || string.IsNullOrEmpty(txtRegistroPass.Text) || string.IsNullOrEmpty(txtconfirmarpass.Text))
             {
-                MessageBox.Show("Error: No deje campos vacíos.");
+                MessageBox.Show("Error: No deje campos vacíos.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (txtRegistroPass.Text != txtconfirmarpass.Text)
             {
-                MessageBox.Show("Las contraseñas no coinciden.");
+                MessageBox.Show("Las contraseñas no coinciden.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -247,58 +271,71 @@ namespace Proyecto_restaurante
 
                 try
                 {
-                    string verificarUsuario = "SELECT COUNT(*) FROM Usuario WHERE IdPersona = @IdPersona";
-                    using (SqlCommand cmdVerificar = new SqlCommand(verificarUsuario, conexion, trans))
+                    int idUsuarioActual = 0;
+                    bool esEdicion = !string.IsNullOrEmpty(idclientetxt.Text) && int.TryParse(idclientetxt.Text, out idUsuarioActual) && idUsuarioActual > 0;
+
+                    if (!esEdicion)
                     {
-                        cmdVerificar.Parameters.AddWithValue("@IdPersona", PersonaID);
-                        int existe = (int)cmdVerificar.ExecuteScalar();
-
-                        if (existe == 0)
+                        string verificarUsuario = "SELECT COUNT(*) FROM Usuario WHERE IdPersona = @IdPersona";
+                        using (SqlCommand cmdVerificar = new SqlCommand(verificarUsuario, conexion, trans))
                         {
-                            string nuevoUsuario = @"
-                            INSERT INTO Usuario (Login, Contrasena, IdPersona, Activo, CreadoEn)
-                            VALUES (@Login, @Contrasena, @IdPersona, @Activo, GETDATE());
-                            SELECT SCOPE_IDENTITY();";
+                            cmdVerificar.Parameters.AddWithValue("@IdPersona", PersonaID);
+                            int existe = (int)cmdVerificar.ExecuteScalar();
 
-                            using (SqlCommand insertarUsuario = new SqlCommand(nuevoUsuario, conexion, trans))
+                            if (existe > 0)
                             {
-                                insertarUsuario.Parameters.AddWithValue("@Login", txtRegistroUsuario.Text);
-                                insertarUsuario.Parameters.AddWithValue("@Contrasena", txtRegistroPass.Text);
-                                insertarUsuario.Parameters.AddWithValue("@IdPersona", PersonaID);
-                                insertarUsuario.Parameters.AddWithValue("@Activo", estadoempleadochk.Checked ? 1 : 0);
-
-                                insertarUsuario.ExecuteScalar();
+                                MessageBox.Show("Este empleado ya tiene un usuario asignado.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                trans.Rollback();
+                                return;
                             }
-
-                            trans.Commit();
-                            MessageBox.Show("Usuario registrado con éxito.");
                         }
-                        else
+
+                        string nuevoUsuario = @"
+                        INSERT INTO Usuario (Login, Contrasena, IdPersona, Activo, CreadoEn)
+                        VALUES (@Login, @Contrasena, @IdPersona, @Activo, GETDATE());";
+
+                        using (SqlCommand insertarUsuario = new SqlCommand(nuevoUsuario, conexion, trans))
                         {
-                            string actualizarUsuario = @"
-                            UPDATE Usuario 
-                            SET Login = @Login, Contrasena = @Contrasena, Activo = @Activo
-                            WHERE IdPersona = @IdPersona";
+                            insertarUsuario.Parameters.AddWithValue("@Login", txtRegistroUsuario.Text);
+                            insertarUsuario.Parameters.AddWithValue("@Contrasena", txtRegistroPass.Text);
+                            insertarUsuario.Parameters.AddWithValue("@IdPersona", PersonaID);
+                            insertarUsuario.Parameters.AddWithValue("@Activo", estadoempleadochk.Checked ? 1 : 0);
 
-                            using (SqlCommand actualizarCommand = new SqlCommand(actualizarUsuario, conexion, trans))
-                            {
-                                actualizarCommand.Parameters.AddWithValue("@Login", txtRegistroUsuario.Text);
-                                actualizarCommand.Parameters.AddWithValue("@Contrasena", txtRegistroPass.Text);
-                                actualizarCommand.Parameters.AddWithValue("@Activo", estadoempleadochk.Checked ? 1 : 0);
-                                actualizarCommand.Parameters.AddWithValue("@IdPersona", PersonaID);
-
-                                actualizarCommand.ExecuteNonQuery();
-                            }
-
-                            trans.Commit();
-                            MessageBox.Show("Usuario actualizado con éxito.");
+                            insertarUsuario.ExecuteNonQuery();
                         }
+
+                        trans.Commit();
+                        MessageBox.Show("Usuario registrado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    else
+                    {
+                        string actualizarUsuario = @"
+                        UPDATE Usuario 
+                        SET Login = @Login, Contrasena = @Contrasena, Activo = @Activo
+                        WHERE IdUsuario = @IdUsuario";
+
+                        using (SqlCommand actualizarCommand = new SqlCommand(actualizarUsuario, conexion, trans))
+                        {
+                            actualizarCommand.Parameters.AddWithValue("@Login", txtRegistroUsuario.Text);
+                            actualizarCommand.Parameters.AddWithValue("@Contrasena", txtRegistroPass.Text);
+                            actualizarCommand.Parameters.AddWithValue("@Activo", estadoempleadochk.Checked ? 1 : 0);
+                            actualizarCommand.Parameters.AddWithValue("@IdUsuario", idUsuarioActual);
+
+                            actualizarCommand.ExecuteNonQuery();
+                        }
+
+                        trans.Commit();
+                        MessageBox.Show("Usuario actualizado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    CargarUsuarios();
+                    LimpiarCamposUsuario();
+                    tabControl2.SelectedIndex = 0;
                 }
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    MessageBox.Show($"Ocurrió un error: {ex.Message}");
+                    MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -373,8 +410,9 @@ namespace Proyecto_restaurante
 
         private void button6_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 1;
-            IDModificar = "";
+            LimpiarCamposUsuario();
+            tabControl2.SelectedIndex = 1;
+            txtRegistroUsuario.Focus();
         }
 
         private void tablausuarios_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -1262,6 +1300,99 @@ namespace Proyecto_restaurante
 
             TelefonoRestTxt.Text = posNum;
             TelefonoRestTxt.SelectionStart = TelefonoRestTxt.Text.Length;
+        }
+
+        private void editarUsuariobtn_Click(object sender, EventArgs e)
+        {
+            if (tablausuarios.SelectedRows.Count == 0 && tablausuarios.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione un usuario para editar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            DataGridViewRow fila = tablausuarios.SelectedRows.Count > 0
+                ? tablausuarios.SelectedRows[0]
+                : tablausuarios.CurrentRow;
+
+            if (fila == null || fila.Cells["IdUsuario"].Value == null || fila.Cells["IdUsuario"].Value == DBNull.Value)
+            {
+                MessageBox.Show("Seleccione un usuario válido.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int idUsuario = Convert.ToInt32(fila.Cells["IdUsuario"].Value);
+
+            string conexionString = ConexionBD.ConexionSQL();
+            using (SqlConnection conexion = new SqlConnection(conexionString))
+            {
+                try
+                {
+                    conexion.Open();
+                    string query = @"
+                    SELECT 
+                        u.IdUsuario,
+                        u.Login,
+                        u.Contrasena,
+                        u.Activo,
+                        u.IdPersona,
+                        p.NombreCompleto,
+                        e.IdEmpleado
+                    FROM Usuario u
+                    LEFT JOIN Persona p ON u.IdPersona = p.IdPersona
+                    LEFT JOIN Empleado e ON e.IdPersona = p.IdPersona
+                    WHERE u.IdUsuario = @IdUsuario";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                idclientetxt.Text = dr["IdUsuario"].ToString();
+                                txtRegistroUsuario.Text = dr["Login"] != DBNull.Value ? dr["Login"].ToString() : "";
+                                txtRegistroPass.Text = dr["Contrasena"] != DBNull.Value ? dr["Contrasena"].ToString() : "";
+                                txtconfirmarpass.Text = dr["Contrasena"] != DBNull.Value ? dr["Contrasena"].ToString() : "";
+                                estadoempleadochk.Checked = dr["Activo"] != DBNull.Value && Convert.ToBoolean(dr["Activo"]);
+
+                                idempleadotxt.Text = dr["IdEmpleado"] != DBNull.Value ? dr["IdEmpleado"].ToString() : "";
+                                nombreempleadotxt.Text = dr["NombreCompleto"] != DBNull.Value ? dr["NombreCompleto"].ToString() : "";
+                                PersonaID = dr["IdPersona"] != DBNull.Value ? Convert.ToInt32(dr["IdPersona"]) : 0;
+
+                                buscarempleado.Enabled = false;
+                                empleadopanel.Visible = false;
+
+                                tabControl2.SelectedIndex = 1;
+                                txtRegistroUsuario.Focus();
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se encontró la información del usuario.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar los datos del usuario: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void verPass_CheckedChanged(object sender, EventArgs e)
+        {
+            if (verPass.Checked == true)
+            {
+                verPass.Image = Proyecto_restaurante.Properties.Resources.ojos_cruzados;
+                txtRegistroPass.UseSystemPasswordChar = false;
+                txtconfirmarpass.UseSystemPasswordChar = false;
+            }
+            else if (verPass.Checked == false)
+            {
+                verPass.Image = Proyecto_restaurante.Properties.Resources.ojo;
+                txtRegistroPass.UseSystemPasswordChar = true;
+                txtconfirmarpass.UseSystemPasswordChar = true;
+            }
         }
     }
 }

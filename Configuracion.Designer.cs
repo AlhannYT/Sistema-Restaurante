@@ -74,7 +74,7 @@ namespace Proyecto_restaurante
             usuarioimg = new PictureBox();
             label7 = new Label();
             button29 = new Button();
-            button3 = new Button();
+            editarUsuariobtn = new Button();
             button6 = new Button();
             checkBox1 = new CheckBox();
             label13 = new Label();
@@ -84,6 +84,7 @@ namespace Proyecto_restaurante
             button8 = new Button();
             button9 = new Button();
             tabPage4 = new TabPage();
+            verPass = new CheckBox();
             idclientetxt = new TextBox();
             label14 = new Label();
             idempleadotxt = new TextBox();
@@ -97,7 +98,7 @@ namespace Proyecto_restaurante
             label16 = new Label();
             empleadousuariodt = new DataGridView();
             panel2 = new Panel();
-            guardarbtn = new Button();
+            guardarusuariobtn = new Button();
             limpiar = new Button();
             label17 = new Label();
             txtRegistroUsuario = new TextBox();
@@ -751,7 +752,7 @@ namespace Proyecto_restaurante
             tabPage3.Controls.Add(usuarioimg);
             tabPage3.Controls.Add(label7);
             tabPage3.Controls.Add(button29);
-            tabPage3.Controls.Add(button3);
+            tabPage3.Controls.Add(editarUsuariobtn);
             tabPage3.Controls.Add(button6);
             tabPage3.Controls.Add(checkBox1);
             tabPage3.Controls.Add(label13);
@@ -816,16 +817,17 @@ namespace Proyecto_restaurante
             button29.UseVisualStyleBackColor = true;
             button29.Click += button29_Click;
             // 
-            // button3
+            // editarUsuariobtn
             // 
-            button3.Image = Properties.Resources.editarcliente1;
-            button3.Location = new Point(463, 183);
-            button3.Name = "button3";
-            button3.Size = new Size(159, 72);
-            button3.TabIndex = 64;
-            button3.Text = "Editar";
-            button3.TextAlign = ContentAlignment.BottomCenter;
-            button3.UseVisualStyleBackColor = true;
+            editarUsuariobtn.Image = Properties.Resources.editarcliente1;
+            editarUsuariobtn.Location = new Point(463, 183);
+            editarUsuariobtn.Name = "editarUsuariobtn";
+            editarUsuariobtn.Size = new Size(159, 72);
+            editarUsuariobtn.TabIndex = 64;
+            editarUsuariobtn.Text = "Editar";
+            editarUsuariobtn.TextAlign = ContentAlignment.BottomCenter;
+            editarUsuariobtn.UseVisualStyleBackColor = true;
+            editarUsuariobtn.Click += editarUsuariobtn_Click;
             // 
             // button6
             // 
@@ -929,6 +931,7 @@ namespace Proyecto_restaurante
             // tabPage4
             // 
             tabPage4.BackColor = SystemColors.WindowFrame;
+            tabPage4.Controls.Add(verPass);
             tabPage4.Controls.Add(idclientetxt);
             tabPage4.Controls.Add(label14);
             tabPage4.Controls.Add(idempleadotxt);
@@ -954,6 +957,20 @@ namespace Proyecto_restaurante
             tabPage4.Size = new Size(637, 522);
             tabPage4.TabIndex = 1;
             tabPage4.Text = "Creación";
+            // 
+            // verPass
+            // 
+            verPass.Appearance = Appearance.Button;
+            verPass.BackColor = SystemColors.Window;
+            verPass.Cursor = Cursors.Hand;
+            verPass.ForeColor = SystemColors.Window;
+            verPass.Image = Properties.Resources.ojo;
+            verPass.Location = new Point(304, 240);
+            verPass.Name = "verPass";
+            verPass.Size = new Size(27, 29);
+            verPass.TabIndex = 108;
+            verPass.UseVisualStyleBackColor = false;
+            verPass.CheckedChanged += verPass_CheckedChanged;
             // 
             // idclientetxt
             // 
@@ -1084,25 +1101,25 @@ namespace Proyecto_restaurante
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(64, 64, 64);
-            panel2.Controls.Add(guardarbtn);
+            panel2.Controls.Add(guardarusuariobtn);
             panel2.Controls.Add(limpiar);
             panel2.Location = new Point(114, 409);
             panel2.Name = "panel2";
             panel2.Size = new Size(409, 74);
             panel2.TabIndex = 76;
             // 
-            // guardarbtn
+            // guardarusuariobtn
             // 
-            guardarbtn.Image = Properties.Resources.guardar;
-            guardarbtn.ImageAlign = ContentAlignment.MiddleLeft;
-            guardarbtn.Location = new Point(12, 8);
-            guardarbtn.Margin = new Padding(4);
-            guardarbtn.Name = "guardarbtn";
-            guardarbtn.Size = new Size(181, 58);
-            guardarbtn.TabIndex = 8;
-            guardarbtn.Text = "Guardar";
-            guardarbtn.UseVisualStyleBackColor = true;
-            guardarbtn.Click += guardarbtn_Click;
+            guardarusuariobtn.Image = Properties.Resources.guardar;
+            guardarusuariobtn.ImageAlign = ContentAlignment.MiddleLeft;
+            guardarusuariobtn.Location = new Point(12, 8);
+            guardarusuariobtn.Margin = new Padding(4);
+            guardarusuariobtn.Name = "guardarusuariobtn";
+            guardarusuariobtn.Size = new Size(181, 58);
+            guardarusuariobtn.TabIndex = 8;
+            guardarusuariobtn.Text = "Guardar";
+            guardarusuariobtn.UseVisualStyleBackColor = true;
+            guardarusuariobtn.Click += guardarusuariobtn_Click;
             // 
             // limpiar
             // 
@@ -1115,6 +1132,7 @@ namespace Proyecto_restaurante
             limpiar.TabIndex = 8;
             limpiar.Text = "Nuevo";
             limpiar.UseVisualStyleBackColor = true;
+            limpiar.Click += limpiar_Click;
             // 
             // label17
             // 
@@ -1313,10 +1331,10 @@ namespace Proyecto_restaurante
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.vista_previa1;
-            pictureBox1.Location = new Point(9, 34);
+            pictureBox1.Image = Properties.Resources.previewcolormenu;
+            pictureBox1.Location = new Point(9, 36);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(545, 315);
+            pictureBox1.Size = new Size(545, 313);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 78;
             pictureBox1.TabStop = false;
@@ -2552,7 +2570,7 @@ namespace Proyecto_restaurante
         private Label label6;
         private PictureBox usuarioimg;
         private Label label7;
-        private Button button3;
+        private Button editarUsuariobtn;
         private Button button6;
         private CheckBox checkBox1;
         private Label label13;
@@ -2575,7 +2593,7 @@ namespace Proyecto_restaurante
         private Label label16;
         private DataGridView empleadousuariodt;
         private Panel panel2;
-        private Button guardarbtn;
+        private Button guardarusuariobtn;
         private Button limpiar;
         private Label label17;
         private TextBox txtRegistroUsuario;
@@ -2700,5 +2718,6 @@ namespace Proyecto_restaurante
         private Label label42;
         private Panel panel12;
         private Label label45;
+        private CheckBox verPass;
     }
 }

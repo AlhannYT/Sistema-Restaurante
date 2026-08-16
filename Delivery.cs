@@ -1,4 +1,4 @@
-﻿using PdfSharp.Drawing;
+using PdfSharp.Drawing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -2150,7 +2150,7 @@ namespace Proyecto_restaurante
         }
         private string ConstruirUrlResena(string token)
         {
-            return $"http://localhost/PanelCentral3/PanelCentral/php/resena_delivery.php?token={token}";
+            return $"http://localhost:8080/resena_delivery.php?token={token}";
         }
 
         private string GenerarTokenResena()

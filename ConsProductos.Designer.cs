@@ -37,6 +37,8 @@
             agregar = new Button();
             Editar = new Button();
             panel1 = new Panel();
+            fechaultimacompralbl = new Label();
+            label22 = new Label();
             label2 = new Label();
             imagenproducto = new PictureBox();
             label1 = new Label();
@@ -58,7 +60,7 @@
             button7 = new Button();
             label20 = new Label();
             label19 = new Label();
-            textBox1 = new TextBox();
+            buscarIngredienteReceta = new TextBox();
             numCantidad = new NumericUpDown();
             label6 = new Label();
             nombreprodreceta = new TextBox();
@@ -106,13 +108,8 @@
             unidadmedida = new ComboBox();
             ITBIS = new ComboBox();
             categoriapanel = new Panel();
-            idconsultatxt = new TextBox();
-            categoriaconsultatxt = new TextBox();
-            button4 = new Button();
             label9 = new Label();
             categoriaconsulta = new DataGridView();
-            label22 = new Label();
-            fechaultimacompralbl = new Label();
             ((System.ComponentModel.ISupportInitialize)tabladatos).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)imagenproducto).BeginInit();
@@ -229,6 +226,28 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(169, 404);
             panel1.TabIndex = 44;
+            // 
+            // fechaultimacompralbl
+            // 
+            fechaultimacompralbl.AutoSize = true;
+            fechaultimacompralbl.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            fechaultimacompralbl.ForeColor = Color.White;
+            fechaultimacompralbl.Location = new Point(7, 275);
+            fechaultimacompralbl.Name = "fechaultimacompralbl";
+            fechaultimacompralbl.Size = new Size(52, 21);
+            fechaultimacompralbl.TabIndex = 47;
+            fechaultimacompralbl.Text = "fecha";
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            label22.ForeColor = Color.White;
+            label22.Location = new Point(7, 247);
+            label22.Name = "label22";
+            label22.Size = new Size(151, 25);
+            label22.TabIndex = 47;
+            label22.Text = "Ultima Compra:";
             // 
             // label2
             // 
@@ -491,7 +510,7 @@
             seleccionpanel.Controls.Add(button7);
             seleccionpanel.Controls.Add(label20);
             seleccionpanel.Controls.Add(label19);
-            seleccionpanel.Controls.Add(textBox1);
+            seleccionpanel.Controls.Add(buscarIngredienteReceta);
             seleccionpanel.Controls.Add(numCantidad);
             seleccionpanel.Controls.Add(label6);
             seleccionpanel.Controls.Add(nombreprodreceta);
@@ -543,15 +562,15 @@
             label19.TabIndex = 55;
             label19.Text = "2. Receta     ";
             // 
-            // textBox1
+            // buscarIngredienteReceta
             // 
-            textBox1.CharacterCasing = CharacterCasing.Upper;
-            textBox1.Enabled = false;
-            textBox1.Location = new Point(5, 37);
-            textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "Buscar ingrediente";
-            textBox1.Size = new Size(338, 29);
-            textBox1.TabIndex = 79;
+            buscarIngredienteReceta.CharacterCasing = CharacterCasing.Upper;
+            buscarIngredienteReceta.Enabled = false;
+            buscarIngredienteReceta.Location = new Point(5, 37);
+            buscarIngredienteReceta.Name = "buscarIngredienteReceta";
+            buscarIngredienteReceta.PlaceholderText = "Buscar ingrediente";
+            buscarIngredienteReceta.Size = new Size(338, 29);
+            buscarIngredienteReceta.TabIndex = 79;
             // 
             // numCantidad
             // 
@@ -732,7 +751,7 @@
             // 
             idcategoriatxt.CharacterCasing = CharacterCasing.Upper;
             idcategoriatxt.Enabled = false;
-            idcategoriatxt.Location = new Point(234, 140);
+            idcategoriatxt.Location = new Point(263, 140);
             idcategoriatxt.Name = "idcategoriatxt";
             idcategoriatxt.Size = new Size(45, 29);
             idcategoriatxt.TabIndex = 58;
@@ -742,7 +761,7 @@
             imagenpanel.BackColor = Color.Gray;
             imagenpanel.Controls.Add(imagenprod);
             imagenpanel.Controls.Add(seleccionimagenbtn);
-            imagenpanel.Location = new Point(545, 65);
+            imagenpanel.Location = new Point(570, 65);
             imagenpanel.Name = "imagenpanel";
             imagenpanel.Size = new Size(199, 265);
             imagenpanel.TabIndex = 72;
@@ -856,9 +875,9 @@
             // 
             categoriatxt.CharacterCasing = CharacterCasing.Upper;
             categoriatxt.Enabled = false;
-            categoriatxt.Location = new Point(281, 140);
+            categoriatxt.Location = new Point(310, 140);
             categoriatxt.Name = "categoriatxt";
-            categoriatxt.Size = new Size(117, 29);
+            categoriatxt.Size = new Size(147, 29);
             categoriatxt.TabIndex = 58;
             // 
             // txtnombre_prod
@@ -904,18 +923,18 @@
             label21.AutoSize = true;
             label21.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label21.ForeColor = Color.White;
-            label21.Location = new Point(234, 179);
+            label21.Location = new Point(355, 49);
             label21.Name = "label21";
-            label21.Size = new Size(151, 21);
+            label21.Size = new Size(68, 21);
             label21.TabIndex = 55;
-            label21.Text = "Unidad de medida";
+            label21.Text = "Medida";
             // 
             // label8
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label8.ForeColor = Color.White;
-            label8.Location = new Point(234, 51);
+            label8.Location = new Point(263, 51);
             label8.Name = "label8";
             label8.Size = new Size(52, 21);
             label8.TabIndex = 55;
@@ -971,7 +990,7 @@
             label17.BackColor = Color.Transparent;
             label17.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
             label17.ForeColor = Color.White;
-            label17.Location = new Point(315, 77);
+            label17.Location = new Point(313, 49);
             label17.Name = "label17";
             label17.Size = new Size(28, 25);
             label17.TabIndex = 50;
@@ -982,7 +1001,7 @@
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label10.ForeColor = Color.White;
-            label10.Location = new Point(234, 112);
+            label10.Location = new Point(263, 112);
             label10.Name = "label10";
             label10.Size = new Size(88, 21);
             label10.TabIndex = 50;
@@ -993,7 +1012,7 @@
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label14.ForeColor = Color.White;
-            label14.Location = new Point(571, 338);
+            label14.Location = new Point(596, 338);
             label14.Name = "label14";
             label14.Size = new Size(65, 21);
             label14.TabIndex = 49;
@@ -1005,7 +1024,7 @@
             estadochk.Checked = true;
             estadochk.CheckState = CheckState.Checked;
             estadochk.ForeColor = Color.Lime;
-            estadochk.Location = new Point(647, 336);
+            estadochk.Location = new Point(672, 336);
             estadochk.Name = "estadochk";
             estadochk.Size = new Size(72, 25);
             estadochk.TabIndex = 46;
@@ -1029,7 +1048,7 @@
             buscarcateg.Enabled = false;
             buscarcateg.ForeColor = Color.Black;
             buscarcateg.Image = Properties.Resources.busqueda;
-            buscarcateg.Location = new Point(400, 140);
+            buscarcateg.Location = new Point(458, 140);
             buscarcateg.Name = "buscarcateg";
             buscarcateg.Size = new Size(28, 29);
             buscarcateg.TabIndex = 60;
@@ -1041,9 +1060,9 @@
             unidadmedida.DropDownStyle = ComboBoxStyle.DropDownList;
             unidadmedida.Enabled = false;
             unidadmedida.FormattingEnabled = true;
-            unidadmedida.Location = new Point(234, 205);
+            unidadmedida.Location = new Point(355, 77);
             unidadmedida.Name = "unidadmedida";
-            unidadmedida.Size = new Size(163, 29);
+            unidadmedida.Size = new Size(131, 29);
             unidadmedida.TabIndex = 64;
             // 
             // ITBIS
@@ -1052,7 +1071,7 @@
             ITBIS.Enabled = false;
             ITBIS.FormattingEnabled = true;
             ITBIS.Items.AddRange(new object[] { "18", "16", "Excento" });
-            ITBIS.Location = new Point(234, 75);
+            ITBIS.Location = new Point(263, 75);
             ITBIS.Name = "ITBIS";
             ITBIS.Size = new Size(78, 29);
             ITBIS.TabIndex = 64;
@@ -1060,43 +1079,13 @@
             // categoriapanel
             // 
             categoriapanel.BackColor = Color.FromArgb(64, 64, 64);
-            categoriapanel.Controls.Add(idconsultatxt);
-            categoriapanel.Controls.Add(categoriaconsultatxt);
-            categoriapanel.Controls.Add(button4);
             categoriapanel.Controls.Add(label9);
             categoriapanel.Controls.Add(categoriaconsulta);
-            categoriapanel.Location = new Point(310, 243);
+            categoriapanel.Location = new Point(263, 175);
             categoriapanel.Name = "categoriapanel";
-            categoriapanel.Size = new Size(204, 242);
+            categoriapanel.Size = new Size(223, 204);
             categoriapanel.TabIndex = 81;
             categoriapanel.Visible = false;
-            // 
-            // idconsultatxt
-            // 
-            idconsultatxt.Enabled = false;
-            idconsultatxt.Location = new Point(4, 28);
-            idconsultatxt.Name = "idconsultatxt";
-            idconsultatxt.Size = new Size(36, 29);
-            idconsultatxt.TabIndex = 58;
-            // 
-            // categoriaconsultatxt
-            // 
-            categoriaconsultatxt.Enabled = false;
-            categoriaconsultatxt.Location = new Point(43, 28);
-            categoriaconsultatxt.Name = "categoriaconsultatxt";
-            categoriaconsultatxt.Size = new Size(125, 29);
-            categoriaconsultatxt.TabIndex = 58;
-            // 
-            // button4
-            // 
-            button4.ForeColor = Color.Black;
-            button4.Image = Properties.Resources.angulo_hacia_izquierda;
-            button4.Location = new Point(171, 28);
-            button4.Name = "button4";
-            button4.Size = new Size(28, 29);
-            button4.TabIndex = 60;
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
             // 
             // label9
             // 
@@ -1116,39 +1105,17 @@
             categoriaconsulta.AllowUserToResizeRows = false;
             categoriaconsulta.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             categoriaconsulta.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            categoriaconsulta.Location = new Point(4, 63);
+            categoriaconsulta.Location = new Point(4, 30);
             categoriaconsulta.MultiSelect = false;
             categoriaconsulta.Name = "categoriaconsulta";
             categoriaconsulta.ReadOnly = true;
             categoriaconsulta.RowHeadersVisible = false;
             categoriaconsulta.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             categoriaconsulta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            categoriaconsulta.Size = new Size(195, 171);
+            categoriaconsulta.Size = new Size(214, 170);
             categoriaconsulta.TabIndex = 74;
             categoriaconsulta.CellClick += categoriaconsulta_CellClick;
             categoriaconsulta.CellDoubleClick += categoriaconsulta_CellDoubleClick;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            label22.ForeColor = Color.White;
-            label22.Location = new Point(7, 247);
-            label22.Name = "label22";
-            label22.Size = new Size(151, 25);
-            label22.TabIndex = 47;
-            label22.Text = "Ultima Compra:";
-            // 
-            // fechaultimacompralbl
-            // 
-            fechaultimacompralbl.AutoSize = true;
-            fechaultimacompralbl.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            fechaultimacompralbl.ForeColor = Color.White;
-            fechaultimacompralbl.Location = new Point(7, 275);
-            fechaultimacompralbl.Name = "fechaultimacompralbl";
-            fechaultimacompralbl.Size = new Size(52, 21);
-            fechaultimacompralbl.TabIndex = 47;
-            fechaultimacompralbl.Text = "fecha";
             // 
             // ConsProductos
             // 
@@ -1237,13 +1204,11 @@
         private NumericUpDown numCantidad;
         private TextBox nombreprodreceta;
         private Button agregarbtn;
-        private TextBox textBox1;
+        private TextBox buscarIngredienteReceta;
         private DataGridView ingredientesconsulta;
         private Panel categoriapanel;
-        private TextBox categoriaconsultatxt;
         private TextBox categoriatxt;
         private Panel seleccionpanel;
-        private Button button4;
         private Label label9;
         private DataGridView categoriaconsulta;
         private CheckBox filtroingredientes;
@@ -1252,7 +1217,6 @@
         private CheckBox filtro;
         private Label label15;
         private TextBox idcategoriatxt;
-        private TextBox idconsultatxt;
         private Label label17;
         private TextBox ultimoID;
         private Label label18;

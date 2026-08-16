@@ -23,7 +23,7 @@ public static class ConexionBD
         {
             MessageBox.Show("No se encontró una conexion por defecto.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        
+
         var partes = lineaDefecto.Split('|');
 
         datosConexion["Servidor"] = partes[0];

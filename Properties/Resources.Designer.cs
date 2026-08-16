@@ -1863,6 +1863,16 @@ namespace Proyecto_restaurante.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap previewcolormenu {
+            get {
+                object obj = ResourceManager.GetObject("previewcolormenu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap procesar {
             get {
                 object obj = ResourceManager.GetObject("procesar", resourceCulture);
