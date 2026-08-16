@@ -223,6 +223,7 @@
             // 
             // button5
             // 
+            button5.BackColor = Color.FromArgb(255, 128, 128);
             button5.Image = Properties.Resources.tipodepago;
             button5.ImageAlign = ContentAlignment.MiddleRight;
             button5.Location = new Point(7, 145);
@@ -232,11 +233,12 @@
             button5.TabIndex = 4;
             button5.Text = "Métodos de pago";
             button5.TextAlign = ContentAlignment.MiddleLeft;
-            button5.UseVisualStyleBackColor = true;
+            button5.UseVisualStyleBackColor = false;
             button5.Click += button5_Click;
             // 
             // button8
             // 
+            button8.BackColor = Color.FromArgb(255, 128, 128);
             button8.Image = Properties.Resources.dni;
             button8.ImageAlign = ContentAlignment.MiddleRight;
             button8.Location = new Point(7, 69);
@@ -246,7 +248,7 @@
             button8.TabIndex = 2;
             button8.Text = "Documento de identificación";
             button8.TextAlign = ContentAlignment.MiddleLeft;
-            button8.UseVisualStyleBackColor = true;
+            button8.UseVisualStyleBackColor = false;
             button8.Click += button8_Click;
             // 
             // label1
@@ -259,9 +261,9 @@
             label1.Location = new Point(4, 2);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(90, 25);
+            label1.Size = new Size(91, 25);
             label1.TabIndex = 14;
-            label1.Text = "Tipos      ";
+            label1.Text = "Extras     ";
             // 
             // barraizq
             // 
@@ -2284,7 +2286,7 @@
             MinimizeBox = false;
             Name = "MenuTipos";
             StartPosition = FormStartPosition.Manual;
-            Text = "Tipos";
+            Text = "Extras";
             barraizq.ResumeLayout(false);
             barraizq.PerformLayout();
             metodopanel.ResumeLayout(false);

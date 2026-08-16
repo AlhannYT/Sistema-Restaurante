@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using static Proyecto_restaurante.menu;
 
@@ -165,26 +166,10 @@ namespace Proyecto_restaurante
                 detalleorden.Columns.Add("subtotal", "Importe");
             }
 
-            cmbZonaEntrega.Items.Clear();
-            cmbZonaEntrega.Items.Add("Centro");
-            cmbZonaEntrega.Items.Add("Norte");
-            cmbZonaEntrega.Items.Add("Sur");
-            cmbZonaEntrega.Items.Add("Este");
-            cmbZonaEntrega.Items.Add("Oeste");
-            cmbZonaEntrega.Items.Add("Periferia");
-
-            if (cmbZonaEntrega.Items.Count > 0)
-                cmbZonaEntrega.SelectedIndex = 0;
-
             Comprobantes();
 
             panelResenas.Visible = false;
             panelResenas.BringToFront();
-
-            panelResenas.Left = (this.ClientSize.Width - panelResenas.Width) / 2;
-            panelResenas.Top = (this.ClientSize.Height - panelResenas.Height) / 2;
-
-            CargarResumenResenas();
         }
 
 
@@ -366,118 +351,6 @@ namespace Proyecto_restaurante
             return totalComidas;
         }
 
-        private void AsignarRepartidorAutomaticamente()
-        {
-            if (string.IsNullOrWhiteSpace(direccioncliente.Text))
-            {
-                MessageBox.Show("Debe indicar una dirección.");
-                return;
-            }
-
-            string zonaDetectada = DetectarZonaDesdeBD(direccioncliente.Text)?.Trim();
-
-            if (!string.IsNullOrWhiteSpace(zonaDetectada))
-            {
-                int idx = cmbZonaEntrega.FindStringExact(zonaDetectada);
-                if (idx >= 0)
-                    cmbZonaEntrega.SelectedIndex = idx;
-            }
-
-            if (cmbZonaEntrega.SelectedIndex < 0)
-            {
-                MessageBox.Show("No se pudo determinar la zona automáticamente. Selecciónela manualmente.");
-                return;
-            }
-
-            int totalComidas = ObtenerTotalComidas();
-
-            if (totalComidas <= 0)
-            {
-                MessageBox.Show("Debe agregar productos antes de asignar un repartidor.");
-                return;
-            }
-
-            string zona = cmbZonaEntrega.Text;
-
-            string query = @"
-            SELECT TOP 1
-                e.IdEmpleado,
-                p.NombreCompleto,
-                r.ZonaAsignada,
-                r.TipoVehiculo,
-                r.RapidezPct,
-                r.FamiliaridadPct,
-                r.CapacidadMaxima,
-                cfg.Prioridad
-            FROM dbo.Repartidor r
-            INNER JOIN dbo.Empleado e ON r.IdEmpleado = e.IdEmpleado
-            INNER JOIN dbo.Persona p ON e.IdPersona = p.IdPersona
-            INNER JOIN dbo.ConfigVehiculoDelivery cfg
-                ON r.TipoVehiculo = cfg.TipoVehiculo
-               AND @TotalComidas BETWEEN cfg.CantidadMin AND cfg.CantidadMax
-               AND cfg.Activo = 1
-            WHERE e.Activo = 1
-              AND p.Activo = 1
-              AND e.IdRolEmpleado = 6
-              AND r.CapacidadMaxima >= @TotalComidas
-            ORDER BY
-                CASE WHEN r.ZonaAsignada = @Zona THEN 0 ELSE 1 END,
-                cfg.Prioridad ASC,
-                r.RapidezPct DESC,
-                r.FamiliaridadPct DESC;";
-
-            using (SqlConnection con = new SqlConnection(conexionString))
-            {
-                con.Open();
-
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@Zona", zona);
-                    cmd.Parameters.AddWithValue("@TotalComidas", totalComidas);
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        if (dr.Read())
-                        {
-                            idrepartidor.Text = dr["IdEmpleado"].ToString();
-                            nombrerepartidor.Text = dr["NombreCompleto"].ToString();
-
-                            vehiculoAsignado = dr["TipoVehiculo"]?.ToString() ?? "";
-                            txtVehiculoAsignado.Text = string.IsNullOrWhiteSpace(vehiculoAsignado)
-                                ? "Sin vehículo"
-                                : vehiculoAsignado;
-
-                            bool mismaZona = dr["ZonaAsignada"].ToString().Trim()
-                                .Equals(zona, StringComparison.OrdinalIgnoreCase);
-
-                            int prioridad = Convert.ToInt32(dr["Prioridad"]);
-
-                            if (mismaZona && prioridad == 1)
-                                motivoAsignacion = "Asignado por coincidencia de zona y prioridad del vehículo.";
-                            else if (mismaZona)
-                                motivoAsignacion = "Asignado por coincidencia de zona.";
-                            else
-                                motivoAsignacion = "Asignado por disponibilidad, capacidad y configuración del vehículo.";
-
-                            txtMotivoAsignacion.Text = motivoAsignacion;
-
-                            MessageBox.Show("Zona y repartidor asignados automáticamente.");
-                        }
-                        else
-                        {
-                            MessageBox.Show("No se encontró un repartidor disponible para esa zona/capacidad.");
-                            idrepartidor.Clear();
-                            nombrerepartidor.Clear();
-                            txtVehiculoAsignado.Clear();
-                            txtMotivoAsignacion.Clear();
-                            vehiculoAsignado = "";
-                            motivoAsignacion = "";
-                        }
-                    }
-                }
-            }
-        }
-
         private void limpiarbtn_Click(object sender, EventArgs e)
         {
 
@@ -498,12 +371,7 @@ namespace Proyecto_restaurante
             idrepartidor.Clear();
             nombrerepartidor.Clear();
             txtVehiculoAsignado.Clear();
-            txtMotivoAsignacion.Clear();
             vehiculoAsignado = "";
-            motivoAsignacion = "";
-
-            if (cmbZonaEntrega.Items.Count > 0)
-                cmbZonaEntrega.SelectedIndex = 0;
 
             detalleorden.Rows.Clear();
 
@@ -569,9 +437,9 @@ namespace Proyecto_restaurante
                     {
                         string queryInsert = @"
                         INSERT INTO Pedido
-                        (Fecha, Origen, IdClientePersona, NombreCliente, Estado, EstadoDelivery, Total, Nota, Direccion, IdRepartidor, ZonaEntrega, VehiculoAsignado, MotivoAsignacion, Comprobante) 
+                        (Fecha, Origen, IdClientePersona, NombreCliente, Estado, EstadoDelivery, Total, Nota, Direccion, IdRepartidor, VehiculoAsignado, Comprobante) 
                         VALUES 
-                        (@Fecha, @Origen, @IdClientePersona, @NombreCliente, @Estado, @EstadoDelivery, @Total, @Nota, @Direccion, @Repartidor, @ZonaEntrega, @VehiculoAsignado, @MotivoAsignacion, @NCF); 
+                        (@Fecha, @Origen, @IdClientePersona, @NombreCliente, @Estado, @EstadoDelivery, @Total, @Nota, @Direccion, @Repartidor, @VehiculoAsignado, @NCF); 
                         SELECT SCOPE_IDENTITY();";
 
                         SqlCommand cmdInsert = new SqlCommand(queryInsert, conexion, transaccion);
@@ -586,9 +454,7 @@ namespace Proyecto_restaurante
                         cmdInsert.Parameters.AddWithValue("@Nota", notatxt.Text);
                         cmdInsert.Parameters.AddWithValue("@Direccion", direccioncliente.Text);
                         cmdInsert.Parameters.AddWithValue("@Repartidor", idrepartidor.Text);
-                        cmdInsert.Parameters.AddWithValue("@ZonaEntrega", cmbZonaEntrega.Text);
                         cmdInsert.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
-                        cmdInsert.Parameters.AddWithValue("@MotivoAsignacion", txtMotivoAsignacion.Text);
                         cmdInsert.Parameters.AddWithValue("@NCF", valNCF);
 
                         idPedidoGenerado = Convert.ToInt32(cmdInsert.ExecuteScalar());
@@ -612,9 +478,7 @@ namespace Proyecto_restaurante
                                nota = @Nota,
                                direccion = @Direccion,
                                idrepartidor = @Repartidor,
-                               zonaentrega = @ZonaEntrega,
                                vehiculoasignado = @VehiculoAsignado,
-                               motivoasignacion = @MotivoAsignacion,
                                Comprobante = @NCF
                         WHERE  idpedido = @IdPedido";
 
@@ -628,9 +492,7 @@ namespace Proyecto_restaurante
                         cmdUpdate.Parameters.AddWithValue("@Direccion", direccioncliente.Text);
                         cmdUpdate.Parameters.AddWithValue("@Repartidor", idrepartidor.Text);
                         cmdUpdate.Parameters.AddWithValue("@IdPedido", PedidoID);
-                        cmdUpdate.Parameters.AddWithValue("@ZonaEntrega", cmbZonaEntrega.Text);
                         cmdUpdate.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
-                        cmdUpdate.Parameters.AddWithValue("@MotivoAsignacion", txtMotivoAsignacion.Text);
                         cmdUpdate.Parameters.AddWithValue("@NCF", valNCF);
 
                         cmdUpdate.ExecuteNonQuery();
@@ -862,7 +724,6 @@ namespace Proyecto_restaurante
                 numerotxt.Text = telefono;
                 IdClientePersonaST = IdClientePersona;
                 direccioncliente.Text = Direccion;
-                AplicarZonaAutomatica();
 
                 int tipoDoc = Convert.ToInt32(tablaclientes.CurrentRow.Cells["TipoDoc"].Value);
 
@@ -1358,15 +1219,12 @@ namespace Proyecto_restaurante
                     string query = @"
                       SELECT idpedido,
                                nombrecliente,
-                               idmesa,
                                total,
                                estado,
-                               estadodelivery,
                                fecha
                         FROM   pedido
-                        WHERE  ( nombrecliente LIKE @buscar
+                        WHERE  Origen = 'Delivery' AND ( nombrecliente LIKE @buscar
                                   OR Cast(idpedido AS VARCHAR) LIKE @buscar
-                                  OR Cast(idmesa AS VARCHAR) LIKE @buscar
                                   OR Cast(total AS VARCHAR) LIKE @buscar )
                                AND fecha >= @inicio
                                AND fecha <= @fin
@@ -1386,8 +1244,36 @@ namespace Proyecto_restaurante
                         da.Fill(dt);
 
                         tabladatospedidos.DataSource = dt;
-                        if (tabladatospedidos.Columns.Contains("EstadoDelivery"))
-                            tabladatospedidos.Columns["EstadoDelivery"].HeaderText = "Estado Delivery";
+
+                        if (tabladatospedidos.Columns.Contains("idpedido"))
+                        {
+                            tabladatospedidos.Columns["idpedido"].HeaderText = "N° Pedido";
+                            tabladatospedidos.Columns["idpedido"].FillWeight = 70;
+                        }
+
+                        if (tabladatospedidos.Columns.Contains("nombrecliente"))
+                        {
+                            tabladatospedidos.Columns["nombrecliente"].HeaderText = "Cliente";
+                            tabladatospedidos.Columns["nombrecliente"].FillWeight = 220;
+                        }
+
+                        if (tabladatospedidos.Columns.Contains("total"))
+                        {
+                            tabladatospedidos.Columns["total"].HeaderText = "Total";
+                            tabladatospedidos.Columns["total"].FillWeight = 80;
+                        }
+
+                        if (tabladatospedidos.Columns.Contains("estado"))
+                        {
+                            tabladatospedidos.Columns["estado"].HeaderText = "Estado";
+                            tabladatospedidos.Columns["estado"].FillWeight = 90;
+                        }
+
+                        if (tabladatospedidos.Columns.Contains("fecha"))
+                        {
+                            tabladatospedidos.Columns["fecha"].HeaderText = "Fecha";
+                            tabladatospedidos.Columns["fecha"].FillWeight = 90;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -2074,6 +1960,46 @@ namespace Proyecto_restaurante
                 DataGridViewRow row = tabladatospedidos.Rows[e.RowIndex];
 
                 PedidoID = Convert.ToInt32(row.Cells["IdPedido"].Value);
+                string estado = row.Cells["Estado"].Value?.ToString() ?? "";
+
+                btnVerResenas.Enabled = false;
+
+                if (estado == "Facturado")
+                {
+                    try
+                    {
+                        using (SqlConnection conectar = new SqlConnection(conexionString))
+                        {
+                            conectar.Open();
+                            string query = "SELECT COUNT(*) FROM ResenaDelivery WHERE IdPedido = @id";
+                            using (SqlCommand cmd = new SqlCommand(query, conectar))
+                            {
+                                cmd.Parameters.AddWithValue("@id", PedidoID);
+                                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                                if (count > 0)
+                                {
+                                    btnVerResenas.Enabled = true;
+                                    btnVerResenas.Visible = true;
+                                    generarEnlaceResena.Visible = false;
+                                    generarEnlaceResena.Enabled = false;
+                                    generarEnlaceResena.Location = new Point(438, 65);
+                                }
+                                else
+                                {
+                                    btnVerResenas.Enabled = false;
+                                    btnVerResenas.Visible = false;
+                                    generarEnlaceResena.Enabled = true;
+                                    generarEnlaceResena.Visible = true;
+                                    generarEnlaceResena.Location = new Point(438, 9);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al verificar reseña: " + ex.Message);
+                    }
+                }
             }
         }
 
@@ -2233,113 +2159,99 @@ namespace Proyecto_restaurante
             return "";
         }
 
-        private void AplicarZonaAutomatica()
+        private string ObtenerTextoCalificacion(int calificacion)
         {
-            string zonaDetectada = DetectarZonaDesdeBD(direccioncliente.Text)?.Trim();
-
-            if (string.IsNullOrWhiteSpace(zonaDetectada))
-                return;
-
-            this.BeginInvoke(new Action(() =>
+            switch (calificacion)
             {
-                int idx = cmbZonaEntrega.FindStringExact(zonaDetectada);
-
-                if (idx >= 0)
-                {
-                    cmbZonaEntrega.SelectedIndex = idx;
-                }
-            }));
-        }
-        private void direccioncliente_TextChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(direccioncliente.Text))
-                AplicarZonaAutomatica();
+                case 1: return "1 - Muy mala";
+                case 2: return "2 - Mala";
+                case 3: return "3 - Regular";
+                case 4: return "4 - Buena";
+                case 5: return "5 - Excelente";
+                default: return "No calificado";
+            }
         }
 
-
-        private void CargarResumenResenas()
+        private void CargarResenaPedido(int idPedido)
         {
             using (SqlConnection con = new SqlConnection(conexionString))
             {
-                con.Open();
-
-                string sql = @"
-                SELECT 
-                    ISNULL(CAST(AVG(CAST(Puntuacion AS DECIMAL(10,2))) AS DECIMAL(10,2)), 0) AS Promedio,
-                    COUNT(*) AS Cantidad,
-                    ISNULL(CAST(AVG(CAST(Calidad AS DECIMAL(10,2))) AS DECIMAL(10,2)), 0) AS PromedioCalidad,
-                    ISNULL(CAST(AVG(CAST(Amabilidad AS DECIMAL(10,2))) AS DECIMAL(10,2)), 0) AS PromedioAmabilidad,
-                    ISNULL(CAST(AVG(CAST(Puntualidad AS DECIMAL(10,2))) AS DECIMAL(10,2)), 0) AS PromedioPuntualidad
-                FROM dbo.ResenaDelivery;";
-
-                using (SqlCommand cmd = new SqlCommand(sql, con))
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                try
                 {
-                    if (dr.Read())
+                    con.Open();
+                    string sql = @"
+                    SELECT 
+                        p.IdPedido,
+                        p.NombreCliente,
+                        r.Puntuacion,
+                        r.Calidad,
+                        r.Amabilidad,
+                        r.Puntualidad,
+                        r.Comentario,
+                        per.NombreCompleto AS DeliveryNombre,
+                        p.VehiculoAsignado,
+                        emp.ImagenEmpleado AS EmpleadoFoto
+                    FROM dbo.ResenaDelivery r
+                    INNER JOIN dbo.Pedido p 
+                        ON r.IdPedido = p.IdPedido
+                    LEFT JOIN dbo.Empleado emp 
+                        ON p.IdRepartidor = emp.IdEmpleado
+                    LEFT JOIN dbo.Persona per 
+                        ON emp.IdPersona = per.IdPersona
+                    WHERE r.IdPedido = @IdPedido";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, con))
                     {
-                        txtPromedioResena.Text = Convert.ToDecimal(dr["Promedio"]).ToString("0.00");
-                        txtCantidadResenas.Text = dr["Cantidad"].ToString();
+                        cmd.Parameters.AddWithValue("@IdPedido", idPedido);
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                pedidoIDlbl.Text = dr["IdPedido"].ToString();
+                                nombreCliente.Text = dr["NombreCliente"].ToString();
+                                deliveryNombre.Text = dr["DeliveryNombre"] != DBNull.Value ? dr["DeliveryNombre"].ToString() : "N/A";
+                                vehiculoRepartidor.Text = dr["VehiculoAsignado"] != DBNull.Value ? dr["VehiculoAsignado"].ToString() : "N/A";
+                                resComent.Text = dr["Comentario"].ToString();
+
+                                int calidad = dr["Calidad"] != DBNull.Value ? Convert.ToInt32(dr["Calidad"]) : 0;
+                                int amabilidad = dr["Amabilidad"] != DBNull.Value ? Convert.ToInt32(dr["Amabilidad"]) : 0;
+                                int puntualidad = dr["Puntualidad"] != DBNull.Value ? Convert.ToInt32(dr["Puntualidad"]) : 0;
+
+                                lblCalidad.Text = "Calidad: " + ObtenerTextoCalificacion(calidad);
+                                lblAmabilidad.Text = "Amabilidad: " + ObtenerTextoCalificacion(amabilidad);
+                                lblPuntualidad.Text = "Puntualidad: " + ObtenerTextoCalificacion(puntualidad);
+
+                                int puntuacion = dr["Puntuacion"] != DBNull.Value ? Convert.ToInt32(dr["Puntuacion"]) : 0;
+                                PictureBox[] estrellas = { estrella1, estrella2, estrella3, estrella4, estrella5 };
+                                for (int i = 0; i < estrellas.Length; i++)
+                                {
+                                    if (i < puntuacion)
+                                        estrellas[i].Image = Proyecto_restaurante.Properties.Resources.estrellallena;
+                                    else
+                                        estrellas[i].Image = Proyecto_restaurante.Properties.Resources.estrellavacia2;
+                                }
+
+                                if (dr["EmpleadoFoto"] != DBNull.Value)
+                                {
+                                    byte[] foto = (byte[])dr["EmpleadoFoto"];
+                                    using (MemoryStream ms = new MemoryStream(foto))
+                                    {
+                                        empleadoimg.Image = Image.FromStream(ms);
+                                    }
+                                }
+                                else
+                                {
+                                    empleadoimg.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        }
-
-        private void CargarUltimasResenas()
-        {
-            using (SqlConnection con = new SqlConnection(conexionString))
-            {
-                con.Open();
-
-                string sql = @"
-                SELECT TOP 10
-                    r.IdPedido,
-                    p.NombreCliente,
-                    r.Puntuacion,
-                    r.Calidad,
-                    r.Amabilidad,
-                    r.Puntualidad,
-                    r.Comentario,
-                    r.FechaResena
-                FROM dbo.ResenaDelivery r
-                INNER JOIN dbo.Pedido p ON r.IdPedido = p.IdPedido
-                ORDER BY r.FechaResena DESC;";
-
-                using (SqlDataAdapter da = new SqlDataAdapter(sql, con))
+                catch (Exception ex)
                 {
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    dgvUltimasResenas.DataSource = dt;
+                    MessageBox.Show("Error al cargar la reseña: " + ex.Message);
                 }
             }
-
-            if (dgvUltimasResenas.Columns.Contains("IdPedido"))
-                dgvUltimasResenas.Columns["IdPedido"].HeaderText = "Pedido";
-
-            if (dgvUltimasResenas.Columns.Contains("NombreCliente"))
-                dgvUltimasResenas.Columns["NombreCliente"].HeaderText = "Cliente";
-
-            if (dgvUltimasResenas.Columns.Contains("Puntuacion"))
-                dgvUltimasResenas.Columns["Puntuacion"].HeaderText = "Puntuación";
-
-            if (dgvUltimasResenas.Columns.Contains("Calidad"))
-                dgvUltimasResenas.Columns["Calidad"].HeaderText = "Calidad";
-
-            if (dgvUltimasResenas.Columns.Contains("Amabilidad"))
-                dgvUltimasResenas.Columns["Amabilidad"].HeaderText = "Amabilidad";
-
-            if (dgvUltimasResenas.Columns.Contains("Puntualidad"))
-                dgvUltimasResenas.Columns["Puntualidad"].HeaderText = "Puntualidad";
-
-            if (dgvUltimasResenas.Columns.Contains("Comentario"))
-                dgvUltimasResenas.Columns["Comentario"].HeaderText = "Comentario";
-
-            if (dgvUltimasResenas.Columns.Contains("FechaResena"))
-                dgvUltimasResenas.Columns["FechaResena"].HeaderText = "Fecha";
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            AsignarRepartidorAutomaticamente();
         }
 
         private void button10_Click(object sender, EventArgs e)
@@ -2349,9 +2261,105 @@ namespace Proyecto_restaurante
 
         private void btnVerResenas_Click(object sender, EventArgs e)
         {
-            CargarUltimasResenas();
-            panelResenas.Visible = true;
-            panelResenas.BringToFront();
+            if (PedidoID > 0)
+            {
+                CargarResenaPedido(PedidoID);
+                panelResenas.Visible = true;
+                panelResenas.Location = new Point(0, 0);
+                panelResenas.BringToFront();
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione un pedido primero.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void numerotxt_TextChanged(object sender, EventArgs e)
+        {
+            string posNum = numerotxt.Text;
+            posNum = posNum.Replace("-", "");
+
+            if (posNum.Length > 10)
+            {
+                posNum = posNum.Substring(0, 10);
+            }
+
+            if (posNum.Length > 3)
+            {
+                posNum = posNum.Insert(3, "-");
+            }
+
+            if (posNum.Length > 7)
+            {
+                posNum = posNum.Insert(7, "-");
+            }
+
+            numerotxt.Text = posNum;
+            numerotxt.SelectionStart = numerotxt.Text.Length;
+        }
+
+        private void pendientechk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (pendientechk.Checked == true)
+            {
+                canceladochk.Checked = false;
+                facturadochk.Checked = false;
+                todoschk.Checked = false;
+                buscar_Click(sender, e);
+            }
+            else
+            {
+                todoschk.Checked = true;
+                buscar_Click(sender, e);
+            }
+        }
+
+        private void canceladochk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (canceladochk.Checked == true)
+            {
+                pendientechk.Checked = false;
+                facturadochk.Checked = false;
+                todoschk.Checked = false;
+                buscar_Click(sender, e);
+            }
+            else
+            {
+                todoschk.Checked = true;
+                buscar_Click(sender, e);
+            }
+        }
+
+        private void facturadochk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (facturadochk.Checked == true)
+            {
+                pendientechk.Checked = false;
+                canceladochk.Checked = false;
+                todoschk.Checked = false;
+                buscar_Click(sender, e);
+            }
+            else
+            {
+                todoschk.Checked = true;
+                buscar_Click(sender, e);
+            }
+        }
+
+        private void todoschk_CheckedChanged(object sender, EventArgs e)
+        {
+            if (todoschk.Checked == true)
+            {
+                pendientechk.Checked = false;
+                canceladochk.Checked = false;
+                facturadochk.Checked = false;
+                buscar_Click(sender, e);
+            }
+        }
+
+        private void generarEnlaceResena_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Para trabajarlo mas tarde.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

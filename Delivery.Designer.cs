@@ -45,19 +45,13 @@
             txtidpedido = new TextBox();
             txtnombrecompleto = new TextBox();
             panel8 = new Panel();
-            cmbZonaEntrega = new ComboBox();
             idrepartidor = new TextBox();
             repartidorbtn = new Button();
-            label22 = new Label();
-            pictureBox7 = new PictureBox();
-            pictureBox6 = new PictureBox();
             pictureBox4 = new PictureBox();
             repartidorlabel = new Label();
             nombrerepartidor = new TextBox();
             txtVehiculoAsignado = new TextBox();
             vehiculolabel = new Label();
-            label18 = new Label();
-            txtMotivoAsignacion = new TextBox();
             panel29 = new Panel();
             panelBloqueoNCF = new Panel();
             tipoComp = new ComboBox();
@@ -79,7 +73,6 @@
             tabPage1 = new TabPage();
             notapanel = new Panel();
             notatxt = new TextBox();
-            btnAsignarAutomatico = new Button();
             panelproducto = new Panel();
             txtproductobusqueda = new TextBox();
             button4 = new Button();
@@ -122,16 +115,37 @@
             flowComanda = new FlowLayoutPanel();
             tabPage2 = new TabPage();
             panelResenas = new Panel();
+            panel15 = new Panel();
+            panel13 = new Panel();
+            panel16 = new Panel();
+            empleadoimg = new PictureBox();
+            label25 = new Label();
+            deliveryNombre = new TextBox();
+            vehiculoRepartidor = new TextBox();
+            label27 = new Label();
+            estrella5 = new PictureBox();
+            label33 = new Label();
+            estrella4 = new PictureBox();
+            estrella3 = new PictureBox();
+            label28 = new Label();
+            estrella2 = new PictureBox();
+            estrella1 = new PictureBox();
+            panel14 = new Panel();
+            panel6 = new Panel();
+            panel22 = new Panel();
+            pedidoIDlbl = new Label();
             lblTituloResenas = new Label();
             btnCerrarResenas = new Button();
-            dgvUltimasResenas = new DataGridView();
-            btnVerResenas = new Button();
-            txtCantidadResenas = new TextBox();
-            button6 = new Button();
-            lblCantidadResenas = new Label();
-            button1 = new Button();
-            txtPromedioResena = new TextBox();
-            lblPromedioResena = new Label();
+            panel4 = new Panel();
+            label24 = new Label();
+            resComent = new TextBox();
+            panel11 = new Panel();
+            label34 = new Label();
+            lblCalidad = new Label();
+            lblAmabilidad = new Label();
+            lblPuntualidad = new Label();
+            label26 = new Label();
+            nombreCliente = new TextBox();
             opcionesCarpeta = new Panel();
             eliminarFacturas = new Button();
             carpetaFactura = new Button();
@@ -186,8 +200,9 @@
             label10 = new Label();
             panel7 = new Panel();
             label8 = new Label();
+            generarEnlaceResena = new Button();
+            btnVerResenas = new Button();
             label9 = new Label();
-            editar = new Button();
             fecini = new DateTimePicker();
             cancelarpedido = new Button();
             fecfin = new DateTimePicker();
@@ -207,8 +222,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             panel29.SuspendLayout();
             panel9.SuspendLayout();
@@ -230,7 +243,16 @@
             comandapanel.SuspendLayout();
             tabPage2.SuspendLayout();
             panelResenas.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvUltimasResenas).BeginInit();
+            panel13.SuspendLayout();
+            panel16.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)empleadoimg).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)estrella5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)estrella4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)estrella3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)estrella2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)estrella1).BeginInit();
+            panel4.SuspendLayout();
+            panel11.SuspendLayout();
             opcionesCarpeta.SuspendLayout();
             detallepanelcompleto.SuspendLayout();
             detallepagopanel.SuspendLayout();
@@ -268,7 +290,7 @@
             panel1.Controls.Add(panel8);
             panel1.Location = new Point(6, 5);
             panel1.Name = "panel1";
-            panel1.Size = new Size(509, 323);
+            panel1.Size = new Size(509, 253);
             panel1.TabIndex = 1;
             // 
             // pictureBox3
@@ -323,6 +345,7 @@
             numerotxt.PlaceholderText = "Número de telefono";
             numerotxt.Size = new Size(163, 29);
             numerotxt.TabIndex = 0;
+            numerotxt.TextChanged += numerotxt_TextChanged;
             // 
             // pictureBox2
             // 
@@ -424,33 +447,17 @@
             // panel8
             // 
             panel8.BackColor = Color.DimGray;
-            panel8.Controls.Add(cmbZonaEntrega);
             panel8.Controls.Add(idrepartidor);
             panel8.Controls.Add(repartidorbtn);
-            panel8.Controls.Add(label22);
-            panel8.Controls.Add(pictureBox7);
-            panel8.Controls.Add(pictureBox6);
             panel8.Controls.Add(pictureBox4);
             panel8.Controls.Add(repartidorlabel);
             panel8.Controls.Add(nombrerepartidor);
             panel8.Controls.Add(txtVehiculoAsignado);
             panel8.Controls.Add(vehiculolabel);
-            panel8.Controls.Add(label18);
-            panel8.Controls.Add(txtMotivoAsignacion);
             panel8.Location = new Point(7, 168);
             panel8.Name = "panel8";
-            panel8.Size = new Size(494, 149);
+            panel8.Size = new Size(494, 78);
             panel8.TabIndex = 71;
-            // 
-            // cmbZonaEntrega
-            // 
-            cmbZonaEntrega.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbZonaEntrega.FormattingEnabled = true;
-            cmbZonaEntrega.Location = new Point(138, 79);
-            cmbZonaEntrega.Margin = new Padding(3, 2, 3, 2);
-            cmbZonaEntrega.Name = "cmbZonaEntrega";
-            cmbZonaEntrega.Size = new Size(351, 29);
-            cmbZonaEntrega.TabIndex = 15;
             // 
             // idrepartidor
             // 
@@ -472,42 +479,6 @@
             repartidorbtn.TabIndex = 2;
             repartidorbtn.UseVisualStyleBackColor = true;
             repartidorbtn.Click += repartidorbtn_Click;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label22.ForeColor = SystemColors.Control;
-            label22.ImageAlign = ContentAlignment.MiddleLeft;
-            label22.Location = new Point(37, 83);
-            label22.Name = "label22";
-            label22.Size = new Size(57, 21);
-            label22.TabIndex = 12;
-            label22.Text = "Zona: ";
-            // 
-            // pictureBox7
-            // 
-            pictureBox7.BackColor = SystemColors.Window;
-            pictureBox7.Image = Properties.Resources._3_rayas;
-            pictureBox7.Location = new Point(3, 116);
-            pictureBox7.Margin = new Padding(3, 2, 3, 2);
-            pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(27, 29);
-            pictureBox7.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox7.TabIndex = 4;
-            pictureBox7.TabStop = false;
-            // 
-            // pictureBox6
-            // 
-            pictureBox6.BackColor = SystemColors.Window;
-            pictureBox6.Image = Properties.Resources.ubicacion_del_terreno;
-            pictureBox6.Location = new Point(3, 79);
-            pictureBox6.Margin = new Padding(3, 2, 3, 2);
-            pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(27, 29);
-            pictureBox6.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox6.TabIndex = 4;
-            pictureBox6.TabStop = false;
             // 
             // pictureBox4
             // 
@@ -564,28 +535,6 @@
             vehiculolabel.Size = new Size(85, 21);
             vehiculolabel.TabIndex = 8;
             vehiculolabel.Text = "Vehiculo: ";
-            // 
-            // label18
-            // 
-            label18.AutoSize = true;
-            label18.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label18.ForeColor = SystemColors.Control;
-            label18.ImageAlign = ContentAlignment.MiddleLeft;
-            label18.Location = new Point(37, 120);
-            label18.Name = "label18";
-            label18.Size = new Size(69, 21);
-            label18.TabIndex = 9;
-            label18.Text = "Motivo:";
-            // 
-            // txtMotivoAsignacion
-            // 
-            txtMotivoAsignacion.Enabled = false;
-            txtMotivoAsignacion.Font = new Font("Segoe UI", 12F);
-            txtMotivoAsignacion.Location = new Point(138, 116);
-            txtMotivoAsignacion.Name = "txtMotivoAsignacion";
-            txtMotivoAsignacion.PlaceholderText = "Motivo";
-            txtMotivoAsignacion.Size = new Size(351, 29);
-            txtMotivoAsignacion.TabIndex = 10;
             // 
             // panel29
             // 
@@ -794,7 +743,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(812, 787);
+            tabControl1.Size = new Size(812, 718);
             tabControl1.TabIndex = 3;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -802,7 +751,6 @@
             // 
             tabPage1.BackColor = Color.FromArgb(87, 128, 87);
             tabPage1.Controls.Add(notapanel);
-            tabPage1.Controls.Add(btnAsignarAutomatico);
             tabPage1.Controls.Add(panelproducto);
             tabPage1.Controls.Add(panelrepartidor);
             tabPage1.Controls.Add(panelclientes);
@@ -813,7 +761,7 @@
             tabPage1.Location = new Point(4, 30);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(804, 753);
+            tabPage1.Size = new Size(804, 684);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Creación";
             // 
@@ -836,20 +784,6 @@
             notatxt.PlaceholderText = "Escribir nota aquí...";
             notatxt.Size = new Size(265, 139);
             notatxt.TabIndex = 0;
-            // 
-            // btnAsignarAutomatico
-            // 
-            btnAsignarAutomatico.BackColor = Color.FromArgb(128, 255, 128);
-            btnAsignarAutomatico.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnAsignarAutomatico.Image = Properties.Resources.repartidor;
-            btnAsignarAutomatico.ImageAlign = ContentAlignment.MiddleLeft;
-            btnAsignarAutomatico.Location = new Point(561, 264);
-            btnAsignarAutomatico.Name = "btnAsignarAutomatico";
-            btnAsignarAutomatico.Size = new Size(204, 58);
-            btnAsignarAutomatico.TabIndex = 1;
-            btnAsignarAutomatico.Text = "Asignar automatico";
-            btnAsignarAutomatico.UseVisualStyleBackColor = false;
-            btnAsignarAutomatico.Click += button1_Click;
             // 
             // panelproducto
             // 
@@ -978,7 +912,7 @@
             panelclientes.Controls.Add(button5);
             panelclientes.Controls.Add(label19);
             panelclientes.Controls.Add(tablaclientes);
-            panelclientes.Location = new Point(851, 10);
+            panelclientes.Location = new Point(824, 3);
             panelclientes.Name = "panelclientes";
             panelclientes.Size = new Size(806, 642);
             panelclientes.TabIndex = 5;
@@ -1042,7 +976,7 @@
             panel2.Controls.Add(label21);
             panel2.Controls.Add(nota);
             panel2.Controls.Add(labelcantidadarticulos);
-            panel2.Location = new Point(6, 388);
+            panel2.Location = new Point(6, 318);
             panel2.Name = "panel2";
             panel2.Size = new Size(793, 361);
             panel2.TabIndex = 3;
@@ -1154,7 +1088,7 @@
             panel3.Controls.Add(txtiva);
             panel3.Controls.Add(txtprecioproducto);
             panel3.Controls.Add(txtcodigoproducto);
-            panel3.Location = new Point(6, 334);
+            panel3.Location = new Point(6, 264);
             panel3.Name = "panel3";
             panel3.Size = new Size(793, 50);
             panel3.TabIndex = 4;
@@ -1236,7 +1170,7 @@
             tabPage6.Controls.Add(panelComanda);
             tabPage6.Location = new Point(4, 30);
             tabPage6.Name = "tabPage6";
-            tabPage6.Size = new Size(804, 753);
+            tabPage6.Size = new Size(804, 684);
             tabPage6.TabIndex = 2;
             tabPage6.Text = "Comanda";
             // 
@@ -1248,7 +1182,7 @@
             panelComanda.Controls.Add(flowComanda);
             panelComanda.Location = new Point(2, 1);
             panelComanda.Name = "panelComanda";
-            panelComanda.Size = new Size(799, 747);
+            panelComanda.Size = new Size(799, 680);
             panelComanda.TabIndex = 102;
             // 
             // recargarbtn
@@ -1269,7 +1203,7 @@
             comandapanel.Controls.Add(EntregarOrden);
             comandapanel.Location = new Point(641, 41);
             comandapanel.Name = "comandapanel";
-            comandapanel.Size = new Size(151, 699);
+            comandapanel.Size = new Size(151, 632);
             comandapanel.TabIndex = 105;
             // 
             // SiEntrega
@@ -1322,20 +1256,13 @@
             flowComanda.BackColor = Color.FromArgb(64, 64, 64);
             flowComanda.Location = new Point(3, 41);
             flowComanda.Name = "flowComanda";
-            flowComanda.Size = new Size(632, 699);
+            flowComanda.Size = new Size(632, 632);
             flowComanda.TabIndex = 26;
             // 
             // tabPage2
             // 
             tabPage2.BackColor = Color.FromArgb(87, 128, 87);
             tabPage2.Controls.Add(panelResenas);
-            tabPage2.Controls.Add(btnVerResenas);
-            tabPage2.Controls.Add(txtCantidadResenas);
-            tabPage2.Controls.Add(button6);
-            tabPage2.Controls.Add(lblCantidadResenas);
-            tabPage2.Controls.Add(button1);
-            tabPage2.Controls.Add(txtPromedioResena);
-            tabPage2.Controls.Add(lblPromedioResena);
             tabPage2.Controls.Add(opcionesCarpeta);
             tabPage2.Controls.Add(deslizar);
             tabPage2.Controls.Add(detallepanelcompleto);
@@ -1348,22 +1275,235 @@
             tabPage2.Location = new Point(4, 30);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(804, 753);
+            tabPage2.Size = new Size(804, 684);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Pedidos";
             // 
             // panelResenas
             // 
-            panelResenas.BackColor = Color.Gray;
+            panelResenas.BackColor = SystemColors.WindowFrame;
             panelResenas.BorderStyle = BorderStyle.FixedSingle;
+            panelResenas.Controls.Add(panel15);
+            panelResenas.Controls.Add(panel13);
+            panelResenas.Controls.Add(panel14);
+            panelResenas.Controls.Add(panel6);
+            panelResenas.Controls.Add(panel22);
+            panelResenas.Controls.Add(pedidoIDlbl);
             panelResenas.Controls.Add(lblTituloResenas);
             panelResenas.Controls.Add(btnCerrarResenas);
-            panelResenas.Controls.Add(dgvUltimasResenas);
-            panelResenas.Location = new Point(810, 703);
+            panelResenas.Controls.Add(panel4);
+            panelResenas.Controls.Add(panel11);
+            panelResenas.Location = new Point(804, 15);
             panelResenas.Name = "panelResenas";
-            panelResenas.Size = new Size(781, 600);
+            panelResenas.Size = new Size(810, 672);
             panelResenas.TabIndex = 38;
             panelResenas.Visible = false;
+            // 
+            // panel15
+            // 
+            panel15.Location = new Point(550, 83);
+            panel15.Name = "panel15";
+            panel15.Size = new Size(210, 39);
+            panel15.TabIndex = 63;
+            // 
+            // panel13
+            // 
+            panel13.BackColor = Color.FromArgb(64, 64, 64);
+            panel13.Controls.Add(panel16);
+            panel13.Controls.Add(estrella5);
+            panel13.Controls.Add(label33);
+            panel13.Controls.Add(estrella4);
+            panel13.Controls.Add(estrella3);
+            panel13.Controls.Add(label28);
+            panel13.Controls.Add(estrella2);
+            panel13.Controls.Add(estrella1);
+            panel13.Location = new Point(419, 89);
+            panel13.Name = "panel13";
+            panel13.Size = new Size(330, 329);
+            panel13.TabIndex = 63;
+            // 
+            // panel16
+            // 
+            panel16.BackColor = Color.Gray;
+            panel16.Controls.Add(empleadoimg);
+            panel16.Controls.Add(label25);
+            panel16.Controls.Add(deliveryNombre);
+            panel16.Controls.Add(vehiculoRepartidor);
+            panel16.Controls.Add(label27);
+            panel16.Location = new Point(5, 40);
+            panel16.Name = "panel16";
+            panel16.Size = new Size(320, 152);
+            panel16.TabIndex = 63;
+            // 
+            // empleadoimg
+            // 
+            empleadoimg.ErrorImage = Properties.Resources.perfilcliente;
+            empleadoimg.Image = Properties.Resources.perfilcliente;
+            empleadoimg.InitialImage = Properties.Resources.perfilcliente;
+            empleadoimg.Location = new Point(6, 14);
+            empleadoimg.Name = "empleadoimg";
+            empleadoimg.Size = new Size(120, 124);
+            empleadoimg.SizeMode = PictureBoxSizeMode.StretchImage;
+            empleadoimg.TabIndex = 62;
+            empleadoimg.TabStop = false;
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label25.ForeColor = SystemColors.Control;
+            label25.Location = new Point(130, 14);
+            label25.Name = "label25";
+            label25.Size = new Size(94, 30);
+            label25.TabIndex = 15;
+            label25.Text = "Nombre";
+            // 
+            // deliveryNombre
+            // 
+            deliveryNombre.CharacterCasing = CharacterCasing.Upper;
+            deliveryNombre.Enabled = false;
+            deliveryNombre.Location = new Point(130, 46);
+            deliveryNombre.Name = "deliveryNombre";
+            deliveryNombre.Size = new Size(185, 29);
+            deliveryNombre.TabIndex = 36;
+            // 
+            // vehiculoRepartidor
+            // 
+            vehiculoRepartidor.CharacterCasing = CharacterCasing.Upper;
+            vehiculoRepartidor.Enabled = false;
+            vehiculoRepartidor.Location = new Point(130, 109);
+            vehiculoRepartidor.Name = "vehiculoRepartidor";
+            vehiculoRepartidor.Size = new Size(185, 29);
+            vehiculoRepartidor.TabIndex = 36;
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label27.ForeColor = SystemColors.Control;
+            label27.Location = new Point(130, 77);
+            label27.Name = "label27";
+            label27.Size = new Size(98, 30);
+            label27.TabIndex = 15;
+            label27.Text = "Vehiculo";
+            // 
+            // estrella5
+            // 
+            estrella5.ErrorImage = Properties.Resources.perfilcliente;
+            estrella5.Image = Properties.Resources.estrellavacia2;
+            estrella5.InitialImage = Properties.Resources.perfilcliente;
+            estrella5.Location = new Point(266, 231);
+            estrella5.Name = "estrella5";
+            estrella5.Size = new Size(34, 34);
+            estrella5.SizeMode = PictureBoxSizeMode.StretchImage;
+            estrella5.TabIndex = 62;
+            estrella5.TabStop = false;
+            // 
+            // label33
+            // 
+            label33.AutoSize = true;
+            label33.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label33.ForeColor = SystemColors.Control;
+            label33.Image = Properties.Resources.userdelivery24x;
+            label33.ImageAlign = ContentAlignment.MiddleRight;
+            label33.Location = new Point(8, 6);
+            label33.Name = "label33";
+            label33.Size = new Size(117, 30);
+            label33.TabIndex = 15;
+            label33.Text = "Delivery    ";
+            // 
+            // estrella4
+            // 
+            estrella4.ErrorImage = Properties.Resources.perfilcliente;
+            estrella4.Image = Properties.Resources.estrellavacia2;
+            estrella4.InitialImage = Properties.Resources.perfilcliente;
+            estrella4.Location = new Point(233, 231);
+            estrella4.Name = "estrella4";
+            estrella4.Size = new Size(34, 34);
+            estrella4.SizeMode = PictureBoxSizeMode.StretchImage;
+            estrella4.TabIndex = 62;
+            estrella4.TabStop = false;
+            // 
+            // estrella3
+            // 
+            estrella3.ErrorImage = Properties.Resources.perfilcliente;
+            estrella3.Image = Properties.Resources.estrellavacia2;
+            estrella3.InitialImage = Properties.Resources.perfilcliente;
+            estrella3.Location = new Point(200, 231);
+            estrella3.Name = "estrella3";
+            estrella3.Size = new Size(34, 34);
+            estrella3.SizeMode = PictureBoxSizeMode.StretchImage;
+            estrella3.TabIndex = 62;
+            estrella3.TabStop = false;
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label28.ForeColor = SystemColors.Control;
+            label28.Location = new Point(30, 233);
+            label28.Name = "label28";
+            label28.Size = new Size(98, 30);
+            label28.TabIndex = 15;
+            label28.Text = "Estrellas:";
+            // 
+            // estrella2
+            // 
+            estrella2.ErrorImage = Properties.Resources.perfilcliente;
+            estrella2.Image = Properties.Resources.estrellavacia2;
+            estrella2.InitialImage = Properties.Resources.perfilcliente;
+            estrella2.Location = new Point(167, 231);
+            estrella2.Name = "estrella2";
+            estrella2.Size = new Size(34, 34);
+            estrella2.SizeMode = PictureBoxSizeMode.StretchImage;
+            estrella2.TabIndex = 62;
+            estrella2.TabStop = false;
+            // 
+            // estrella1
+            // 
+            estrella1.ErrorImage = Properties.Resources.perfilcliente;
+            estrella1.Image = Properties.Resources.estrellallena;
+            estrella1.InitialImage = Properties.Resources.perfilcliente;
+            estrella1.Location = new Point(134, 231);
+            estrella1.Name = "estrella1";
+            estrella1.Size = new Size(34, 34);
+            estrella1.SizeMode = PictureBoxSizeMode.StretchImage;
+            estrella1.TabIndex = 62;
+            estrella1.TabStop = false;
+            // 
+            // panel14
+            // 
+            panel14.Location = new Point(154, 83);
+            panel14.Name = "panel14";
+            panel14.Size = new Size(240, 41);
+            panel14.TabIndex = 63;
+            // 
+            // panel6
+            // 
+            panel6.Location = new Point(202, 426);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(551, 33);
+            panel6.TabIndex = 63;
+            // 
+            // panel22
+            // 
+            panel22.Anchor = AnchorStyles.Top;
+            panel22.BackColor = Color.FromArgb(64, 64, 64);
+            panel22.Location = new Point(406, 91);
+            panel22.Name = "panel22";
+            panel22.Size = new Size(7, 327);
+            panel22.TabIndex = 37;
+            // 
+            // pedidoIDlbl
+            // 
+            pedidoIDlbl.AutoSize = true;
+            pedidoIDlbl.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            pedidoIDlbl.ForeColor = SystemColors.Control;
+            pedidoIDlbl.Location = new Point(257, 13);
+            pedidoIDlbl.Name = "pedidoIDlbl";
+            pedidoIDlbl.Size = new Size(47, 30);
+            pedidoIDlbl.TabIndex = 15;
+            pedidoIDlbl.Text = "ID: ";
             // 
             // lblTituloResenas
             // 
@@ -1372,116 +1512,139 @@
             lblTituloResenas.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTituloResenas.ForeColor = SystemColors.Control;
             lblTituloResenas.ImageAlign = ContentAlignment.BottomLeft;
-            lblTituloResenas.Location = new Point(43, 32);
+            lblTituloResenas.Location = new Point(29, 12);
             lblTituloResenas.Name = "lblTituloResenas";
-            lblTituloResenas.Size = new Size(225, 32);
+            lblTituloResenas.Size = new Size(229, 32);
             lblTituloResenas.TabIndex = 35;
-            lblTituloResenas.Text = "Reseñas Deliverys:";
+            lblTituloResenas.Text = "Reseña del Pedido:";
             // 
             // btnCerrarResenas
             // 
             btnCerrarResenas.BackColor = Color.FromArgb(255, 128, 128);
-            btnCerrarResenas.Image = Properties.Resources.cancelardoc;
+            btnCerrarResenas.Image = Properties.Resources.atras24x;
             btnCerrarResenas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCerrarResenas.Location = new Point(629, 23);
+            btnCerrarResenas.Location = new Point(635, 13);
             btnCerrarResenas.Name = "btnCerrarResenas";
-            btnCerrarResenas.Size = new Size(114, 56);
+            btnCerrarResenas.Size = new Size(114, 36);
             btnCerrarResenas.TabIndex = 1;
             btnCerrarResenas.Text = "Cerrar";
             btnCerrarResenas.TextAlign = ContentAlignment.MiddleRight;
             btnCerrarResenas.UseVisualStyleBackColor = false;
             btnCerrarResenas.Click += button10_Click;
             // 
-            // dgvUltimasResenas
+            // panel4
             // 
-            dgvUltimasResenas.AllowUserToAddRows = false;
-            dgvUltimasResenas.AllowUserToDeleteRows = false;
-            dgvUltimasResenas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUltimasResenas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvUltimasResenas.Location = new Point(43, 93);
-            dgvUltimasResenas.Name = "dgvUltimasResenas";
-            dgvUltimasResenas.ReadOnly = true;
-            dgvUltimasResenas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUltimasResenas.Size = new Size(700, 465);
-            dgvUltimasResenas.TabIndex = 0;
+            panel4.Anchor = AnchorStyles.Top;
+            panel4.BackColor = Color.FromArgb(64, 64, 64);
+            panel4.Controls.Add(label24);
+            panel4.Controls.Add(resComent);
+            panel4.Location = new Point(29, 433);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(720, 203);
+            panel4.TabIndex = 37;
             // 
-            // btnVerResenas
+            // label24
             // 
-            btnVerResenas.BackColor = Color.FromArgb(128, 255, 128);
-            btnVerResenas.Image = Properties.Resources.ojo;
-            btnVerResenas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnVerResenas.Location = new Point(682, 141);
-            btnVerResenas.Name = "btnVerResenas";
-            btnVerResenas.Size = new Size(114, 56);
-            btnVerResenas.TabIndex = 37;
-            btnVerResenas.Text = "Ver Reseña";
-            btnVerResenas.TextAlign = ContentAlignment.MiddleRight;
-            btnVerResenas.UseVisualStyleBackColor = false;
-            btnVerResenas.Click += btnVerResenas_Click;
+            label24.AutoSize = true;
+            label24.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label24.ForeColor = SystemColors.Control;
+            label24.Image = Properties.Resources.comentario24x_blanco;
+            label24.ImageAlign = ContentAlignment.MiddleRight;
+            label24.Location = new Point(9, 2);
+            label24.Name = "label24";
+            label24.Size = new Size(158, 30);
+            label24.TabIndex = 15;
+            label24.Text = "Comentario     ";
             // 
-            // txtCantidadResenas
+            // resComent
             // 
-            txtCantidadResenas.BackColor = SystemColors.ActiveCaption;
-            txtCantidadResenas.Location = new Point(625, 153);
-            txtCantidadResenas.Multiline = true;
-            txtCantidadResenas.Name = "txtCantidadResenas";
-            txtCantidadResenas.Size = new Size(42, 32);
-            txtCantidadResenas.TabIndex = 36;
-            txtCantidadResenas.Text = "12";
+            resComent.CharacterCasing = CharacterCasing.Upper;
+            resComent.Enabled = false;
+            resComent.Location = new Point(9, 36);
+            resComent.Multiline = true;
+            resComent.Name = "resComent";
+            resComent.Size = new Size(700, 158);
+            resComent.TabIndex = 36;
             // 
-            // button6
+            // panel11
             // 
-            button6.Image = Properties.Resources.pedido;
-            button6.Location = new Point(324, 150);
-            button6.Name = "button6";
-            button6.RightToLeft = RightToLeft.No;
-            button6.Size = new Size(39, 39);
-            button6.TabIndex = 35;
-            button6.UseVisualStyleBackColor = true;
+            panel11.BackColor = Color.FromArgb(64, 64, 64);
+            panel11.Controls.Add(label34);
+            panel11.Controls.Add(lblCalidad);
+            panel11.Controls.Add(lblAmabilidad);
+            panel11.Controls.Add(lblPuntualidad);
+            panel11.Controls.Add(label26);
+            panel11.Controls.Add(nombreCliente);
+            panel11.Location = new Point(29, 92);
+            panel11.Name = "panel11";
+            panel11.Size = new Size(362, 326);
+            panel11.TabIndex = 63;
             // 
-            // lblCantidadResenas
+            // label34
             // 
-            lblCantidadResenas.AutoSize = true;
-            lblCantidadResenas.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblCantidadResenas.ForeColor = SystemColors.Control;
-            lblCantidadResenas.ImageAlign = ContentAlignment.BottomLeft;
-            lblCantidadResenas.Location = new Point(370, 153);
-            lblCantidadResenas.Name = "lblCantidadResenas";
-            lblCantidadResenas.Size = new Size(256, 32);
-            lblCantidadResenas.TabIndex = 34;
-            lblCantidadResenas.Text = "Cantidad de Reseñas:";
+            label34.AutoSize = true;
+            label34.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label34.ForeColor = SystemColors.Control;
+            label34.Location = new Point(14, 117);
+            label34.Name = "label34";
+            label34.Size = new Size(132, 30);
+            label34.TabIndex = 15;
+            label34.Text = "Puntuación:";
             // 
-            // button1
+            // lblCalidad
             // 
-            button1.Image = Properties.Resources.delivery1;
-            button1.Location = new Point(8, 150);
-            button1.Name = "button1";
-            button1.RightToLeft = RightToLeft.No;
-            button1.Size = new Size(39, 39);
-            button1.TabIndex = 33;
-            button1.UseVisualStyleBackColor = true;
+            lblCalidad.AutoSize = true;
+            lblCalidad.Font = new Font("Segoe UI", 15.75F);
+            lblCalidad.ForeColor = SystemColors.Control;
+            lblCalidad.Location = new Point(14, 159);
+            lblCalidad.Name = "lblCalidad";
+            lblCalidad.Size = new Size(87, 30);
+            lblCalidad.TabIndex = 15;
+            lblCalidad.Text = "Calidad:";
             // 
-            // txtPromedioResena
+            // lblAmabilidad
             // 
-            txtPromedioResena.BackColor = Color.FromArgb(255, 255, 192);
-            txtPromedioResena.Location = new Point(275, 153);
-            txtPromedioResena.Multiline = true;
-            txtPromedioResena.Name = "txtPromedioResena";
-            txtPromedioResena.Size = new Size(42, 32);
-            txtPromedioResena.TabIndex = 32;
-            txtPromedioResena.Text = "4.7";
+            lblAmabilidad.AutoSize = true;
+            lblAmabilidad.Font = new Font("Segoe UI", 15.75F);
+            lblAmabilidad.ForeColor = SystemColors.Control;
+            lblAmabilidad.Location = new Point(14, 197);
+            lblAmabilidad.Name = "lblAmabilidad";
+            lblAmabilidad.Size = new Size(123, 30);
+            lblAmabilidad.TabIndex = 15;
+            lblAmabilidad.Text = "Amabilidad:";
             // 
-            // lblPromedioResena
+            // lblPuntualidad
             // 
-            lblPromedioResena.AutoSize = true;
-            lblPromedioResena.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblPromedioResena.ForeColor = SystemColors.Control;
-            lblPromedioResena.ImageAlign = ContentAlignment.BottomLeft;
-            lblPromedioResena.Location = new Point(46, 153);
-            lblPromedioResena.Name = "lblPromedioResena";
-            lblPromedioResena.Size = new Size(231, 32);
-            lblPromedioResena.TabIndex = 31;
-            lblPromedioResena.Text = "Promedio Reseñas:";
+            lblPuntualidad.AutoSize = true;
+            lblPuntualidad.Font = new Font("Segoe UI", 15.75F);
+            lblPuntualidad.ForeColor = SystemColors.Control;
+            lblPuntualidad.Location = new Point(14, 235);
+            lblPuntualidad.Name = "lblPuntualidad";
+            lblPuntualidad.Size = new Size(129, 30);
+            lblPuntualidad.TabIndex = 15;
+            lblPuntualidad.Text = "Puntualidad:";
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
+            label26.ForeColor = SystemColors.Control;
+            label26.Image = Properties.Resources.user24x;
+            label26.ImageAlign = ContentAlignment.MiddleRight;
+            label26.Location = new Point(14, 6);
+            label26.Name = "label26";
+            label26.Size = new Size(105, 30);
+            label26.TabIndex = 15;
+            label26.Text = "Cliente    ";
+            // 
+            // nombreCliente
+            // 
+            nombreCliente.CharacterCasing = CharacterCasing.Upper;
+            nombreCliente.Enabled = false;
+            nombreCliente.Location = new Point(14, 43);
+            nombreCliente.Name = "nombreCliente";
+            nombreCliente.Size = new Size(341, 29);
+            nombreCliente.TabIndex = 36;
             // 
             // opcionesCarpeta
             // 
@@ -1537,7 +1700,7 @@
             detallepanelcompleto.BackColor = Color.Gray;
             detallepanelcompleto.Controls.Add(detallepagopanel);
             detallepanelcompleto.Controls.Add(devueltapanel);
-            detallepanelcompleto.Location = new Point(809, 3);
+            detallepanelcompleto.Location = new Point(1606, 7);
             detallepanelcompleto.Name = "detallepanelcompleto";
             detallepanelcompleto.Size = new Size(810, 680);
             detallepanelcompleto.TabIndex = 15;
@@ -2034,7 +2197,7 @@
             label13.BackColor = Color.White;
             label13.ForeColor = SystemColors.Control;
             label13.Image = Properties.Resources.busqueda;
-            label13.Location = new Point(342, 211);
+            label13.Location = new Point(342, 149);
             label13.Name = "label13";
             label13.Size = new Size(18, 21);
             label13.TabIndex = 13;
@@ -2044,7 +2207,7 @@
             // 
             txtbusquedafactura.CharacterCasing = CharacterCasing.Upper;
             txtbusquedafactura.ForeColor = Color.Gray;
-            txtbusquedafactura.Location = new Point(8, 206);
+            txtbusquedafactura.Location = new Point(8, 145);
             txtbusquedafactura.Name = "txtbusquedafactura";
             txtbusquedafactura.PlaceholderText = "Buscar";
             txtbusquedafactura.Size = new Size(355, 29);
@@ -2063,10 +2226,11 @@
             // 
             // panel7
             // 
-            panel7.BackColor = Color.FromArgb(64, 64, 64);
+            panel7.BackColor = Color.DimGray;
             panel7.Controls.Add(label8);
+            panel7.Controls.Add(generarEnlaceResena);
+            panel7.Controls.Add(btnVerResenas);
             panel7.Controls.Add(label9);
-            panel7.Controls.Add(editar);
             panel7.Controls.Add(fecini);
             panel7.Controls.Add(cancelarpedido);
             panel7.Controls.Add(fecfin);
@@ -2089,6 +2253,36 @@
             label8.TabIndex = 14;
             label8.Text = "Inicio";
             // 
+            // generarEnlaceResena
+            // 
+            generarEnlaceResena.BackColor = Color.FromArgb(255, 255, 128);
+            generarEnlaceResena.Enabled = false;
+            generarEnlaceResena.Image = Properties.Resources.enviar;
+            generarEnlaceResena.ImageAlign = ContentAlignment.MiddleLeft;
+            generarEnlaceResena.Location = new Point(438, 65);
+            generarEnlaceResena.Name = "generarEnlaceResena";
+            generarEnlaceResena.Size = new Size(114, 56);
+            generarEnlaceResena.TabIndex = 37;
+            generarEnlaceResena.Text = "Enlace\r\nReseña";
+            generarEnlaceResena.TextAlign = ContentAlignment.MiddleRight;
+            generarEnlaceResena.UseVisualStyleBackColor = false;
+            generarEnlaceResena.Visible = false;
+            generarEnlaceResena.Click += generarEnlaceResena_Click;
+            // 
+            // btnVerResenas
+            // 
+            btnVerResenas.BackColor = Color.FromArgb(255, 192, 128);
+            btnVerResenas.Image = Properties.Resources.revisar;
+            btnVerResenas.ImageAlign = ContentAlignment.MiddleLeft;
+            btnVerResenas.Location = new Point(438, 9);
+            btnVerResenas.Name = "btnVerResenas";
+            btnVerResenas.Size = new Size(114, 56);
+            btnVerResenas.TabIndex = 37;
+            btnVerResenas.Text = "Ver Reseña";
+            btnVerResenas.TextAlign = ContentAlignment.MiddleRight;
+            btnVerResenas.UseVisualStyleBackColor = false;
+            btnVerResenas.Click += btnVerResenas_Click;
+            // 
             // label9
             // 
             label9.AutoSize = true;
@@ -2099,19 +2293,6 @@
             label9.Size = new Size(33, 21);
             label9.TabIndex = 15;
             label9.Text = "Fin";
-            // 
-            // editar
-            // 
-            editar.BackColor = Color.FromArgb(255, 192, 128);
-            editar.Image = Properties.Resources.editar;
-            editar.ImageAlign = ContentAlignment.MiddleLeft;
-            editar.Location = new Point(438, 9);
-            editar.Name = "editar";
-            editar.Size = new Size(114, 56);
-            editar.TabIndex = 1;
-            editar.Text = "Editar";
-            editar.TextAlign = ContentAlignment.MiddleRight;
-            editar.UseVisualStyleBackColor = false;
             // 
             // fecini
             // 
@@ -2188,9 +2369,9 @@
             // 
             panel5.BackColor = Color.FromArgb(64, 64, 64);
             panel5.Controls.Add(tabladatospedidos);
-            panel5.Location = new Point(4, 241);
+            panel5.Location = new Point(4, 177);
             panel5.Name = "panel5";
-            panel5.Size = new Size(795, 506);
+            panel5.Size = new Size(795, 504);
             panel5.TabIndex = 10;
             // 
             // tabladatospedidos
@@ -2206,7 +2387,7 @@
             tabladatospedidos.RowHeadersVisible = false;
             tabladatospedidos.RowHeadersWidth = 51;
             tabladatospedidos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            tabladatospedidos.Size = new Size(789, 496);
+            tabladatospedidos.Size = new Size(789, 493);
             tabladatospedidos.TabIndex = 5;
             tabladatospedidos.CellClick += tabladatospedidos_CellClick;
             // 
@@ -2218,7 +2399,7 @@
             panel10.Controls.Add(canceladochk);
             panel10.Controls.Add(pendientechk);
             panel10.Controls.Add(facturadochk);
-            panel10.Location = new Point(368, 206);
+            panel10.Location = new Point(368, 145);
             panel10.Name = "panel10";
             panel10.Size = new Size(428, 29);
             panel10.TabIndex = 14;
@@ -2238,23 +2419,25 @@
             // 
             todoschk.AutoSize = true;
             todoschk.ForeColor = Color.White;
-            todoschk.Location = new Point(357, 2);
+            todoschk.Location = new Point(33, 1);
             todoschk.Name = "todoschk";
             todoschk.Size = new Size(69, 25);
             todoschk.TabIndex = 6;
             todoschk.Text = "Todos";
             todoschk.UseVisualStyleBackColor = true;
+            todoschk.CheckedChanged += todoschk_CheckedChanged;
             // 
             // canceladochk
             // 
             canceladochk.AutoSize = true;
             canceladochk.ForeColor = Color.White;
-            canceladochk.Location = new Point(246, 2);
+            canceladochk.Location = new Point(326, 1);
             canceladochk.Name = "canceladochk";
             canceladochk.Size = new Size(101, 25);
             canceladochk.TabIndex = 6;
             canceladochk.Text = "Cancelado";
             canceladochk.UseVisualStyleBackColor = true;
+            canceladochk.CheckedChanged += canceladochk_CheckedChanged;
             // 
             // pendientechk
             // 
@@ -2262,30 +2445,32 @@
             pendientechk.Checked = true;
             pendientechk.CheckState = CheckState.Checked;
             pendientechk.ForeColor = Color.White;
-            pendientechk.Location = new Point(139, 2);
+            pendientechk.Location = new Point(219, 1);
             pendientechk.Name = "pendientechk";
             pendientechk.Size = new Size(97, 25);
             pendientechk.TabIndex = 6;
             pendientechk.Text = "Pendiente";
             pendientechk.UseVisualStyleBackColor = true;
+            pendientechk.CheckedChanged += pendientechk_CheckedChanged;
             // 
             // facturadochk
             // 
             facturadochk.AutoSize = true;
             facturadochk.ForeColor = Color.White;
-            facturadochk.Location = new Point(32, 2);
+            facturadochk.Location = new Point(112, 1);
             facturadochk.Name = "facturadochk";
             facturadochk.Size = new Size(97, 25);
             facturadochk.TabIndex = 6;
             facturadochk.Text = "Facturado";
             facturadochk.UseVisualStyleBackColor = true;
+            facturadochk.CheckedChanged += facturadochk_CheckedChanged;
             // 
             // Delivery
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.WindowFrame;
-            ClientSize = new Size(812, 787);
+            ClientSize = new Size(812, 718);
             Controls.Add(tabControl1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -2304,8 +2489,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             panel29.ResumeLayout(false);
             panel29.PerformLayout();
@@ -2337,7 +2520,20 @@
             tabPage2.PerformLayout();
             panelResenas.ResumeLayout(false);
             panelResenas.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvUltimasResenas).EndInit();
+            panel13.ResumeLayout(false);
+            panel13.PerformLayout();
+            panel16.ResumeLayout(false);
+            panel16.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)empleadoimg).EndInit();
+            ((System.ComponentModel.ISupportInitialize)estrella5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)estrella4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)estrella3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)estrella2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)estrella1).EndInit();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel11.ResumeLayout(false);
+            panel11.PerformLayout();
             opcionesCarpeta.ResumeLayout(false);
             detallepanelcompleto.ResumeLayout(false);
             detallepagopanel.ResumeLayout(false);
@@ -2412,7 +2608,6 @@
         private TextBox txtbusquedafactura;
         private Label label10;
         private Panel panel7;
-        private Button editar;
         private Button cancelarpedido;
         private Button imprimirbtn;
         private Button facturarbtn;
@@ -2514,30 +2709,46 @@
         private Button deslizar;
         private Label label14;
         private TextBox estimado;
-        private Label label18;
         private Label vehiculolabel;
         private TextBox txtVehiculoAsignado;
-        private TextBox txtMotivoAsignacion;
-        private Button btnAsignarAutomatico;
-        private Label label22;
-        private ComboBox cmbZonaEntrega;
-        private TextBox txtPromedioResena;
-        private Button button1;
-        private Button button6;
-        private Label lblCantidadResenas;
-        private Label lblPromedioResena;
         private Button btnVerResenas;
-        private TextBox txtCantidadResenas;
         private Panel panelResenas;
-        private DataGridView dgvUltimasResenas;
         private Button btnCerrarResenas;
         private Label lblTituloResenas;
         private Panel panel8;
         private Panel panelBloqueoNCF;
-        private PictureBox pictureBox7;
-        private PictureBox pictureBox6;
         private PictureBox pictureBox4;
         private Label itbisLBL;
         private Label label23;
+        private TextBox deliveryNombre;
+        private TextBox resComent;
+        private Label label25;
+        private Label label24;
+        private TextBox nombreCliente;
+        private Label pedidoIDlbl;
+        private Label label26;
+        private Label lblPuntualidad;
+        private Label lblAmabilidad;
+        private Label lblCalidad;
+        private Panel panel22;
+        private Label label34;
+        private PictureBox empleadoimg;
+        private TextBox vehiculoRepartidor;
+        private Label label28;
+        private Label label27;
+        private PictureBox estrella5;
+        private PictureBox estrella4;
+        private PictureBox estrella3;
+        private PictureBox estrella2;
+        private PictureBox estrella1;
+        private Label label33;
+        private Panel panel4;
+        private Panel panel6;
+        private Panel panel13;
+        private Panel panel11;
+        private Panel panel15;
+        private Panel panel14;
+        private Panel panel16;
+        private Button generarEnlaceResena;
     }
 }
