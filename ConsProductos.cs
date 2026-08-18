@@ -1110,9 +1110,7 @@ namespace Proyecto_restaurante
 
         private void categoriaconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            idcategoriatxt.Text = categoriaconsulta.SelectedCells[0].Value.ToString();
-            categoriatxt.Text = categoriaconsulta.SelectedCells[1].Value.ToString();
-            buscarcateg_Click(sender, e);
+            
         }
 
         private void ingredientesconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -1244,7 +1242,9 @@ namespace Proyecto_restaurante
 
         private void categoriaconsulta_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            idcategoriatxt.Text = categoriaconsulta.SelectedCells[0].Value.ToString();
+            categoriatxt.Text = categoriaconsulta.SelectedCells[1].Value.ToString();
+            buscarcateg_Click(sender, e);
         }
     }
 }

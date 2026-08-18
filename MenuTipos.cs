@@ -1,4 +1,4 @@
-﻿using PdfSharp.Pdf.Filters;
+using PdfSharp.Pdf.Filters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,11 +24,12 @@ namespace Proyecto_restaurante
         private string CategoriaId = "";
         private string TipoDocID = "";
         private string ProductoTipoId = "";
-        private string MetodoPagoId = "";
+        private string VehiculoId = "";
         private string DepaID = "";
         private string PuestoID = "";
         private string MotivoId = "";
         private string UnidadID = "";
+        private bool imagenVehiculoSeleccionada = false;
 
         private void button4_Click(object sender, EventArgs e)
         {
@@ -480,158 +481,280 @@ namespace Proyecto_restaurante
             metodopanel.BringToFront();
             metodopanel.Visible = true;
 
-            MP_CargarGrid();
-            MP_Limpiar();
+            Vehiculo_CargarGrid();
+            Vehiculo_Limpiar();
         }
 
-        private void MP_CargarGrid()
+        private void Vehiculo_CargarGrid()
         {
-            string textoFiltro = metbuscar?.Text?.Trim() ?? "";
-            bool soloActivos = (metfiltrochk != null && metfiltrochk.Checked);
-
+            string textoFiltro = vehicbuscar?.Text?.Trim() ?? "";
+            bool soloActivos = (vehifiltrochk != null && vehifiltrochk.Checked);
 
             string sql = @"
-                        SELECT IdMetodoPago, Nombre, Activo
-                        FROM dbo.MetodoPago
-                        WHERE (@f = '' OR Nombre LIKE '%' + @f + '%')"
-                                    + (soloActivos ? " AND Activo = 1" : "") +
-                                @"
-                        ORDER BY Activo DESC, Nombre;";
+                SELECT 
+                    IdVehiculo, 
+                    Matricula, 
+                    Marca, 
+                    Modelo, 
+                    Anio, 
+                    Color, 
+                    Chasis, 
+                    EstadoVehiculo, 
+                    ImagenPlaca
+                FROM dbo.VehiculoEmpleados
+                WHERE (@f = '' OR Matricula LIKE '%' + @f + '%' OR Marca LIKE '%' + @f + '%' OR Modelo LIKE '%' + @f + '%' OR Chasis LIKE '%' + @f + '%')
+                  AND (@soloAct = 0 OR EstadoVehiculo = 'Activo')
+                ORDER BY IdVehiculo DESC;";
 
             using (var cn = new SqlConnection(conexionString))
             using (var da = new SqlDataAdapter(sql, cn))
             {
                 da.SelectCommand.Parameters.AddWithValue("@f", textoFiltro);
+                da.SelectCommand.Parameters.AddWithValue("@soloAct", soloActivos ? 1 : 0);
 
                 var dt = new DataTable();
                 da.Fill(dt);
 
-                metododt.AutoGenerateColumns = true;
-                metododt.DataSource = dt;
+                vehiculodt.AutoGenerateColumns = true;
+                vehiculodt.DataSource = dt;
 
-                if (metododt.Columns.Contains("IdMetodoPago"))
+                if (vehiculodt.Columns.Contains("IdVehiculo"))
                 {
-                    var c = metododt.Columns["IdMetodoPago"];
+                    var c = vehiculodt.Columns["IdVehiculo"];
                     c.HeaderText = "ID";
-                    c.Width = 70;
+                    c.Width = 60;
                     c.ReadOnly = true;
                 }
-                if (metododt.Columns.Contains("Nombre"))
-                    metododt.Columns["Nombre"].HeaderText = "Método";
-                if (metododt.Columns.Contains("Activo"))
-                    metododt.Columns["Activo"].HeaderText = "Activo";
+                if (vehiculodt.Columns.Contains("Matricula"))
+                    vehiculodt.Columns["Matricula"].HeaderText = "Placa";
+                if (vehiculodt.Columns.Contains("Marca"))
+                    vehiculodt.Columns["Marca"].HeaderText = "Marca";
+                if (vehiculodt.Columns.Contains("Modelo"))
+                    vehiculodt.Columns["Modelo"].HeaderText = "Modelo";
+                if (vehiculodt.Columns.Contains("Anio"))
+                    vehiculodt.Columns["Anio"].HeaderText = "Año";
+                if (vehiculodt.Columns.Contains("Color"))
+                    vehiculodt.Columns["Color"].HeaderText = "Color";
+                if (vehiculodt.Columns.Contains("Chasis"))
+                    vehiculodt.Columns["Chasis"].HeaderText = "Chasis";
+                if (vehiculodt.Columns.Contains("EstadoVehiculo"))
+                    vehiculodt.Columns["EstadoVehiculo"].HeaderText = "Estado";
+                if (vehiculodt.Columns.Contains("ImagenPlaca"))
+                    vehiculodt.Columns["ImagenPlaca"].Visible = false;
             }
         }
 
-        private void MP_Limpiar()
+        private void Vehiculo_Limpiar()
         {
-            MetodoPagoId = "";
-            idmetpago.Text = "";
-            metodotxt.Text = "";
-            if (estadometodo != null) estadometodo.Checked = true;
-            metodotxt.Focus();
+            VehiculoId = "";
+            idvehiculo.Text = "";
+            marcatxt.Text = "";
+            modelotxt.Text = "";
+            aniotxt.Text = "";
+            placatxt.Text = "";
+            colortxt.Text = "";
+            chasistxt.Text = "";
+            if (estadovehic != null) estadovehic.Checked = true;
+            imagenPlaca.Image = Properties.Resources.placa1;
+            imagenVehiculoSeleccionada = false;
+            marcatxt.Focus();
         }
 
-        private bool MP_Validar()
+        private bool Vehiculo_Validar()
         {
-            if (string.IsNullOrWhiteSpace(metodotxt.Text))
+            if (string.IsNullOrWhiteSpace(marcatxt.Text))
             {
-                MessageBox.Show("El nombre es obligatorio.");
-                metodotxt.Focus();
+                MessageBox.Show("La marca es obligatoria.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                marcatxt.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(modelotxt.Text))
+            {
+                MessageBox.Show("El modelo es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                modelotxt.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(aniotxt.Text) || !int.TryParse(aniotxt.Text.Trim(), out _))
+            {
+                MessageBox.Show("Ingrese un año válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                aniotxt.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(placatxt.Text))
+            {
+                MessageBox.Show("La placa (matrícula) es obligatoria.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                placatxt.Focus();
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(chasistxt.Text))
+            {
+                MessageBox.Show("El chasis es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                chasistxt.Focus();
                 return false;
             }
 
-            if (MP_ExisteNombre(metodotxt.Text, MetodoPagoId))
+            if (Vehiculo_ExisteMatricula(placatxt.Text.Trim(), VehiculoId))
             {
-                MessageBox.Show("Ya existe un método con ese nombre.");
-                metodotxt.Focus();
+                MessageBox.Show("Ya existe un vehículo registrado con esta placa (matrícula).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                placatxt.Focus();
                 return false;
             }
+
+            if (Vehiculo_ExisteChasis(chasistxt.Text.Trim(), VehiculoId))
+            {
+                MessageBox.Show("Ya existe un vehículo registrado con este chasis.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                chasistxt.Focus();
+                return false;
+            }
+
             return true;
         }
 
-        private bool MP_ExisteNombre(string nombre, string idActual)
+        private bool Vehiculo_ExisteMatricula(string matricula, string idActual)
         {
-            string sql = @"SELECT COUNT(1) FROM dbo.MetodoPago
-                   WHERE Nombre = @n AND (@id = '' OR IdMetodoPago <> @idint);";
-
+            string sql = @"SELECT COUNT(1) FROM dbo.VehiculoEmpleados
+                           WHERE Matricula = @m AND (@id = '' OR IdVehiculo <> @idint);";
             using (var cn = new SqlConnection(conexionString))
             using (var cmd = new SqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@n", (nombre ?? "").Trim());
-                int idint = 0; int.TryParse(idActual, out idint);
+                cmd.Parameters.AddWithValue("@m", (matricula ?? "").Trim());
+                int.TryParse(idActual, out int idint);
                 cmd.Parameters.AddWithValue("@id", idActual ?? "");
                 cmd.Parameters.AddWithValue("@idint", idint);
-
                 cn.Open();
-                int n = Convert.ToInt32(cmd.ExecuteScalar());
-                return n > 0;
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
 
-        private void MP_Guardar()
+        private bool Vehiculo_ExisteChasis(string chasis, string idActual)
         {
-            if (!MP_Validar()) return;
+            string sql = @"SELECT COUNT(1) FROM dbo.VehiculoEmpleados
+                           WHERE Chasis = @c AND (@id = '' OR IdVehiculo <> @idint);";
+            using (var cn = new SqlConnection(conexionString))
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                cmd.Parameters.AddWithValue("@c", (chasis ?? "").Trim());
+                int.TryParse(idActual, out int idint);
+                cmd.Parameters.AddWithValue("@id", idActual ?? "");
+                cmd.Parameters.AddWithValue("@idint", idint);
+                cn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
+        private void Vehiculo_Guardar()
+        {
+            if (!Vehiculo_Validar()) return;
+
+            byte[] imagenBytes = null;
+            if (imagenVehiculoSeleccionada && imagenPlaca.Image != null)
+            {
+                using (Bitmap bmp = new Bitmap(imagenPlaca.Image))
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    imagenBytes = ms.ToArray();
+                }
+            }
+
+            string estadoStr = (estadovehic != null && estadovehic.Checked) ? "Activo" : "Inactivo";
 
             using (var cn = new SqlConnection(conexionString))
             {
                 cn.Open();
 
-                if (string.IsNullOrEmpty(MetodoPagoId))
+                if (string.IsNullOrEmpty(VehiculoId))
                 {
-                    string sql = "INSERT INTO dbo.MetodoPago (Nombre, Activo) VALUES (@Nombre, @Activo);";
+                    string sql = @"INSERT INTO dbo.VehiculoEmpleados (Matricula, Marca, Modelo, Anio, Color, Chasis, EstadoVehiculo, FechaRegistro, ImagenPlaca) 
+                                   VALUES (@Matricula, @Marca, @Modelo, @Anio, @Color, @Chasis, @EstadoVehiculo, GETDATE(), @ImagenPlaca);";
                     using (var cmd = new SqlCommand(sql, cn))
                     {
-                        cmd.Parameters.AddWithValue("@Nombre", metodotxt.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Activo", (estadometodo != null && estadometodo.Checked) ? 1 : 0);
+                        cmd.Parameters.AddWithValue("@Matricula", placatxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Marca", marcatxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Modelo", modelotxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Anio", int.Parse(aniotxt.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@Color", string.IsNullOrWhiteSpace(colortxt.Text) ? (object)DBNull.Value : colortxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Chasis", chasistxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@EstadoVehiculo", estadoStr);
+                        cmd.Parameters.Add("@ImagenPlaca", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
 
                         MessageBox.Show(cmd.ExecuteNonQuery() > 0
-                            ? "Método registrado con éxito."
+                            ? "Vehículo registrado con éxito."
                             : "No se pudo guardar.");
                     }
                 }
                 else
                 {
-                    string sql = "UPDATE dbo.MetodoPago SET Nombre=@Nombre, Activo=@Activo WHERE IdMetodoPago=@Id;";
+                    string sql = @"UPDATE dbo.VehiculoEmpleados 
+                                   SET Matricula=@Matricula, Marca=@Marca, Modelo=@Modelo, Anio=@Anio, Color=@Color, Chasis=@Chasis, EstadoVehiculo=@EstadoVehiculo, ImagenPlaca=@ImagenPlaca 
+                                   WHERE IdVehiculo=@Id;";
                     using (var cmd = new SqlCommand(sql, cn))
                     {
-                        cmd.Parameters.AddWithValue("@Id", int.Parse(MetodoPagoId));
-                        cmd.Parameters.AddWithValue("@Nombre", metodotxt.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Activo", (estadometodo != null && estadometodo.Checked) ? 1 : 0);
+                        cmd.Parameters.AddWithValue("@Id", int.Parse(VehiculoId));
+                        cmd.Parameters.AddWithValue("@Matricula", placatxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Marca", marcatxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Modelo", modelotxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Anio", int.Parse(aniotxt.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@Color", string.IsNullOrWhiteSpace(colortxt.Text) ? (object)DBNull.Value : colortxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Chasis", chasistxt.Text.Trim());
+                        cmd.Parameters.AddWithValue("@EstadoVehiculo", estadoStr);
+                        cmd.Parameters.Add("@ImagenPlaca", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
 
                         MessageBox.Show(cmd.ExecuteNonQuery() > 0
-                            ? "Método actualizado con éxito."
+                            ? "Vehículo actualizado con éxito."
                             : "No se pudo actualizar.");
                     }
                 }
             }
 
-            MP_Limpiar();
-            MP_CargarGrid();
+            Vehiculo_Limpiar();
+            Vehiculo_CargarGrid();
         }
 
-        private void MP_CargarDesdeGridRow(int rowIndex)
+        private void Vehiculo_CargarDesdeGridRow(int rowIndex)
         {
             if (rowIndex < 0) return;
-            var row = metododt.Rows[rowIndex];
+            var row = vehiculodt.Rows[rowIndex];
             if (row == null) return;
 
-            var idObj = row.Cells["IdMetodoPago"]?.Value;
-            MetodoPagoId = (idObj == null || idObj == DBNull.Value) ? "" : idObj.ToString();
-            idmetpago.Text = MetodoPagoId;
+            var idObj = row.Cells["IdVehiculo"]?.Value;
+            VehiculoId = (idObj == null || idObj == DBNull.Value) ? "" : idObj.ToString();
+            idvehiculo.Text = VehiculoId;
 
-            metodotxt.Text = row.Cells["Nombre"]?.Value?.ToString() ?? "";
+            placatxt.Text = row.Cells["Matricula"]?.Value?.ToString() ?? "";
+            marcatxt.Text = row.Cells["Marca"]?.Value?.ToString() ?? "";
+            modelotxt.Text = row.Cells["Modelo"]?.Value?.ToString() ?? "";
+            aniotxt.Text = row.Cells["Anio"]?.Value?.ToString() ?? "";
+            colortxt.Text = row.Cells["Color"]?.Value?.ToString() ?? "";
+            chasistxt.Text = row.Cells["Chasis"]?.Value?.ToString() ?? "";
 
-            if (metododt.Columns.Contains("Activo") && estadometodo != null)
+            var estObj = row.Cells["EstadoVehiculo"]?.Value?.ToString();
+            if (estadovehic != null)
             {
-                var actObj = row.Cells["Activo"]?.Value;
-                bool activo = false;
-                if (actObj != null && actObj != DBNull.Value) activo = Convert.ToBoolean(actObj);
-                estadometodo.Checked = activo;
+                estadovehic.Checked = (estObj == "Activo");
             }
-            else if (estadometodo != null)
+
+            if (vehiculodt.Columns.Contains("ImagenPlaca") && row.Cells["ImagenPlaca"]?.Value != DBNull.Value && row.Cells["ImagenPlaca"]?.Value != null)
             {
-                estadometodo.Checked = true;
+                byte[] bytes = (byte[])row.Cells["ImagenPlaca"].Value;
+                if (bytes.Length > 0)
+                {
+                    using (MemoryStream ms = new MemoryStream(bytes))
+                    {
+                        imagenPlaca.Image = Image.FromStream(ms);
+                    }
+                    imagenVehiculoSeleccionada = true;
+                }
+                else
+                {
+                    imagenPlaca.Image = Properties.Resources.placa1;
+                    imagenVehiculoSeleccionada = false;
+                }
+            }
+            else
+            {
+                imagenPlaca.Image = Properties.Resources.placa1;
+                imagenVehiculoSeleccionada = false;
             }
         }
 
@@ -812,7 +935,7 @@ namespace Proyecto_restaurante
 
         private void metfiltrochk_CheckedChanged(object sender, EventArgs e)
         {
-            MP_CargarGrid();
+            Vehiculo_CargarGrid();
         }
 
         private void Puesto_CargarDepartamentosGrid()
@@ -1287,7 +1410,7 @@ namespace Proyecto_restaurante
 
         private void button6_Click(object sender, EventArgs e)
         {
-            MP_Guardar();
+            Vehiculo_Guardar();
         }
 
         private void UM_CargarGrid()
@@ -1636,7 +1759,7 @@ namespace Proyecto_restaurante
 
         private void button7_Click(object sender, EventArgs e)
         {
-            MP_Limpiar();
+            Vehiculo_Limpiar();
         }
 
         private void selecdepa_Click(object sender, EventArgs e)
@@ -1718,23 +1841,28 @@ namespace Proyecto_restaurante
 
         private void button9_Click(object sender, EventArgs e)
         {
-            MP_Limpiar();
+            Vehiculo_Limpiar();
         }
 
-        private void selecmetodo_Click(object sender, EventArgs e)
+        private void selecvehic_Click(object sender, EventArgs e)
         {
-            if (metododt.CurrentRow != null)
-                MP_CargarDesdeGridRow(metododt.CurrentRow.Index);
+            if (vehiculodt.CurrentRow != null)
+                Vehiculo_CargarDesdeGridRow(vehiculodt.CurrentRow.Index);
         }
 
-        private void metbuscar_TextChanged(object sender, EventArgs e)
+        private void vehicbuscar_TextChanged(object sender, EventArgs e)
         {
-            MP_CargarGrid();
+            Vehiculo_CargarGrid();
         }
 
-        private void metododt_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void vehifiltrochk_CheckedChanged(object sender, EventArgs e)
         {
-            MP_CargarDesdeGridRow(e.RowIndex);
+            Vehiculo_CargarGrid();
+        }
+
+        private void vehiculodt_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Vehiculo_CargarDesdeGridRow(e.RowIndex);
         }
 
         private void button22_Click(object sender, EventArgs e)
@@ -1931,6 +2059,32 @@ namespace Proyecto_restaurante
             {
                 ingredientechk.Checked = false;
                 bebidachk.Checked = false;
+            }
+        }
+
+        private void seleccionimagenbtn_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Archivos de imagen (*.jpg, *.jpeg, *.png)|*.jpg;*.jpeg;*.png";
+                openFileDialog.Title = "Seleccionar imagen";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        byte[] bytes = File.ReadAllBytes(openFileDialog.FileName);
+                        using (MemoryStream ms = new MemoryStream(bytes))
+                        {
+                            imagenPlaca.Image = Image.FromStream(ms);
+                        }
+                        imagenVehiculoSeleccionada = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al cargar la imagen: " + ex.Message);
+                    }
+                }
             }
         }
     }

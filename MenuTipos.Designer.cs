@@ -1,4 +1,4 @@
-﻿namespace Proyecto_restaurante
+namespace Proyecto_restaurante
 {
     partial class MenuTipos
     {
@@ -42,18 +42,24 @@
             button2 = new Button();
             button1 = new Button();
             metodopanel = new Panel();
-            selecmetodo = new Button();
+            seleccionimagenbtn = new Button();
+            imagenPlaca = new PictureBox();
+            selecvehic = new Button();
             label5 = new Label();
             button9 = new Button();
-            metfiltrochk = new CheckBox();
-            estadometodo = new CheckBox();
-            metbuscar = new TextBox();
-            metododt = new DataGridView();
-            idmetpago = new TextBox();
-            metodotxt = new TextBox();
+            vehifiltrochk = new CheckBox();
+            estadovehic = new CheckBox();
+            vehicbuscar = new TextBox();
+            vehiculodt = new DataGridView();
+            idvehiculo = new TextBox();
+            aniotxt = new TextBox();
+            modelotxt = new TextBox();
+            chasistxt = new TextBox();
+            marcatxt = new TextBox();
+            colortxt = new TextBox();
+            placatxt = new TextBox();
             label4 = new Label();
             label6 = new Label();
-            label3 = new Label();
             label2 = new Label();
             panel2 = new Panel();
             button7 = new Button();
@@ -195,7 +201,8 @@
             button33 = new Button();
             barraizq.SuspendLayout();
             metodopanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)metododt).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)imagenPlaca).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)vehiculodt).BeginInit();
             panel2.SuspendLayout();
             idenpanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)identdt).BeginInit();
@@ -223,15 +230,15 @@
             // 
             // button5
             // 
-            button5.BackColor = Color.FromArgb(255, 128, 128);
-            button5.Image = Properties.Resources.tipodepago;
+            button5.BackColor = Color.White;
+            button5.Image = Properties.Resources.camion_contenedor24x;
             button5.ImageAlign = ContentAlignment.MiddleRight;
             button5.Location = new Point(7, 145);
             button5.Margin = new Padding(2);
             button5.Name = "button5";
             button5.Size = new Size(202, 38);
             button5.TabIndex = 4;
-            button5.Text = "Métodos de pago";
+            button5.Text = "Vehiculos";
             button5.TextAlign = ContentAlignment.MiddleLeft;
             button5.UseVisualStyleBackColor = false;
             button5.Click += button5_Click;
@@ -386,18 +393,24 @@
             // 
             // metodopanel
             // 
-            metodopanel.Controls.Add(selecmetodo);
+            metodopanel.Controls.Add(seleccionimagenbtn);
+            metodopanel.Controls.Add(imagenPlaca);
+            metodopanel.Controls.Add(selecvehic);
             metodopanel.Controls.Add(label5);
             metodopanel.Controls.Add(button9);
-            metodopanel.Controls.Add(metfiltrochk);
-            metodopanel.Controls.Add(estadometodo);
-            metodopanel.Controls.Add(metbuscar);
-            metodopanel.Controls.Add(metododt);
-            metodopanel.Controls.Add(idmetpago);
-            metodopanel.Controls.Add(metodotxt);
+            metodopanel.Controls.Add(vehifiltrochk);
+            metodopanel.Controls.Add(estadovehic);
+            metodopanel.Controls.Add(vehicbuscar);
+            metodopanel.Controls.Add(vehiculodt);
+            metodopanel.Controls.Add(idvehiculo);
+            metodopanel.Controls.Add(aniotxt);
+            metodopanel.Controls.Add(modelotxt);
+            metodopanel.Controls.Add(chasistxt);
+            metodopanel.Controls.Add(marcatxt);
+            metodopanel.Controls.Add(colortxt);
+            metodopanel.Controls.Add(placatxt);
             metodopanel.Controls.Add(label4);
             metodopanel.Controls.Add(label6);
-            metodopanel.Controls.Add(label3);
             metodopanel.Controls.Add(label2);
             metodopanel.Controls.Add(panel2);
             metodopanel.Location = new Point(225, 12);
@@ -406,17 +419,40 @@
             metodopanel.TabIndex = 21;
             metodopanel.Visible = false;
             // 
-            // selecmetodo
+            // seleccionimagenbtn
             // 
-            selecmetodo.Image = Properties.Resources.seleccion;
-            selecmetodo.ImageAlign = ContentAlignment.MiddleLeft;
-            selecmetodo.Location = new Point(363, 262);
-            selecmetodo.Name = "selecmetodo";
-            selecmetodo.Size = new Size(138, 26);
-            selecmetodo.TabIndex = 1;
-            selecmetodo.Text = "Seleccionar";
-            selecmetodo.UseVisualStyleBackColor = true;
-            selecmetodo.Click += selecmetodo_Click;
+            seleccionimagenbtn.BackColor = Color.Lime;
+            seleccionimagenbtn.ForeColor = Color.Black;
+            seleccionimagenbtn.Image = Properties.Resources.subir1;
+            seleccionimagenbtn.Location = new Point(431, 116);
+            seleccionimagenbtn.Name = "seleccionimagenbtn";
+            seleccionimagenbtn.Size = new Size(61, 52);
+            seleccionimagenbtn.TabIndex = 8;
+            seleccionimagenbtn.TextAlign = ContentAlignment.BottomCenter;
+            seleccionimagenbtn.UseVisualStyleBackColor = false;
+            seleccionimagenbtn.Click += seleccionimagenbtn_Click;
+            // 
+            // imagenPlaca
+            // 
+            imagenPlaca.Image = Properties.Resources.placa1;
+            imagenPlaca.Location = new Point(226, 116);
+            imagenPlaca.Name = "imagenPlaca";
+            imagenPlaca.Size = new Size(199, 52);
+            imagenPlaca.SizeMode = PictureBoxSizeMode.StretchImage;
+            imagenPlaca.TabIndex = 7;
+            imagenPlaca.TabStop = false;
+            // 
+            // selecvehic
+            // 
+            selecvehic.Image = Properties.Resources.seleccion;
+            selecvehic.ImageAlign = ContentAlignment.MiddleLeft;
+            selecvehic.Location = new Point(363, 262);
+            selecvehic.Name = "selecvehic";
+            selecvehic.Size = new Size(138, 26);
+            selecvehic.TabIndex = 1;
+            selecvehic.Text = "Seleccionar";
+            selecvehic.UseVisualStyleBackColor = true;
+            selecvehic.Click += selecvehic_Click;
             // 
             // label5
             // 
@@ -442,78 +478,130 @@
             button9.UseVisualStyleBackColor = true;
             button9.Click += button9_Click;
             // 
-            // metfiltrochk
+            // vehifiltrochk
             // 
-            metfiltrochk.AutoSize = true;
-            metfiltrochk.Checked = true;
-            metfiltrochk.CheckState = CheckState.Checked;
-            metfiltrochk.Font = new Font("Segoe UI", 15F);
-            metfiltrochk.Image = Properties.Resources.sicheck;
-            metfiltrochk.Location = new Point(364, 359);
-            metfiltrochk.Name = "metfiltrochk";
-            metfiltrochk.Size = new Size(61, 32);
-            metfiltrochk.TabIndex = 6;
-            metfiltrochk.Text = "      ";
-            metfiltrochk.UseVisualStyleBackColor = true;
-            metfiltrochk.CheckedChanged += metfiltrochk_CheckedChanged;
+            vehifiltrochk.AutoSize = true;
+            vehifiltrochk.Checked = true;
+            vehifiltrochk.CheckState = CheckState.Checked;
+            vehifiltrochk.Font = new Font("Segoe UI", 15F);
+            vehifiltrochk.Image = Properties.Resources.sicheck;
+            vehifiltrochk.Location = new Point(364, 359);
+            vehifiltrochk.Name = "vehifiltrochk";
+            vehifiltrochk.Size = new Size(61, 32);
+            vehifiltrochk.TabIndex = 6;
+            vehifiltrochk.Text = "      ";
+            vehifiltrochk.UseVisualStyleBackColor = true;
+            vehifiltrochk.CheckedChanged += vehifiltrochk_CheckedChanged;
             // 
-            // estadometodo
+            // estadovehic
             // 
-            estadometodo.AutoSize = true;
-            estadometodo.Checked = true;
-            estadometodo.CheckState = CheckState.Checked;
-            estadometodo.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            estadometodo.ForeColor = Color.Lime;
-            estadometodo.Location = new Point(113, 66);
-            estadometodo.Name = "estadometodo";
-            estadometodo.Size = new Size(78, 25);
-            estadometodo.TabIndex = 6;
-            estadometodo.Text = "Activo";
-            estadometodo.UseVisualStyleBackColor = true;
+            estadovehic.AutoSize = true;
+            estadovehic.Checked = true;
+            estadovehic.CheckState = CheckState.Checked;
+            estadovehic.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            estadovehic.ForeColor = Color.Lime;
+            estadovehic.Location = new Point(428, 57);
+            estadovehic.Name = "estadovehic";
+            estadovehic.Size = new Size(78, 25);
+            estadovehic.TabIndex = 6;
+            estadovehic.Text = "Activo";
+            estadovehic.UseVisualStyleBackColor = true;
             // 
-            // metbuscar
+            // vehicbuscar
             // 
-            metbuscar.CharacterCasing = CharacterCasing.Upper;
-            metbuscar.Location = new Point(363, 330);
-            metbuscar.Name = "metbuscar";
-            metbuscar.Size = new Size(138, 23);
-            metbuscar.TabIndex = 5;
-            metbuscar.TextChanged += metbuscar_TextChanged;
+            vehicbuscar.CharacterCasing = CharacterCasing.Upper;
+            vehicbuscar.Location = new Point(363, 330);
+            vehicbuscar.Name = "vehicbuscar";
+            vehicbuscar.Size = new Size(138, 23);
+            vehicbuscar.TabIndex = 5;
+            vehicbuscar.TextChanged += vehicbuscar_TextChanged;
             // 
-            // metododt
+            // vehiculodt
             // 
-            metododt.AllowUserToAddRows = false;
-            metododt.AllowUserToDeleteRows = false;
-            metododt.AllowUserToResizeRows = false;
-            metododt.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            metododt.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            metododt.Location = new Point(13, 262);
-            metododt.MultiSelect = false;
-            metododt.Name = "metododt";
-            metododt.ReadOnly = true;
-            metododt.RowHeadersVisible = false;
-            metododt.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            metododt.Size = new Size(344, 133);
-            metododt.TabIndex = 3;
-            metododt.TabStop = false;
-            metododt.CellContentClick += metododt_CellContentClick;
+            vehiculodt.AllowUserToAddRows = false;
+            vehiculodt.AllowUserToDeleteRows = false;
+            vehiculodt.AllowUserToResizeRows = false;
+            vehiculodt.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            vehiculodt.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            vehiculodt.Location = new Point(13, 262);
+            vehiculodt.MultiSelect = false;
+            vehiculodt.Name = "vehiculodt";
+            vehiculodt.ReadOnly = true;
+            vehiculodt.RowHeadersVisible = false;
+            vehiculodt.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            vehiculodt.Size = new Size(344, 133);
+            vehiculodt.TabIndex = 3;
+            vehiculodt.TabStop = false;
+            vehiculodt.CellClick += vehiculodt_CellContentClick;
+            vehiculodt.CellContentClick += vehiculodt_CellContentClick;
             // 
-            // idmetpago
+            // idvehiculo
             // 
-            idmetpago.Enabled = false;
-            idmetpago.Location = new Point(36, 11);
-            idmetpago.Name = "idmetpago";
-            idmetpago.Size = new Size(56, 23);
-            idmetpago.TabIndex = 2;
+            idvehiculo.Enabled = false;
+            idvehiculo.Location = new Point(36, 11);
+            idvehiculo.Name = "idvehiculo";
+            idvehiculo.Size = new Size(56, 23);
+            idvehiculo.TabIndex = 2;
             // 
-            // metodotxt
+            // aniotxt
             // 
-            metodotxt.Anchor = AnchorStyles.None;
-            metodotxt.CharacterCasing = CharacterCasing.Upper;
-            metodotxt.Location = new Point(200, 103);
-            metodotxt.Name = "metodotxt";
-            metodotxt.Size = new Size(199, 23);
-            metodotxt.TabIndex = 2;
+            aniotxt.Anchor = AnchorStyles.None;
+            aniotxt.CharacterCasing = CharacterCasing.Upper;
+            aniotxt.Location = new Point(21, 116);
+            aniotxt.Name = "aniotxt";
+            aniotxt.PlaceholderText = "Año";
+            aniotxt.Size = new Size(199, 23);
+            aniotxt.TabIndex = 2;
+            // 
+            // modelotxt
+            // 
+            modelotxt.Anchor = AnchorStyles.None;
+            modelotxt.CharacterCasing = CharacterCasing.Upper;
+            modelotxt.Location = new Point(21, 87);
+            modelotxt.Name = "modelotxt";
+            modelotxt.PlaceholderText = "Modelo";
+            modelotxt.Size = new Size(199, 23);
+            modelotxt.TabIndex = 2;
+            // 
+            // chasistxt
+            // 
+            chasistxt.Anchor = AnchorStyles.None;
+            chasistxt.CharacterCasing = CharacterCasing.Upper;
+            chasistxt.Location = new Point(226, 87);
+            chasistxt.Name = "chasistxt";
+            chasistxt.PlaceholderText = "Chasis";
+            chasistxt.Size = new Size(199, 23);
+            chasistxt.TabIndex = 2;
+            // 
+            // marcatxt
+            // 
+            marcatxt.Anchor = AnchorStyles.None;
+            marcatxt.CharacterCasing = CharacterCasing.Upper;
+            marcatxt.Location = new Point(21, 58);
+            marcatxt.Name = "marcatxt";
+            marcatxt.PlaceholderText = "Marca";
+            marcatxt.Size = new Size(199, 23);
+            marcatxt.TabIndex = 2;
+            // 
+            // colortxt
+            // 
+            colortxt.Anchor = AnchorStyles.None;
+            colortxt.CharacterCasing = CharacterCasing.Upper;
+            colortxt.Location = new Point(226, 58);
+            colortxt.Name = "colortxt";
+            colortxt.PlaceholderText = "Color";
+            colortxt.Size = new Size(199, 23);
+            colortxt.TabIndex = 2;
+            // 
+            // placatxt
+            // 
+            placatxt.Anchor = AnchorStyles.None;
+            placatxt.CharacterCasing = CharacterCasing.Upper;
+            placatxt.Location = new Point(21, 145);
+            placatxt.Name = "placatxt";
+            placatxt.PlaceholderText = "Placa";
+            placatxt.Size = new Size(199, 23);
+            placatxt.TabIndex = 2;
             // 
             // label4
             // 
@@ -539,27 +627,16 @@
             label6.TabIndex = 0;
             label6.Text = "Filtros     ";
             // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label3.ForeColor = Color.White;
-            label3.Location = new Point(113, 104);
-            label3.Name = "label3";
-            label3.Size = new Size(73, 21);
-            label3.TabIndex = 0;
-            label3.Text = "Nombre";
-            // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(163, 4);
+            label2.Location = new Point(201, 4);
             label2.Name = "label2";
-            label2.Size = new Size(215, 32);
+            label2.Size = new Size(111, 32);
             label2.TabIndex = 0;
-            label2.Text = "Métodos de pago";
+            label2.Text = "Vehiculo";
             // 
             // panel2
             // 
@@ -2291,7 +2368,8 @@
             barraizq.PerformLayout();
             metodopanel.ResumeLayout(false);
             metodopanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)metododt).EndInit();
+            ((System.ComponentModel.ISupportInitialize)imagenPlaca).EndInit();
+            ((System.ComponentModel.ISupportInitialize)vehiculodt).EndInit();
             panel2.ResumeLayout(false);
             idenpanel.ResumeLayout(false);
             idenpanel.PerformLayout();
@@ -2338,16 +2416,15 @@
         private Button button4;
         private Panel metodopanel;
         private Button button6;
-        private TextBox metodotxt;
-        private DataGridView metododt;
-        private TextBox idmetpago;
+        private TextBox placatxt;
+        private DataGridView vehiculodt;
+        private TextBox idvehiculo;
         private Label label4;
-        private Label label3;
         private Panel panel2;
         private Button button7;
-        private CheckBox metfiltrochk;
-        private CheckBox estadometodo;
-        private TextBox metbuscar;
+        private CheckBox vehifiltrochk;
+        private CheckBox estadovehic;
+        private TextBox vehicbuscar;
         private Label label5;
         private Button button9;
         private Label label6;
@@ -2442,7 +2519,7 @@
         public Label textoinicial;
         private Label label2;
         private Button button26;
-        private Button selecmetodo;
+        private Button selecvehic;
         private Button seleciden;
         private Button selectdepapuest;
         private Button selecpuest;
@@ -2491,5 +2568,12 @@
         private TextBox iddepapuestotxt;
         private CheckBox bebidachk;
         private CheckBox adicionchk;
+        private TextBox aniotxt;
+        private TextBox modelotxt;
+        private TextBox marcatxt;
+        private TextBox chasistxt;
+        private TextBox colortxt;
+        private PictureBox imagenPlaca;
+        private Button seleccionimagenbtn;
     }
 }

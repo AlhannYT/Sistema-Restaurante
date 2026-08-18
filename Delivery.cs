@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using static Proyecto_restaurante.menu;
+using System.ServiceModel;
 
 namespace Proyecto_restaurante
 {
@@ -358,7 +359,6 @@ namespace Proyecto_restaurante
             txtnombrecompleto.Text = "AL CONTADO";
             idclientetxt.Text = "1";
             numerotxt.Clear();
-            estimado.Clear();
 
             txtcodigoproducto.Clear();
             txtnombreproducto.Clear();
@@ -370,7 +370,12 @@ namespace Proyecto_restaurante
             labeltotal.Text = "0";
             idrepartidor.Clear();
             nombrerepartidor.Clear();
-            txtVehiculoAsignado.Clear();
+            if (vehiculoEmpleadocmbx != null)
+            {
+                vehiculoEmpleadocmbx.DataSource = null;
+                vehiculoEmpleadocmbx.SelectedIndex = -1;
+                vehiculoEmpleadocmbx.Enabled = false;
+            }
             vehiculoAsignado = "";
 
             detalleorden.Rows.Clear();
@@ -444,6 +449,8 @@ namespace Proyecto_restaurante
 
                         SqlCommand cmdInsert = new SqlCommand(queryInsert, conexion, transaccion);
 
+                        string vehiculoTexto = (vehiculoEmpleadocmbx != null && vehiculoEmpleadocmbx.SelectedIndex >= 0) ? vehiculoEmpleadocmbx.Text : "";
+
                         cmdInsert.Parameters.AddWithValue("@Fecha", SistemaFecha.FechaActual);
                         cmdInsert.Parameters.AddWithValue("@Origen", "Delivery");
                         cmdInsert.Parameters.AddWithValue("@IdClientePersona", Convert.ToInt32(IdClientePersonaST));
@@ -454,7 +461,7 @@ namespace Proyecto_restaurante
                         cmdInsert.Parameters.AddWithValue("@Nota", notatxt.Text);
                         cmdInsert.Parameters.AddWithValue("@Direccion", direccioncliente.Text);
                         cmdInsert.Parameters.AddWithValue("@Repartidor", idrepartidor.Text);
-                        cmdInsert.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
+                        cmdInsert.Parameters.AddWithValue("@VehiculoAsignado", vehiculoTexto);
                         cmdInsert.Parameters.AddWithValue("@NCF", valNCF);
 
                         idPedidoGenerado = Convert.ToInt32(cmdInsert.ExecuteScalar());
@@ -468,6 +475,8 @@ namespace Proyecto_restaurante
                     else if (EditarEstado == 1)
                     {
                         idPedidoGenerado = PedidoID;
+
+                        string vehiculoTexto = (vehiculoEmpleadocmbx != null && vehiculoEmpleadocmbx.SelectedIndex >= 0) ? vehiculoEmpleadocmbx.Text : "";
 
                         string queryUpdate = @"
                         UPDATE Pedido
@@ -492,7 +501,7 @@ namespace Proyecto_restaurante
                         cmdUpdate.Parameters.AddWithValue("@Direccion", direccioncliente.Text);
                         cmdUpdate.Parameters.AddWithValue("@Repartidor", idrepartidor.Text);
                         cmdUpdate.Parameters.AddWithValue("@IdPedido", PedidoID);
-                        cmdUpdate.Parameters.AddWithValue("@VehiculoAsignado", txtVehiculoAsignado.Text);
+                        cmdUpdate.Parameters.AddWithValue("@VehiculoAsignado", vehiculoTexto);
                         cmdUpdate.Parameters.AddWithValue("@NCF", valNCF);
 
                         cmdUpdate.ExecuteNonQuery();
@@ -655,12 +664,12 @@ namespace Proyecto_restaurante
 
             string consultaCliente = @"
                 SELECT 
-                e.IdEmpleado,
-                p.NombreCompleto
-            FROM Empleado e
-            LEFT JOIN Persona p ON e.IdPersona = p.IdPersona
-            LEFT JOIN PersonaDocumento pd ON p.IdPersona = pd.IdPersona
-            WHERE e.Activo = 1 AND p.Activo = 1 and e.IdRolEmpleado=6;";
+                    e.IdEmpleado,
+                    p.NombreCompleto
+                FROM Empleado e
+                LEFT JOIN Persona p ON e.IdPersona = p.IdPersona
+                LEFT JOIN PersonaDocumento pd ON p.IdPersona = pd.IdPersona
+                WHERE e.Activo = 1 AND p.Activo = 1 and e.IdRolEmpleado=5;";
 
             using (SqlDataAdapter adaptador = new SqlDataAdapter(consultaCliente, conexionString))
             {
@@ -741,6 +750,60 @@ namespace Proyecto_restaurante
             panelclientes.Location = new Point(803, 532);
         }
 
+        private void CargarVehiculos()
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    string query = @"
+                    SELECT IdVehiculo, 
+                           ISNULL(Marca, '') + ' ' + ISNULL(Modelo, '') + ' ' + ISNULL(Color, '') + ' (' + ISNULL(Matricula, '') + ')' AS VehiculoDescripcion
+                    FROM dbo.VehiculoEmpleados
+                    WHERE EstadoVehiculo = 'Activo'
+                    ORDER BY Marca, Modelo";
+
+                    SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
+                    DataTable dt = new DataTable();
+                    adaptador.Fill(dt);
+
+                    vehiculoEmpleadocmbx.DisplayMember = "VehiculoDescripcion";
+                    vehiculoEmpleadocmbx.ValueMember = "IdVehiculo";
+                    vehiculoEmpleadocmbx.DataSource = dt;
+                    vehiculoEmpleadocmbx.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los vehículos: {ex.Message}");
+            }
+        }
+
+        private int? ObtenerVehiculoEmpleado(int idEmpleado)
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    conexion.Open();
+                    string query = "SELECT IdVehiculoAsignado FROM Empleado WHERE IdEmpleado = @IdEmpleado";
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            return Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+
+
+
         private void tabladelivery_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -751,6 +814,23 @@ namespace Proyecto_restaurante
                 string idRepartidor = row.Cells["IdEmpleado"].Value.ToString();
                 nombrerepartidor.Text = nombreCompleto;
                 idrepartidor.Text = idRepartidor;
+
+                CargarVehiculos();
+
+                if (int.TryParse(idRepartidor, out int idEmp))
+                {
+                    int? idVehiculoDefecto = ObtenerVehiculoEmpleado(idEmp);
+                    if (idVehiculoDefecto.HasValue && idVehiculoDefecto.Value > 0)
+                    {
+                        vehiculoEmpleadocmbx.SelectedValue = idVehiculoDefecto.Value;
+                    }
+                    else
+                    {
+                        vehiculoEmpleadocmbx.SelectedIndex = -1;
+                    }
+                }
+
+                vehiculoEmpleadocmbx.Enabled = false;
             }
 
             panelrepartidor.Visible = false;
@@ -2360,6 +2440,27 @@ namespace Proyecto_restaurante
         private void generarEnlaceResena_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Para trabajarlo mas tarde.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void cambiarVehiculo_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(idrepartidor.Text))
+            {
+                MessageBox.Show("Primero seleccione un repartidor.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult cambiar = MessageBox.Show("¿Seguro que desea cambiarle el vehículo?", "Información", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (cambiar == DialogResult.Yes)
+            {
+                if (vehiculoEmpleadocmbx.DataSource == null)
+                {
+                    CargarVehiculos();
+                }
+                vehiculoEmpleadocmbx.Enabled = true;
+                vehiculoEmpleadocmbx.Focus();
+                cambiarVehiculo.Enabled = false;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Proyecto_restaurante
+namespace Proyecto_restaurante
 {
     partial class ConsEmpleados
     {
@@ -45,22 +45,19 @@
             eliminarbtn = new Button();
             filtro = new CheckBox();
             tabPage2 = new TabPage();
-            puestopanel = new Panel();
-            idconsultatxt = new TextBox();
-            puestoconsultatxt = new TextBox();
-            button5 = new Button();
-            label5 = new Label();
-            puestoconsulta = new DataGridView();
+            panel6 = new Panel();
+            panel8 = new Panel();
             estadochk = new CheckBox();
             label8 = new Label();
             panel4 = new Panel();
+            puestoCmbx = new ComboBox();
+            vehiculoEmpleadocmbx = new ComboBox();
             rolcmbx = new ComboBox();
             tiposueldocmbx = new ComboBox();
             fechaingreso = new DateTimePicker();
-            idpuestotxt = new TextBox();
-            puestotxt = new TextBox();
+            label4 = new Label();
+            label9 = new Label();
             label10 = new Label();
-            buscarpuesto = new Button();
             panel2 = new Panel();
             panel5 = new Panel();
             label19 = new Label();
@@ -101,14 +98,11 @@
             label7 = new Label();
             label12 = new Label();
             toolTip1 = new ToolTip(components);
-            label4 = new Label();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)empleadoimg).BeginInit();
             ((System.ComponentModel.ISupportInitialize)tabladatos).BeginInit();
             tabPage2.SuspendLayout();
-            puestopanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)puestoconsulta).BeginInit();
             panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)direccionEmpleado).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numeroEmpleado).BeginInit();
@@ -299,18 +293,19 @@
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.WindowFrame;
-            tabPage2.Controls.Add(puestopanel);
+            tabPage2.Controls.Add(panel6);
+            tabPage2.Controls.Add(panel8);
             tabPage2.Controls.Add(estadochk);
             tabPage2.Controls.Add(label8);
             tabPage2.Controls.Add(panel4);
+            tabPage2.Controls.Add(puestoCmbx);
+            tabPage2.Controls.Add(vehiculoEmpleadocmbx);
             tabPage2.Controls.Add(rolcmbx);
             tabPage2.Controls.Add(tiposueldocmbx);
             tabPage2.Controls.Add(fechaingreso);
-            tabPage2.Controls.Add(idpuestotxt);
-            tabPage2.Controls.Add(puestotxt);
             tabPage2.Controls.Add(label4);
+            tabPage2.Controls.Add(label9);
             tabPage2.Controls.Add(label10);
-            tabPage2.Controls.Add(buscarpuesto);
             tabPage2.Controls.Add(panel2);
             tabPage2.Controls.Add(panel5);
             tabPage2.Controls.Add(panel3);
@@ -333,77 +328,21 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Creación";
             // 
-            // puestopanel
+            // panel6
             // 
-            puestopanel.BackColor = Color.FromArgb(64, 64, 64);
-            puestopanel.Controls.Add(idconsultatxt);
-            puestopanel.Controls.Add(puestoconsultatxt);
-            puestopanel.Controls.Add(button5);
-            puestopanel.Controls.Add(label5);
-            puestopanel.Controls.Add(puestoconsulta);
-            puestopanel.Location = new Point(264, 136);
-            puestopanel.Name = "puestopanel";
-            puestopanel.Size = new Size(227, 159);
-            puestopanel.TabIndex = 100;
-            puestopanel.Visible = false;
+            panel6.BackColor = Color.FromArgb(64, 64, 64);
+            panel6.Location = new Point(521, 71);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(7, 237);
+            panel6.TabIndex = 103;
             // 
-            // idconsultatxt
+            // panel8
             // 
-            idconsultatxt.Enabled = false;
-            idconsultatxt.Location = new Point(4, 28);
-            idconsultatxt.Name = "idconsultatxt";
-            idconsultatxt.Size = new Size(31, 29);
-            idconsultatxt.TabIndex = 58;
-            // 
-            // puestoconsultatxt
-            // 
-            puestoconsultatxt.Enabled = false;
-            puestoconsultatxt.Location = new Point(37, 28);
-            puestoconsultatxt.Name = "puestoconsultatxt";
-            puestoconsultatxt.Size = new Size(154, 29);
-            puestoconsultatxt.TabIndex = 58;
-            // 
-            // button5
-            // 
-            button5.ForeColor = Color.Black;
-            button5.Image = Properties.Resources.angulo_hacia_arriba;
-            button5.Location = new Point(194, 28);
-            button5.Name = "button5";
-            button5.Size = new Size(28, 29);
-            button5.TabIndex = 60;
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label5.ForeColor = Color.White;
-            label5.Location = new Point(5, 2);
-            label5.Name = "label5";
-            label5.Size = new Size(154, 21);
-            label5.TabIndex = 50;
-            label5.Text = "Seleccionar puesto";
-            // 
-            // puestoconsulta
-            // 
-            puestoconsulta.AllowUserToAddRows = false;
-            puestoconsulta.AllowUserToDeleteRows = false;
-            puestoconsulta.AllowUserToResizeRows = false;
-            puestoconsulta.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            puestoconsulta.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
-            puestoconsulta.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            puestoconsulta.Location = new Point(4, 63);
-            puestoconsulta.MultiSelect = false;
-            puestoconsulta.Name = "puestoconsulta";
-            puestoconsulta.ReadOnly = true;
-            puestoconsulta.RowHeadersVisible = false;
-            puestoconsulta.RowHeadersWidth = 51;
-            puestoconsulta.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            puestoconsulta.Size = new Size(219, 90);
-            puestoconsulta.TabIndex = 74;
-            puestoconsulta.CellClick += puestoconsulta_CellClick;
-            puestoconsulta.CellContentDoubleClick += puestoconsulta_CellContentDoubleClick;
+            panel8.BackColor = Color.FromArgb(64, 64, 64);
+            panel8.Location = new Point(250, 71);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(7, 237);
+            panel8.TabIndex = 103;
             // 
             // estadochk
             // 
@@ -436,22 +375,43 @@
             panel4.Size = new Size(279, 26);
             panel4.TabIndex = 95;
             // 
+            // puestoCmbx
+            // 
+            puestoCmbx.DropDownStyle = ComboBoxStyle.DropDownList;
+            puestoCmbx.FormattingEnabled = true;
+            puestoCmbx.Items.AddRange(new object[] { "Gerente", "Administrator", "Supervisor", "Cajero", "Mesero", "Repartidor", "Cocinero" });
+            puestoCmbx.Location = new Point(272, 86);
+            puestoCmbx.Name = "puestoCmbx";
+            puestoCmbx.Size = new Size(230, 29);
+            puestoCmbx.TabIndex = 102;
+            // 
+            // vehiculoEmpleadocmbx
+            // 
+            vehiculoEmpleadocmbx.DropDownStyle = ComboBoxStyle.DropDownList;
+            vehiculoEmpleadocmbx.Enabled = false;
+            vehiculoEmpleadocmbx.FormattingEnabled = true;
+            vehiculoEmpleadocmbx.Location = new Point(272, 181);
+            vehiculoEmpleadocmbx.Name = "vehiculoEmpleadocmbx";
+            vehiculoEmpleadocmbx.Size = new Size(230, 29);
+            vehiculoEmpleadocmbx.TabIndex = 102;
+            // 
             // rolcmbx
             // 
             rolcmbx.DropDownStyle = ComboBoxStyle.DropDownList;
             rolcmbx.FormattingEnabled = true;
             rolcmbx.Items.AddRange(new object[] { "Gerente", "Administrator", "Supervisor", "Cajero", "Mesero", "Repartidor", "Cocinero" });
-            rolcmbx.Location = new Point(59, 279);
+            rolcmbx.Location = new Point(59, 288);
             rolcmbx.Name = "rolcmbx";
-            rolcmbx.Size = new Size(132, 29);
+            rolcmbx.Size = new Size(172, 29);
             rolcmbx.TabIndex = 102;
+            rolcmbx.SelectedIndexChanged += rolcmbx_SelectedIndexChanged;
             // 
             // tiposueldocmbx
             // 
             tiposueldocmbx.DropDownStyle = ComboBoxStyle.DropDownList;
             tiposueldocmbx.FormattingEnabled = true;
             tiposueldocmbx.Items.AddRange(new object[] { "Semanal", "Quincenal", "Mensual" });
-            tiposueldocmbx.Location = new Point(144, 244);
+            tiposueldocmbx.Location = new Point(415, 125);
             tiposueldocmbx.Name = "tiposueldocmbx";
             tiposueldocmbx.Size = new Size(87, 29);
             tiposueldocmbx.TabIndex = 102;
@@ -459,26 +419,35 @@
             // fechaingreso
             // 
             fechaingreso.Format = DateTimePickerFormat.Short;
-            fechaingreso.Location = new Point(266, 184);
+            fechaingreso.Location = new Point(19, 85);
             fechaingreso.Name = "fechaingreso";
-            fechaingreso.Size = new Size(172, 29);
+            fechaingreso.Size = new Size(171, 29);
             fechaingreso.TabIndex = 101;
             // 
-            // idpuestotxt
+            // label4
             // 
-            idpuestotxt.Enabled = false;
-            idpuestotxt.Location = new Point(268, 101);
-            idpuestotxt.Name = "idpuestotxt";
-            idpuestotxt.Size = new Size(31, 29);
-            idpuestotxt.TabIndex = 97;
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.White;
+            label4.ImageAlign = ContentAlignment.MiddleLeft;
+            label4.Location = new Point(17, 118);
+            label4.Name = "label4";
+            label4.Size = new Size(133, 21);
+            label4.TabIndex = 96;
+            label4.Text = "Datos Generales";
             // 
-            // puestotxt
+            // label9
             // 
-            puestotxt.Enabled = false;
-            puestotxt.Location = new Point(301, 101);
-            puestotxt.Name = "puestotxt";
-            puestotxt.Size = new Size(155, 29);
-            puestotxt.TabIndex = 98;
+            label9.AutoSize = true;
+            label9.Enabled = false;
+            label9.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label9.ForeColor = Color.White;
+            label9.ImageAlign = ContentAlignment.MiddleLeft;
+            label9.Location = new Point(272, 157);
+            label9.Name = "label9";
+            label9.Size = new Size(77, 21);
+            label9.TabIndex = 96;
+            label9.Text = "Vehiculo";
             // 
             // label10
             // 
@@ -486,23 +455,11 @@
             label10.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label10.ForeColor = Color.White;
             label10.ImageAlign = ContentAlignment.MiddleLeft;
-            label10.Location = new Point(268, 79);
+            label10.Location = new Point(272, 58);
             label10.Name = "label10";
-            label10.Size = new Size(144, 21);
+            label10.Size = new Size(62, 21);
             label10.TabIndex = 96;
-            label10.Text = "Puesto de trabajo";
-            // 
-            // buscarpuesto
-            // 
-            buscarpuesto.ForeColor = Color.Black;
-            buscarpuesto.Image = Properties.Resources.busqueda;
-            buscarpuesto.Location = new Point(460, 101);
-            buscarpuesto.Name = "buscarpuesto";
-            buscarpuesto.Size = new Size(28, 29);
-            buscarpuesto.TabIndex = 99;
-            toolTip1.SetToolTip(buscarpuesto, "Buscar Puesto");
-            buscarpuesto.UseVisualStyleBackColor = true;
-            buscarpuesto.Click += buscarpuesto_Click;
+            label10.Text = "Puesto";
             // 
             // panel2
             // 
@@ -816,7 +773,7 @@
             // emailtxt
             // 
             emailtxt.CharacterCasing = CharacterCasing.Upper;
-            emailtxt.Location = new Point(19, 209);
+            emailtxt.Location = new Point(19, 251);
             emailtxt.Name = "emailtxt";
             emailtxt.PlaceholderText = "Email";
             emailtxt.Size = new Size(212, 29);
@@ -825,17 +782,17 @@
             // txtcedula
             // 
             txtcedula.CharacterCasing = CharacterCasing.Upper;
-            txtcedula.Location = new Point(19, 101);
+            txtcedula.Location = new Point(19, 143);
             txtcedula.Name = "txtcedula";
             txtcedula.PlaceholderText = "Cédula";
-            txtcedula.Size = new Size(172, 29);
+            txtcedula.Size = new Size(212, 29);
             txtcedula.TabIndex = 78;
             txtcedula.TextChanged += txtcedula_TextChanged;
             // 
             // txtapellido
             // 
             txtapellido.CharacterCasing = CharacterCasing.Upper;
-            txtapellido.Location = new Point(19, 173);
+            txtapellido.Location = new Point(19, 215);
             txtapellido.Name = "txtapellido";
             txtapellido.PlaceholderText = "Apellido(s)";
             txtapellido.Size = new Size(212, 29);
@@ -844,23 +801,23 @@
             // idUltimoEmpleado
             // 
             idUltimoEmpleado.Enabled = false;
-            idUltimoEmpleado.Location = new Point(31, 3);
+            idUltimoEmpleado.Location = new Point(47, 12);
             idUltimoEmpleado.Name = "idUltimoEmpleado";
             idUltimoEmpleado.Size = new Size(76, 29);
             idUltimoEmpleado.TabIndex = 81;
             // 
             // txtsueldo
             // 
-            txtsueldo.Location = new Point(19, 244);
+            txtsueldo.Location = new Point(272, 125);
             txtsueldo.Name = "txtsueldo";
             txtsueldo.PlaceholderText = "Sueldo";
-            txtsueldo.Size = new Size(119, 29);
+            txtsueldo.Size = new Size(137, 29);
             txtsueldo.TabIndex = 76;
             // 
             // txtnombre
             // 
             txtnombre.CharacterCasing = CharacterCasing.Upper;
-            txtnombre.Location = new Point(19, 137);
+            txtnombre.Location = new Point(19, 179);
             txtnombre.Name = "txtnombre";
             txtnombre.PlaceholderText = "Nombre(s)";
             txtnombre.Size = new Size(212, 29);
@@ -871,18 +828,18 @@
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label14.ForeColor = SystemColors.Control;
-            label14.Location = new Point(266, 162);
+            label14.Location = new Point(17, 59);
             label14.Name = "label14";
-            label14.Size = new Size(138, 21);
+            label14.Size = new Size(67, 21);
             label14.TabIndex = 82;
-            label14.Text = "Fecha de ingreso";
+            label14.Text = "Ingreso";
             // 
             // label17
             // 
             label17.AutoSize = true;
             label17.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label17.ForeColor = SystemColors.Control;
-            label17.Location = new Point(19, 287);
+            label17.Location = new Point(19, 296);
             label17.Name = "label17";
             label17.Size = new Size(35, 21);
             label17.TabIndex = 82;
@@ -904,23 +861,11 @@
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label12.ForeColor = SystemColors.Control;
-            label12.Location = new Point(4, 7);
+            label12.Location = new Point(20, 16);
             label12.Name = "label12";
             label12.Size = new Size(27, 21);
             label12.TabIndex = 89;
             label12.Text = "ID";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label4.ForeColor = Color.White;
-            label4.ImageAlign = ContentAlignment.MiddleLeft;
-            label4.Location = new Point(19, 79);
-            label4.Name = "label4";
-            label4.Size = new Size(133, 21);
-            label4.TabIndex = 96;
-            label4.Text = "Datos Generales";
             // 
             // ConsEmpleados
             // 
@@ -945,9 +890,6 @@
             ((System.ComponentModel.ISupportInitialize)tabladatos).EndInit();
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
-            puestopanel.ResumeLayout(false);
-            puestopanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)puestoconsulta).EndInit();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)direccionEmpleado).EndInit();
@@ -1004,16 +946,7 @@
         private Button bajarDireccion;
         private Panel panel4;
         private Panel panel2;
-        private TextBox idpuestotxt;
-        private TextBox puestotxt;
         private Label label10;
-        private Button buscarpuesto;
-        private Panel puestopanel;
-        private TextBox idconsultatxt;
-        private TextBox puestoconsultatxt;
-        private Button button5;
-        private Label label5;
-        private DataGridView puestoconsulta;
         private DateTimePicker fechaingreso;
         private CheckBox principalDireccion;
         private Label label14;
@@ -1032,5 +965,10 @@
         private DataGridViewTextBoxColumn numero;
         private DataGridViewCheckBoxColumn principal;
         private Label label4;
+        private Label label9;
+        private ComboBox vehiculoEmpleadocmbx;
+        private ComboBox puestoCmbx;
+        private Panel panel6;
+        private Panel panel8;
     }
 }

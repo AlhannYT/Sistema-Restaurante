@@ -503,6 +503,26 @@ namespace Proyecto_restaurante.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap camion_contenedor {
+            get {
+                object obj = ResourceManager.GetObject("camion-contenedor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap camion_contenedor24x {
+            get {
+                object obj = ResourceManager.GetObject("camion-contenedor24x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cancelar {
             get {
                 object obj = ResourceManager.GetObject("cancelar", resourceCulture);
@@ -1896,6 +1916,26 @@ namespace Proyecto_restaurante.Properties {
         internal static System.Drawing.Bitmap pintar1 {
             get {
                 object obj = ResourceManager.GetObject("pintar1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap placa {
+            get {
+                object obj = ResourceManager.GetObject("placa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap placa1 {
+            get {
+                object obj = ResourceManager.GetObject("placa1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

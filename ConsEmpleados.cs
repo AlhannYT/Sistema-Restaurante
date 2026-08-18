@@ -35,9 +35,76 @@ namespace Proyecto_restaurante
         public int EliminarDir = 0;
 
         string conexionString = ConexionBD.ConexionSQL();
+        private bool imagenSeleccionada = false;
+
+        private void CargarPuestos()
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    string query = "SELECT IdPuesto, Nombre FROM Puesto";
+                    SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
+                    DataTable dt = new DataTable();
+                    adaptador.Fill(dt);
+
+                    puestoCmbx.DisplayMember = "Nombre";
+                    puestoCmbx.ValueMember = "IdPuesto";
+                    puestoCmbx.DataSource = dt;
+                    puestoCmbx.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los puestos: {ex.Message}");
+            }
+        }
+
+        private void CargarVehiculos()
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(conexionString))
+                {
+                    string query = @"
+                    SELECT IdVehiculo, 
+                           ISNULL(Marca, '') + ' ' + ISNULL(Modelo, '') + ' ' + ISNULL(Color, '') + ' (' + ISNULL(Matricula, '') + ')' AS VehiculoDescripcion
+                    FROM dbo.VehiculoEmpleados
+                    WHERE EstadoVehiculo = 'Activo'
+                    ORDER BY Marca, Modelo";
+
+                    SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
+                    DataTable dt = new DataTable();
+                    adaptador.Fill(dt);
+
+                    vehiculoEmpleadocmbx.DisplayMember = "VehiculoDescripcion";
+                    vehiculoEmpleadocmbx.ValueMember = "IdVehiculo";
+                    vehiculoEmpleadocmbx.DataSource = dt;
+                    vehiculoEmpleadocmbx.SelectedIndex = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los vehículos: {ex.Message}");
+            }
+        }
+
+        private void rolcmbx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool esRepartidor = (rolcmbx.SelectedItem != null && rolcmbx.SelectedItem.ToString() == "Repartidor");
+            vehiculoEmpleadocmbx.Enabled = esRepartidor;
+            label9.Enabled = true;
+            if (!esRepartidor)
+            {
+                vehiculoEmpleadocmbx.SelectedIndex = -1;
+                label9.Enabled = false;
+            }
+        }
 
         private void ConsEmpleados_Load(object sender, EventArgs e)
         {
+            CargarPuestos();
+            CargarVehiculos();
             string conexionString = ConexionBD.ConexionSQL();
 
             try
@@ -89,20 +156,27 @@ namespace Proyecto_restaurante
         {
             if (string.IsNullOrEmpty(txtnombre.Text) || string.IsNullOrEmpty(txtapellido.Text) ||
             string.IsNullOrEmpty(txtcedula.Text) || string.IsNullOrEmpty(txtsueldo.Text) ||
-            string.IsNullOrEmpty(idpuestotxt.Text))
+            puestoCmbx.SelectedValue == null || puestoCmbx.SelectedIndex < 0)
             {
                 MessageBox.Show("Error: No deje campos vacíos.");
                 return;
             }
 
             byte[] imagenBytes = null;
-            if (imagenempleado.Image != null)
+            if (imagenSeleccionada && imagenempleado.Image != null)
             {
+                using (Bitmap bmp = new Bitmap(imagenempleado.Image))
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    imagenempleado.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                     imagenBytes = ms.ToArray();
                 }
+            }
+
+            object idVehiculoVal = DBNull.Value;
+            if (vehiculoEmpleadocmbx.Enabled && vehiculoEmpleadocmbx.SelectedValue != null && vehiculoEmpleadocmbx.SelectedIndex >= 0)
+            {
+                idVehiculoVal = Convert.ToInt32(vehiculoEmpleadocmbx.SelectedValue);
             }
 
             using (SqlConnection conexion = new SqlConnection(conexionString))
@@ -130,19 +204,20 @@ namespace Proyecto_restaurante
                         }
 
                         string nuevoEmpleado = @"
-                        INSERT INTO Empleado (IdPersona, IdPuesto, FechaIngreso, Activo, Sueldo, TipoSueldo, IdRolempleado, ImagenEmpleado)
-                        VALUES (@IdPersona, @IdPuesto, @FechaIngreso, @Activo, @Sueldo, @TipoSueldo, @IdRol, @ImagenEmpleado)";
+                        INSERT INTO Empleado (IdPersona, IdPuesto, FechaIngreso, Activo, Sueldo, TipoSueldo, IdRolempleado, ImagenEmpleado, IdVehiculoAsignado)
+                        VALUES (@IdPersona, @IdPuesto, @FechaIngreso, @Activo, @Sueldo, @TipoSueldo, @IdRol, @ImagenEmpleado, @IdVehiculoAsignado)";
 
                         using (SqlCommand insertarEmpleado = new SqlCommand(nuevoEmpleado, conexion, trans))
                         {
                             insertarEmpleado.Parameters.AddWithValue("@IdPersona", PersonaID);
-                            insertarEmpleado.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(idpuestotxt.Text));
+                            insertarEmpleado.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(puestoCmbx.SelectedValue));
                             insertarEmpleado.Parameters.AddWithValue("@Sueldo", Convert.ToDecimal(txtsueldo.Text));
                             insertarEmpleado.Parameters.AddWithValue("@FechaIngreso", fechaingreso.Value);
-                            insertarEmpleado.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex : 0);
+                            insertarEmpleado.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex + 1 : 1);
                             insertarEmpleado.Parameters.AddWithValue("@IdRol", rolcmbx.SelectedIndex >= 0 ? rolcmbx.SelectedIndex : 0);
                             insertarEmpleado.Parameters.AddWithValue("@Activo", estadochk.Checked ? 1 : 0);
                             insertarEmpleado.Parameters.Add("@ImagenEmpleado", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
+                            insertarEmpleado.Parameters.AddWithValue("@IdVehiculoAsignado", idVehiculoVal);
 
                             insertarEmpleado.ExecuteNonQuery();
                         }
@@ -229,19 +304,20 @@ namespace Proyecto_restaurante
                         UPDATE Empleado 
                         SET IdPuesto = @IdPuesto, Sueldo = @Sueldo, FechaIngreso = @FechaIngreso, 
                             TipoSueldo = @TipoSueldo, Activo = @Activo, IdRolempleado = @IdRol, 
-                            ImagenEmpleado = @ImagenEmpleado 
+                            ImagenEmpleado = @ImagenEmpleado, IdVehiculoAsignado = @IdVehiculoAsignado 
                         WHERE IdEmpleado = @IdEmpleado";
 
                         using (SqlCommand actualizarCommand = new SqlCommand(actualizarEmpleado, conexion, trans))
                         {
                             actualizarCommand.Parameters.AddWithValue("@IdEmpleado", EmpleadoID);
-                            actualizarCommand.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(idpuestotxt.Text));
+                            actualizarCommand.Parameters.AddWithValue("@IdPuesto", Convert.ToInt32(puestoCmbx.SelectedValue));
                             actualizarCommand.Parameters.AddWithValue("@Sueldo", Convert.ToDecimal(txtsueldo.Text));
                             actualizarCommand.Parameters.AddWithValue("@FechaIngreso", fechaingreso.Value);
-                            actualizarCommand.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex : 0);
+                            actualizarCommand.Parameters.AddWithValue("@TipoSueldo", tiposueldocmbx.SelectedIndex >= 0 ? tiposueldocmbx.SelectedIndex + 1 : 1);
                             actualizarCommand.Parameters.AddWithValue("@IdRol", rolcmbx.SelectedIndex >= 0 ? rolcmbx.SelectedIndex : 0);
                             actualizarCommand.Parameters.AddWithValue("@Activo", estadochk.Checked ? 1 : 0);
                             actualizarCommand.Parameters.Add("@ImagenEmpleado", SqlDbType.VarBinary).Value = (object)imagenBytes ?? DBNull.Value;
+                            actualizarCommand.Parameters.AddWithValue("@IdVehiculoAsignado", idVehiculoVal);
                             actualizarCommand.ExecuteNonQuery();
                         }
 
@@ -315,6 +391,7 @@ namespace Proyecto_restaurante
 
                         trans.Commit();
                         MessageBox.Show("Empleado actualizado con éxito.");
+                        limpiarbtn_Click(sender, e);
                     }
                 }
                 catch (Exception ex)
@@ -337,30 +414,6 @@ namespace Proyecto_restaurante
             DataTable dt = new DataTable();
 
             adaptador.Fill(dt);
-
-            puestoconsulta.DataSource = dt;
-
-            if (Estadobuscarpuesto == 1)
-            {
-                buscarpuesto.Image = Proyecto_restaurante.Properties.Resources.cancelar1;
-                toolTip1.SetToolTip(buscarpuesto, "Cancelar búsqueda");
-                puestopanel.Visible = true;
-
-                Estadobuscarpuesto = 0;
-            }
-            else
-            {
-                buscarpuesto.Image = Proyecto_restaurante.Properties.Resources.busqueda1;
-                toolTip1.SetToolTip(buscarpuesto, "Buscar departamento");
-                puestopanel.Visible = false;
-
-                Estadobuscarpuesto = 1;
-            }
-        }
-
-        private void puestoconsulta_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            puestoconsulta_CellClick(sender, e);
         }
 
         private void txtcedula_TextChanged(object sender, EventArgs e)
@@ -393,24 +446,12 @@ namespace Proyecto_restaurante
             txtcedula.Focus();
             EmpleadoID = 0;
             PersonaID = 0;
-        }
-
-        private void puestoconsulta_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            idconsultatxt.Text = puestoconsulta.SelectedCells[0].Value.ToString();
-            puestoconsultatxt.Text = puestoconsulta.SelectedCells[1].Value.ToString();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            idpuestotxt.Text = idconsultatxt.Text;
-            puestotxt.Text = puestoconsultatxt.Text;
-            buscarpuesto_Click(sender, e);
+            imagenSeleccionada = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 1;
+            tabControl1.SelectedIndex = 0;
             limpiarbtn_Click(sender, e);
         }
 
@@ -421,15 +462,17 @@ namespace Proyecto_restaurante
             txtapellido.Clear();
             emailtxt.Clear();
             txtsueldo.Clear();
-            idpuestotxt.Clear();
-            puestotxt.Clear();
+            puestoCmbx.SelectedIndex = -1;
             fechaingreso.Value = DateTime.Now;
             tiposueldocmbx.SelectedIndex = -1;
             rolcmbx.SelectedIndex = -1;
+            vehiculoEmpleadocmbx.SelectedIndex = -1;
+            vehiculoEmpleadocmbx.Enabled = false;
             estadochk.Checked = true;
             numeroEmpleado.Rows.Clear();
             direccionEmpleado.Rows.Clear();
             imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+            imagenSeleccionada = false;
         }
 
         private void seleccionimagenbtn_Click(object sender, EventArgs e)
@@ -448,6 +491,7 @@ namespace Proyecto_restaurante
                         {
                             imagenempleado.Image = Image.FromStream(ms);
                         }
+                        imagenSeleccionada = true;
                     }
                     catch (Exception ex)
                     {
@@ -634,6 +678,7 @@ namespace Proyecto_restaurante
                     e.TipoSueldo,
                     e.IdRolempleado,
                     e.ImagenEmpleado,
+                    e.IdVehiculoAsignado,
                     p.Nombre,
                     p.Apellido,
                     p.Email,
@@ -662,8 +707,15 @@ namespace Proyecto_restaurante
                 emailtxt.Text = dr["Email"].ToString();
                 estadochk.Checked = Convert.ToBoolean(dr["Activo"]);
 
-                idpuestotxt.Text = dr["IdPuesto"] != DBNull.Value ? dr["IdPuesto"].ToString() : "";
-                puestotxt.Text = dr["NombrePuesto"] != DBNull.Value ? dr["NombrePuesto"].ToString() : "";
+                if (dr["IdPuesto"] != DBNull.Value)
+                {
+                    puestoCmbx.SelectedValue = Convert.ToInt32(dr["IdPuesto"]);
+                }
+                else
+                {
+                    puestoCmbx.SelectedIndex = -1;
+                }
+
                 txtsueldo.Text = dr["Sueldo"] != DBNull.Value ? dr["Sueldo"].ToString() : "";
 
                 if (dr["FechaIngreso"] != DBNull.Value)
@@ -673,7 +725,8 @@ namespace Proyecto_restaurante
 
                 if (dr["TipoSueldo"] != DBNull.Value)
                 {
-                    int indexTipo = Convert.ToInt32(dr["TipoSueldo"]);
+                    int valTipo = Convert.ToInt32(dr["TipoSueldo"]);
+                    int indexTipo = (valTipo > 0) ? valTipo - 1 : valTipo;
                     if (indexTipo >= 0 && indexTipo < tiposueldocmbx.Items.Count)
                         tiposueldocmbx.SelectedIndex = indexTipo;
                     else
@@ -697,6 +750,17 @@ namespace Proyecto_restaurante
                     rolcmbx.SelectedIndex = -1;
                 }
 
+                rolcmbx_SelectedIndexChanged(null, null);
+
+                if (dr["IdVehiculoAsignado"] != DBNull.Value)
+                {
+                    vehiculoEmpleadocmbx.SelectedValue = Convert.ToInt32(dr["IdVehiculoAsignado"]);
+                }
+                else
+                {
+                    vehiculoEmpleadocmbx.SelectedIndex = -1;
+                }
+
                 if (dr["ImagenEmpleado"] != DBNull.Value && dr["ImagenEmpleado"] != null)
                 {
                     byte[] bytes = (byte[])dr["ImagenEmpleado"];
@@ -706,15 +770,18 @@ namespace Proyecto_restaurante
                         {
                             imagenempleado.Image = Image.FromStream(ms);
                         }
+                        imagenSeleccionada = true;
                     }
                     else
                     {
                         imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                        imagenSeleccionada = false;
                     }
                 }
                 else
                 {
                     imagenempleado.Image = Proyecto_restaurante.Properties.Resources.perfilcliente;
+                    imagenSeleccionada = false;
                 }
 
                 dr.Close();

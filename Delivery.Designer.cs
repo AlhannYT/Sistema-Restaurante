@@ -45,12 +45,13 @@
             txtidpedido = new TextBox();
             txtnombrecompleto = new TextBox();
             panel8 = new Panel();
+            vehiculoEmpleadocmbx = new ComboBox();
             idrepartidor = new TextBox();
+            cambiarVehiculo = new Button();
             repartidorbtn = new Button();
             pictureBox4 = new PictureBox();
             repartidorlabel = new Label();
             nombrerepartidor = new TextBox();
-            txtVehiculoAsignado = new TextBox();
             vehiculolabel = new Label();
             panel29 = new Panel();
             panelBloqueoNCF = new Panel();
@@ -89,9 +90,7 @@
             label19 = new Label();
             tablaclientes = new DataGridView();
             panel2 = new Panel();
-            estimado = new TextBox();
             label37 = new Label();
-            label14 = new Label();
             label6 = new Label();
             detalleorden = new DataGridView();
             label21 = new Label();
@@ -447,17 +446,28 @@
             // panel8
             // 
             panel8.BackColor = Color.DimGray;
+            panel8.Controls.Add(vehiculoEmpleadocmbx);
             panel8.Controls.Add(idrepartidor);
+            panel8.Controls.Add(cambiarVehiculo);
             panel8.Controls.Add(repartidorbtn);
             panel8.Controls.Add(pictureBox4);
             panel8.Controls.Add(repartidorlabel);
             panel8.Controls.Add(nombrerepartidor);
-            panel8.Controls.Add(txtVehiculoAsignado);
             panel8.Controls.Add(vehiculolabel);
             panel8.Location = new Point(7, 168);
             panel8.Name = "panel8";
             panel8.Size = new Size(494, 78);
             panel8.TabIndex = 71;
+            // 
+            // vehiculoEmpleadocmbx
+            // 
+            vehiculoEmpleadocmbx.DropDownStyle = ComboBoxStyle.DropDownList;
+            vehiculoEmpleadocmbx.Enabled = false;
+            vehiculoEmpleadocmbx.FormattingEnabled = true;
+            vehiculoEmpleadocmbx.Location = new Point(138, 42);
+            vehiculoEmpleadocmbx.Name = "vehiculoEmpleadocmbx";
+            vehiculoEmpleadocmbx.Size = new Size(316, 29);
+            vehiculoEmpleadocmbx.TabIndex = 103;
             // 
             // idrepartidor
             // 
@@ -468,6 +478,17 @@
             idrepartidor.PlaceholderText = "ID";
             idrepartidor.Size = new Size(45, 29);
             idrepartidor.TabIndex = 0;
+            // 
+            // cambiarVehiculo
+            // 
+            cambiarVehiculo.Image = Properties.Resources.actualizar;
+            cambiarVehiculo.Location = new Point(460, 42);
+            cambiarVehiculo.Name = "cambiarVehiculo";
+            cambiarVehiculo.RightToLeft = RightToLeft.No;
+            cambiarVehiculo.Size = new Size(29, 29);
+            cambiarVehiculo.TabIndex = 2;
+            cambiarVehiculo.UseVisualStyleBackColor = true;
+            cambiarVehiculo.Click += cambiarVehiculo_Click;
             // 
             // repartidorbtn
             // 
@@ -513,16 +534,6 @@
             nombrerepartidor.PlaceholderText = "Repartidor";
             nombrerepartidor.Size = new Size(300, 29);
             nombrerepartidor.TabIndex = 0;
-            // 
-            // txtVehiculoAsignado
-            // 
-            txtVehiculoAsignado.Enabled = false;
-            txtVehiculoAsignado.Font = new Font("Segoe UI", 12F);
-            txtVehiculoAsignado.Location = new Point(138, 42);
-            txtVehiculoAsignado.Name = "txtVehiculoAsignado";
-            txtVehiculoAsignado.PlaceholderText = "Vehiculo";
-            txtVehiculoAsignado.Size = new Size(351, 29);
-            txtVehiculoAsignado.TabIndex = 7;
             // 
             // vehiculolabel
             // 
@@ -968,9 +979,7 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(64, 64, 64);
-            panel2.Controls.Add(estimado);
             panel2.Controls.Add(label37);
-            panel2.Controls.Add(label14);
             panel2.Controls.Add(label6);
             panel2.Controls.Add(detalleorden);
             panel2.Controls.Add(label21);
@@ -980,15 +989,6 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(793, 361);
             panel2.TabIndex = 3;
-            // 
-            // estimado
-            // 
-            estimado.Font = new Font("Segoe UI", 12F);
-            estimado.Location = new Point(186, 3);
-            estimado.Name = "estimado";
-            estimado.PlaceholderText = "Minutos";
-            estimado.Size = new Size(78, 29);
-            estimado.TabIndex = 0;
             // 
             // label37
             // 
@@ -1000,19 +1000,6 @@
             label37.Size = new Size(456, 21);
             label37.TabIndex = 75;
             label37.Text = "Combinaciones:    Alt+1, Alt+2, Alt+3: Cambio rapido de pestaña";
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label14.ForeColor = SystemColors.Control;
-            label14.Image = Properties.Resources.tiempo;
-            label14.ImageAlign = ContentAlignment.MiddleLeft;
-            label14.Location = new Point(7, 7);
-            label14.Name = "label14";
-            label14.Size = new Size(179, 21);
-            label14.TabIndex = 8;
-            label14.Text = "     Minutos estimados:";
             // 
             // label6
             // 
@@ -2707,10 +2694,7 @@
         private Button eliminarFacturas;
         private Button carpetaFactura;
         private Button deslizar;
-        private Label label14;
-        private TextBox estimado;
         private Label vehiculolabel;
-        private TextBox txtVehiculoAsignado;
         private Button btnVerResenas;
         private Panel panelResenas;
         private Button btnCerrarResenas;
@@ -2750,5 +2734,7 @@
         private Panel panel14;
         private Panel panel16;
         private Button generarEnlaceResena;
+        private Button cambiarVehiculo;
+        private ComboBox vehiculoEmpleadocmbx;
     }
 }
