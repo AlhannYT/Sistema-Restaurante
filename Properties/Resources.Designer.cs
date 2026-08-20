@@ -353,6 +353,26 @@ namespace Proyecto_restaurante.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bloqueo_binario {
+            get {
+                object obj = ResourceManager.GetObject("bloqueo-binario", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bloqueo_binario__1_ {
+            get {
+                object obj = ResourceManager.GetObject("bloqueo-binario (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap borrador {
             get {
                 object obj = ResourceManager.GetObject("borrador", resourceCulture);
@@ -1816,6 +1836,16 @@ namespace Proyecto_restaurante.Properties {
         internal static System.Drawing.Bitmap pedir_comida_online1 {
             get {
                 object obj = ResourceManager.GetObject("pedir-comida-online1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pegar {
+            get {
+                object obj = ResourceManager.GetObject("pegar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

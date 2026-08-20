@@ -78,6 +78,14 @@
             label1 = new Label();
             label2 = new Label();
             panelSesion = new Panel();
+            panelSerial = new Panel();
+            quitarPanelSerial = new Button();
+            generarSerial = new Button();
+            pegarClipb = new Button();
+            validarSerial = new Button();
+            label9 = new Label();
+            label10 = new Label();
+            codigoSerial = new TextBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)alerta).BeginInit();
             AvisoDBIMG.SuspendLayout();
@@ -89,15 +97,16 @@
             ((System.ComponentModel.ISupportInitialize)contraimagen).BeginInit();
             autorizar.SuspendLayout();
             panelSesion.SuspendLayout();
+            panelSerial.SuspendLayout();
             SuspendLayout();
             // 
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Image = Properties.Resources.comidapedido2;
-            pictureBox1.Location = new Point(208, 54);
+            pictureBox1.Location = new Point(43, 55);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(142, 132);
+            pictureBox1.Size = new Size(178, 197);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -106,7 +115,7 @@
             // 
             txtusuario.CharacterCasing = CharacterCasing.Upper;
             txtusuario.Font = new Font("Segoe UI", 12F);
-            txtusuario.Location = new Point(183, 222);
+            txtusuario.Location = new Point(315, 115);
             txtusuario.Name = "txtusuario";
             txtusuario.PlaceholderText = "Usuario";
             txtusuario.Size = new Size(218, 29);
@@ -118,7 +127,7 @@
             // 
             txtpass.CharacterCasing = CharacterCasing.Upper;
             txtpass.Font = new Font("Segoe UI", 12F);
-            txtpass.Location = new Point(183, 264);
+            txtpass.Location = new Point(315, 157);
             txtpass.Name = "txtpass";
             txtpass.PlaceholderText = "Contraseña";
             txtpass.Size = new Size(218, 29);
@@ -131,7 +140,7 @@
             iniciobtn.Cursor = Cursors.Hand;
             iniciobtn.Image = Properties.Resources.entrar1;
             iniciobtn.ImageAlign = ContentAlignment.MiddleLeft;
-            iniciobtn.Location = new Point(208, 315);
+            iniciobtn.Location = new Point(343, 213);
             iniciobtn.Name = "iniciobtn";
             iniciobtn.Size = new Size(142, 29);
             iniciobtn.TabIndex = 3;
@@ -142,9 +151,9 @@
             // panel1
             // 
             panel1.BackColor = SystemColors.Highlight;
-            panel1.Location = new Point(96, 200);
+            panel1.Location = new Point(253, 55);
             panel1.Name = "panel1";
-            panel1.Size = new Size(366, 6);
+            panel1.Size = new Size(5, 197);
             panel1.TabIndex = 4;
             // 
             // passView
@@ -155,7 +164,7 @@
             passView.FlatStyle = FlatStyle.Flat;
             passView.ForeColor = SystemColors.Window;
             passView.Image = Properties.Resources.ojo;
-            passView.Location = new Point(372, 265);
+            passView.Location = new Point(504, 158);
             passView.Name = "passView";
             passView.Size = new Size(27, 26);
             passView.TabIndex = 6;
@@ -181,7 +190,7 @@
             iniciolabel.AutoSize = true;
             iniciolabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             iniciolabel.ForeColor = Color.White;
-            iniciolabel.Location = new Point(214, 18);
+            iniciolabel.Location = new Point(343, 68);
             iniciolabel.Name = "iniciolabel";
             iniciolabel.Size = new Size(130, 21);
             iniciolabel.TabIndex = 8;
@@ -205,7 +214,7 @@
             // 
             sqlbtn.Cursor = Cursors.Hand;
             sqlbtn.Image = Properties.Resources.sql;
-            sqlbtn.Location = new Point(13, 35);
+            sqlbtn.Location = new Point(13, 9);
             sqlbtn.Name = "sqlbtn";
             sqlbtn.Size = new Size(36, 36);
             sqlbtn.TabIndex = 9;
@@ -223,7 +232,7 @@
             recordarchk.Font = new Font("Segoe UI", 10F);
             recordarchk.ForeColor = SystemColors.Window;
             recordarchk.Image = Properties.Resources.disco;
-            recordarchk.Location = new Point(372, 223);
+            recordarchk.Location = new Point(504, 116);
             recordarchk.Name = "recordarchk";
             recordarchk.Size = new Size(27, 26);
             recordarchk.TabIndex = 13;
@@ -247,7 +256,7 @@
             // 
             AvisoDBIMG.Controls.Add(pictureBox3);
             AvisoDBIMG.Controls.Add(alerta);
-            AvisoDBIMG.Location = new Point(17, 31);
+            AvisoDBIMG.Location = new Point(17, 5);
             AvisoDBIMG.Name = "AvisoDBIMG";
             AvisoDBIMG.Size = new Size(69, 43);
             AvisoDBIMG.TabIndex = 15;
@@ -516,7 +525,7 @@
             // usuarioimagen
             // 
             usuarioimagen.Image = Properties.Resources.persona2;
-            usuarioimagen.Location = new Point(158, 223);
+            usuarioimagen.Location = new Point(290, 116);
             usuarioimagen.Name = "usuarioimagen";
             usuarioimagen.Size = new Size(22, 28);
             usuarioimagen.SizeMode = PictureBoxSizeMode.Zoom;
@@ -526,7 +535,7 @@
             // contraimagen
             // 
             contraimagen.Image = Properties.Resources.clave;
-            contraimagen.Location = new Point(158, 265);
+            contraimagen.Location = new Point(290, 158);
             contraimagen.Name = "contraimagen";
             contraimagen.Size = new Size(22, 28);
             contraimagen.SizeMode = PictureBoxSizeMode.Zoom;
@@ -641,10 +650,106 @@
             panelSesion.Controls.Add(iniciobtn);
             panelSesion.Controls.Add(txtpass);
             panelSesion.Controls.Add(txtusuario);
-            panelSesion.Location = new Point(7, 15);
+            panelSesion.Location = new Point(7, 36);
             panelSesion.Name = "panelSesion";
-            panelSesion.Size = new Size(487, 357);
+            panelSesion.Size = new Size(551, 336);
             panelSesion.TabIndex = 17;
+            // 
+            // panelSerial
+            // 
+            panelSerial.BackColor = Color.Gray;
+            panelSerial.Controls.Add(quitarPanelSerial);
+            panelSerial.Controls.Add(generarSerial);
+            panelSerial.Controls.Add(pegarClipb);
+            panelSerial.Controls.Add(validarSerial);
+            panelSerial.Controls.Add(label9);
+            panelSerial.Controls.Add(label10);
+            panelSerial.Controls.Add(codigoSerial);
+            panelSerial.Location = new Point(1189, 45);
+            panelSerial.Name = "panelSerial";
+            panelSerial.Size = new Size(564, 368);
+            panelSerial.TabIndex = 18;
+            panelSerial.Visible = false;
+            // 
+            // quitarPanelSerial
+            // 
+            quitarPanelSerial.Cursor = Cursors.Hand;
+            quitarPanelSerial.Image = Properties.Resources.salida;
+            quitarPanelSerial.ImageAlign = ContentAlignment.MiddleLeft;
+            quitarPanelSerial.Location = new Point(290, 262);
+            quitarPanelSerial.Name = "quitarPanelSerial";
+            quitarPanelSerial.Size = new Size(154, 41);
+            quitarPanelSerial.TabIndex = 8;
+            quitarPanelSerial.Text = "Salir";
+            quitarPanelSerial.UseVisualStyleBackColor = true;
+            quitarPanelSerial.Click += quitarPanelSerial_Click;
+            // 
+            // generarSerial
+            // 
+            generarSerial.Cursor = Cursors.Hand;
+            generarSerial.Image = Properties.Resources.bloqueo_binario__1_;
+            generarSerial.Location = new Point(27, 18);
+            generarSerial.Name = "generarSerial";
+            generarSerial.Size = new Size(36, 36);
+            generarSerial.TabIndex = 9;
+            generarSerial.UseVisualStyleBackColor = true;
+            generarSerial.Visible = false;
+            generarSerial.Click += generarSerial_Click;
+            // 
+            // pegarClipb
+            // 
+            pegarClipb.Image = Properties.Resources.pegar;
+            pegarClipb.Location = new Point(453, 174);
+            pegarClipb.Name = "pegarClipb";
+            pegarClipb.Size = new Size(29, 29);
+            pegarClipb.TabIndex = 4;
+            pegarClipb.UseVisualStyleBackColor = true;
+            pegarClipb.Visible = false;
+            pegarClipb.Click += pegarClipb_Click;
+            // 
+            // validarSerial
+            // 
+            validarSerial.Image = Properties.Resources.check;
+            validarSerial.ImageAlign = ContentAlignment.MiddleLeft;
+            validarSerial.Location = new Point(121, 262);
+            validarSerial.Name = "validarSerial";
+            validarSerial.Size = new Size(163, 41);
+            validarSerial.TabIndex = 1;
+            validarSerial.Text = "Validar";
+            validarSerial.UseVisualStyleBackColor = true;
+            validarSerial.Click += validarSerial_Click;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label9.ForeColor = Color.White;
+            label9.Location = new Point(201, 15);
+            label9.Name = "label9";
+            label9.Size = new Size(163, 32);
+            label9.TabIndex = 0;
+            label9.Text = "Validar Serial";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label10.ForeColor = Color.White;
+            label10.Location = new Point(85, 131);
+            label10.Name = "label10";
+            label10.Size = new Size(158, 21);
+            label10.TabIndex = 0;
+            label10.Text = "Digite el serial aquí";
+            // 
+            // codigoSerial
+            // 
+            codigoSerial.CharacterCasing = CharacterCasing.Upper;
+            codigoSerial.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            codigoSerial.Location = new Point(85, 174);
+            codigoSerial.Name = "codigoSerial";
+            codigoSerial.Size = new Size(397, 29);
+            codigoSerial.TabIndex = 0;
+            codigoSerial.UseSystemPasswordChar = true;
             // 
             // inicio
             // 
@@ -652,6 +757,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(64, 64, 64);
             ClientSize = new Size(565, 377);
+            Controls.Add(panelSerial);
             Controls.Add(autorizar);
             Controls.Add(conexiones);
             Controls.Add(conexionpanel);
@@ -682,6 +788,8 @@
             autorizar.PerformLayout();
             panelSesion.ResumeLayout(false);
             panelSesion.PerformLayout();
+            panelSerial.ResumeLayout(false);
+            panelSerial.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -735,5 +843,13 @@
         private Panel AvisoDBIMG;
         private TextBox DBTxt;
         private Label label8;
+        private Panel panelSerial;
+        private TextBox codigoSerial;
+        private Button validarSerial;
+        private Label label9;
+        private Button generarSerial;
+        private Label label10;
+        private Button quitarPanelSerial;
+        private Button pegarClipb;
     }
 }

@@ -15,15 +15,23 @@ namespace Proyecto_restaurante
         }
 
         private static string rutaUsuario = @"C:\SistemaArchivos\Usuarios\Usuarios.txt";
+        private static string rutaActivacion = @"C:\SistemaArchivos\Configuracion\Activacion.txt";
         public string rutaArchivo = @"C:\SistemaArchivos\Conexion\ConexionesSQL.txt";
-
         public int idUsuario = 0;
         bool esAdmin = false;
         public string UsuarioAdmin = "A";
         public string PassAdmin = "A";
+        string conexionString = ConexionBD.ConexionSQL();
 
         private void inicio_Load(object sender, EventArgs e)
         {
+            using (SqlConnection conexion = new SqlConnection(conexionString))
+            {
+
+            }
+
+            VerificarActivacionMaquina();
+
             string rutaBase = @"C:\SistemaArchivos";
 
             string rutaReportes = @"C:\SistemaArchivos\Reportes";
@@ -139,11 +147,9 @@ namespace Proyecto_restaurante
         {
             if (string.IsNullOrEmpty(txtusuario.Text) || string.IsNullOrEmpty(txtpass.Text))
             {
-                MessageBox.Show("Error: Campos vacÌos.");
+                MessageBox.Show("Error: Campos vac√≠os.");
                 return;
             }
-
-            string conexionString = ConexionBD.ConexionSQL();
 
             using (SqlConnection conexion = new SqlConnection(conexionString))
             {
@@ -173,7 +179,7 @@ namespace Proyecto_restaurante
                             }
                             else
                             {
-                                MessageBox.Show("Usuario o contraseÒa incorrectos / Inactivo.");
+                                MessageBox.Show("Usuario o contraseÔøΩa incorrectos / Inactivo.");
                                 return;
                             }
                         }
@@ -205,7 +211,7 @@ namespace Proyecto_restaurante
 
                         if (existe == 0)
                         {
-                            string insertarQuery = "INSERT INTO Configuracion (NombrePC) VALUES (@NombrePC)";
+                            string insertarQuery = "INSERT INTO Configuracion (NombrePC, Activado) VALUES (@NombrePC, 1)";
                             using (SqlCommand cmdInsertar = new SqlCommand(insertarQuery, conexion))
                             {
                                 cmdInsertar.Parameters.AddWithValue("@NombrePC", nombrePC);
@@ -262,7 +268,7 @@ namespace Proyecto_restaurante
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"OcurriÛ un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"OcurriÔøΩ un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -340,12 +346,12 @@ namespace Proyecto_restaurante
             string servidor = servidortxt.Text.Trim();
             string basededatos = DBTxt.Text.Trim();
             string usuario = usuarioservidortxt.Text.Trim();
-            string contraseÒa = contservidortxt.Text.Trim();
+            string contra = contservidortxt.Text.Trim();
             string porDefecto = defectochk.Checked ? "1" : "0";
 
-            if (string.IsNullOrEmpty(servidor) || string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contraseÒa))
+            if (string.IsNullOrEmpty(servidor) || string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contra))
             {
-                MessageBox.Show("Todos los campos son obligatorios.", "ValidaciÛn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Todos los campos son obligatorios.", "ValidaciÔøΩn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -366,7 +372,7 @@ namespace Proyecto_restaurante
 
                         if (mismaConexion)
                         {
-                            lineas.Add($"{servidor}|{basededatos}|{usuario}|{contraseÒa}|{porDefecto}");
+                            lineas.Add($"{servidor}|{basededatos}|{usuario}|{contra}|{porDefecto}");
                             actualizada = true;
                         }
                         else
@@ -384,11 +390,11 @@ namespace Proyecto_restaurante
             }
 
             if (!actualizada)
-                lineas.Add($"{servidor}|{basededatos}|{usuario}|{contraseÒa}|{porDefecto}");
+                lineas.Add($"{servidor}|{basededatos}|{usuario}|{contra}|{porDefecto}");
 
             File.WriteAllLines(rutaArchivo, lineas);
 
-            MessageBox.Show(actualizada ? "ConexiÛn actualizada correctamente." : "ConexiÛn guardada correctamente.", "…xito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(actualizada ? "ConexiÔøΩn actualizada correctamente." : "ConexiÔøΩn guardada correctamente.", "ÔøΩxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             iniciobtn.Enabled = true;
             button6_Click(sender, e);
@@ -410,7 +416,7 @@ namespace Proyecto_restaurante
             tabla.Columns.Add("Servidor");
             tabla.Columns.Add("Base de Datos");
             tabla.Columns.Add("Usuario");
-            tabla.Columns.Add("ContraseÒa");
+            tabla.Columns.Add("Contras");
             tabla.Columns.Add("PorDefecto");
 
             var lineas = File.ReadAllLines(rutaArchivo);
@@ -420,7 +426,7 @@ namespace Proyecto_restaurante
                 var partes = linea.Split('|');
                 if (partes.Length == 5)
                 {
-                    tabla.Rows.Add(partes[0], partes[1], partes[2], partes[3], partes[4] == "1" ? "SÌ" : "No");
+                    tabla.Rows.Add(partes[0], partes[1], partes[2], partes[3], partes[4] == "1" ? "SÔøΩ" : "No");
                 }
             }
 
@@ -443,10 +449,10 @@ namespace Proyecto_restaurante
                 servidortxt.Text = fila.Cells["Servidor"].Value?.ToString();
                 DBTxt.Text = fila.Cells["Base de Datos"].Value?.ToString();
                 usuarioservidortxt.Text = fila.Cells["Usuario"].Value?.ToString();
-                contservidortxt.Text = fila.Cells["ContraseÒa"].Value?.ToString();
+                contservidortxt.Text = fila.Cells["Contra"].Value?.ToString();
 
                 string porDefecto = fila.Cells["PorDefecto"].Value?.ToString();
-                defectochk.Checked = porDefecto == "SÌ";
+                defectochk.Checked = porDefecto == "SÔøΩ";
                 button5_Click(sender, e);
             }
         }
@@ -469,7 +475,7 @@ namespace Proyecto_restaurante
         {
             if (txtsql.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Selecciona una conexiÛn para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Selecciona una conexiÔøΩn para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -477,10 +483,10 @@ namespace Proyecto_restaurante
             string servidor = fila.Cells["Servidor"].Value?.ToString();
             string basededatos = fila.Cells["Base de Datos"].Value?.ToString();
             string usuario = fila.Cells["Usuario"].Value?.ToString();
-            string contraseÒa = fila.Cells["ContraseÒa"].Value?.ToString();
-            string porDefecto = fila.Cells["PorDefecto"].Value?.ToString() == "SÌ" ? "1" : "0";
+            string contras = fila.Cells["Contra"].Value?.ToString();
+            string porDefecto = fila.Cells["PorDefecto"].Value?.ToString() == "SÔøΩ" ? "1" : "0";
 
-            string lineaEliminar = $"{servidor}|{usuario}|{contraseÒa}|{porDefecto}";
+            string lineaEliminar = $"{servidor}|{usuario}|{contras}|{porDefecto}";
 
             var lineas = File.ReadAllLines(rutaArchivo).ToList();
             bool eliminada = lineas.Remove(lineaEliminar);
@@ -488,14 +494,14 @@ namespace Proyecto_restaurante
             if (eliminada)
             {
                 File.WriteAllLines(rutaArchivo, lineas);
-                MessageBox.Show("ConexiÛn eliminada correctamente.", "…xito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("ConexiÔøΩn eliminada correctamente.", "ÔøΩxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 button3_Click(sender, e);
             }
             else
             {
-                MessageBox.Show("No se pudo eliminar la conexiÛn. Verifica los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo eliminar la conexiÔøΩn. Verifica los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }        
+        }
 
         private void inicio_Shown(object sender, EventArgs e)
         {
@@ -519,7 +525,7 @@ namespace Proyecto_restaurante
         {
             if (string.IsNullOrEmpty(servidortxt.Text) || string.IsNullOrEmpty(DBTxt.Text) || string.IsNullOrEmpty(usuarioservidortxt.Text) || string.IsNullOrEmpty(contservidortxt.Text))
             {
-                MessageBox.Show("Error: Campos vacÌos.");
+                MessageBox.Show("Error: Campos vacÔøΩos.");
                 return;
             }
 
@@ -529,9 +535,9 @@ namespace Proyecto_restaurante
             string servidor = servidortxt.Text;
             string nombreDB = DBTxt.Text;
             string usuario = usuarioservidortxt.Text;
-            string contraseÒa = contservidortxt.Text;
+            string passw = contservidortxt.Text;
 
-            string conexion = $"Server={servidor};Database=master;User Id={usuario};Password={contraseÒa};TrustServerCertificate=True;";
+            string conexion = $"Server={servidor};Database=master;User Id={usuario};Password={passw};TrustServerCertificate=True;";
 
             try
             {
@@ -541,7 +547,7 @@ namespace Proyecto_restaurante
                 }
 
                 progressBar1.Value = 30;
-                MessageBox.Show("ConexiÛn exitosa");
+                MessageBox.Show("ConexiÔøΩn exitosa");
 
                 bool existe = await Task.Run(() => ExisteBaseDatos(conexion, nombreDB));
 
@@ -642,7 +648,7 @@ namespace Proyecto_restaurante
             }
             else
             {
-                MessageBox.Show("Usuario o contraseÒa incorrectos / Inactivo.");
+                MessageBox.Show("Usuario o contrase√±a incorrectos / Inactivo.");
                 return;
             }
         }
@@ -665,6 +671,11 @@ namespace Proyecto_restaurante
                 usuAdmin.Focus();
                 e.SuppressKeyPress = true;
             }
+
+            if (e.Control && e.Alt && e.KeyCode == Keys.P)
+            {
+                generarSerial.Visible = true;
+            }
         }
 
         private void usuAdmin_KeyPress(object sender, KeyPressEventArgs e)
@@ -683,6 +694,238 @@ namespace Proyecto_restaurante
                 autorizarBTN.PerformClick();
                 autorizarBTN.Focus();
                 e.Handled = true;
+            }
+        }
+
+        private void VerificarActivacionMaquina()
+        {
+            try
+            {
+                string dirConfig = Path.GetDirectoryName(rutaActivacion);
+                if (!Directory.Exists(dirConfig))
+                    Directory.CreateDirectory(dirConfig);
+
+                if (!File.Exists(rutaActivacion))
+                {
+                    File.WriteAllText(rutaActivacion, "INACTIVA");
+                }
+
+                bool activadaLocal = File.ReadAllText(rutaActivacion).Trim().ToUpper() == "ACTIVADO";
+                bool activadaBD = false;
+
+                try
+                {
+                    string connStr = ConexionBD.ConexionSQL();
+                    if (!string.IsNullOrEmpty(connStr))
+                    {
+                        using (SqlConnection conexion = new SqlConnection(connStr))
+                        {
+                            conexion.Open();
+                            string nombrePC = Environment.MachineName;
+                            string queryCheck = "SELECT Activado FROM Configuracion WHERE NombrePC = @NombrePC";
+                            using (SqlCommand cmd = new SqlCommand(queryCheck, conexion))
+                            {
+                                cmd.Parameters.AddWithValue("@NombrePC", nombrePC);
+                                object res = cmd.ExecuteScalar();
+                                if (res != null && res != DBNull.Value)
+                                {
+                                    activadaBD = Convert.ToInt32(res) == 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Si la BD a√∫n no est√° disponible, se maneja con la activaci√≥n local
+                }
+
+                if (activadaBD && !activadaLocal)
+                {
+                    File.WriteAllText(rutaActivacion, "ACTIVADO");
+                    activadaLocal = true;
+                }
+
+                if (activadaLocal || activadaBD)
+                {
+                    panelSerial.Visible = false;
+                    panelSesion.Enabled = true;
+                }
+                else
+                {
+                    panelSerial.Location = new Point(0, 33);
+                    panelSerial.BringToFront();
+                    panelSerial.Visible = true;
+                    panelSesion.Enabled = false;
+                    codigoSerial.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al verificar el estado de activaci√≥n: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static string GenerarPrefijoSerial(DateTime fecha)
+        {
+            int d = fecha.Day;
+            int m = fecha.Month;
+            int y = fecha.Year;
+
+            // Genera 6 d√≠gitos de verificaci√≥n matem√°tica
+            int c1 = ((d * 739) + (m * 491) + (y * 127) + 3821) % 900 + 100;
+            int c2 = ((d * 313) + (m * 857) + (y * 619) + 7159) % 900 + 100;
+            return $"{c1:D3}{c2:D3}";
+        }
+
+        public static string GenerarSerial(DateTime fecha)
+        {
+            string fechaStr = fecha.ToString("ddMMyyyy");
+            return $"{GenerarPrefijoSerial(fecha)}{fechaStr}";
+        }
+
+        public static bool ValidarSerial(string serial)
+        {
+            if (string.IsNullOrWhiteSpace(serial))
+                return false;
+
+            serial = serial.Trim();
+            if (serial.Length != 14 || !long.TryParse(serial, out _))
+                return false;
+
+            string prefijoIngresado = serial.Substring(0, 6);
+            string fechaStr = serial.Substring(6, 8);
+
+            if (!DateTime.TryParseExact(fechaStr, "ddMMyyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime fecha))
+                return false;
+
+            string prefijoEsperado = GenerarPrefijoSerial(fecha);
+            return prefijoIngresado == prefijoEsperado;
+        }
+
+        private void generarSerial_Click(object sender, EventArgs e)
+        {
+            string prefijo = GenerarPrefijoSerial(DateTime.Now);
+            try
+            {
+                Clipboard.SetText(prefijo);
+                MessageBox.Show("Prefijo de activaci√≥n copiado al portapapeles con √©xito.",
+                                "Serial", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                pegarClipb.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo copiar al portapapeles: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void validarSerial_Click(object sender, EventArgs e)
+        {
+            string serial = codigoSerial.Text.Trim();
+
+            if (string.IsNullOrEmpty(serial))
+            {
+                MessageBox.Show("Por favor digite el serial de activaci√≥n.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (ValidarSerial(serial))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(rutaActivacion));
+                    File.WriteAllText(rutaActivacion, "ACTIVADO");
+
+                    try
+                    {
+                        string connStr = ConexionBD.ConexionSQL();
+                        if (!string.IsNullOrEmpty(connStr))
+                        {
+                            using (SqlConnection conexion = new SqlConnection(connStr))
+                            {
+                                conexion.Open();
+                                string nombrePC = Environment.MachineName;
+                                string queryExiste = "SELECT COUNT(*) FROM Configuracion WHERE NombrePC = @NombrePC";
+                                using (SqlCommand cmdExiste = new SqlCommand(queryExiste, conexion))
+                                {
+                                    cmdExiste.Parameters.AddWithValue("@NombrePC", nombrePC);
+                                    int existe = (int)cmdExiste.ExecuteScalar();
+
+                                    if (existe == 0)
+                                    {
+                                        string insert = "INSERT INTO Configuracion (NombrePC, Activado) VALUES (@NombrePC, 1)";
+                                        using (SqlCommand cmdIns = new SqlCommand(insert, conexion))
+                                        {
+                                            cmdIns.Parameters.AddWithValue("@NombrePC", nombrePC);
+                                            cmdIns.ExecuteNonQuery();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string update = "UPDATE Configuracion SET Activado = 1 WHERE NombrePC = @NombrePC";
+                                        using (SqlCommand cmdUpd = new SqlCommand(update, conexion))
+                                        {
+                                            cmdUpd.Parameters.AddWithValue("@NombrePC", nombrePC);
+                                            cmdUpd.ExecuteNonQuery();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Si la BD a√∫n no est√° creada o conectada, la activaci√≥n local queda registrada
+                    }
+
+                    MessageBox.Show("¬°Sistema activado con √©xito!", "Activaci√≥n Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    panelSerial.Visible = false;
+                    panelSesion.Enabled = true;
+                    panelSesion.BringToFront();
+                    txtusuario.Focus();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al registrar la activaci√≥n: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("El serial ingresado es inv√°lido o incorrecto.", "Error de Activaci√≥n", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                codigoSerial.Focus();
+                codigoSerial.SelectAll();
+            }
+        }
+
+        private void quitarPanelSerial_Click(object sender, EventArgs e)
+        {
+            bool activada = File.Exists(rutaActivacion) && File.ReadAllText(rutaActivacion).Trim().ToUpper() == "ACTIVADO";
+            if (activada)
+            {
+                panelSerial.Visible = false;
+                panelSesion.Enabled = true;
+            }
+            else
+            {
+                Application.Exit();
+            }
+        }
+
+        private void pegarClipb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Clipboard.ContainsText())
+                {
+                    codigoSerial.Text = Clipboard.GetText().Trim();
+                    codigoSerial.Focus();
+                    codigoSerial.SelectionStart = codigoSerial.Text.Length;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo pegar desde el portapapeles: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
