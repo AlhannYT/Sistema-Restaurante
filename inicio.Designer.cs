@@ -79,7 +79,7 @@
             label1 = new Label();
             label2 = new Label();
             panelSesion = new Panel();
-            label11 = new Label();
+            labelVersion = new Label();
             actualizarSistema = new Button();
             panelSerial = new Panel();
             quitarPanelSerial = new Button();
@@ -661,7 +661,7 @@
             panelSesion.Controls.Add(usuarioimagen);
             panelSesion.Controls.Add(recordarchk);
             panelSesion.Controls.Add(pictureBox1);
-            panelSesion.Controls.Add(label11);
+            panelSesion.Controls.Add(labelVersion);
             panelSesion.Controls.Add(iniciolabel);
             panelSesion.Controls.Add(passView);
             panelSesion.Controls.Add(panel1);
@@ -675,16 +675,16 @@
             panelSesion.Size = new Size(551, 336);
             panelSesion.TabIndex = 17;
             // 
-            // label11
+            // labelVersion
             // 
-            label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label11.ForeColor = Color.White;
-            label11.Location = new Point(482, 302);
-            label11.Name = "label11";
-            label11.Size = new Size(51, 21);
-            label11.TabIndex = 8;
-            label11.Text = "v1.0.2";
+            labelVersion.AutoSize = true;
+            labelVersion.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelVersion.ForeColor = Color.White;
+            labelVersion.Location = new Point(482, 302);
+            labelVersion.Name = "labelVersion";
+            labelVersion.Size = new Size(51, 21);
+            labelVersion.TabIndex = 8;
+            labelVersion.Text = "v1.0.0";
             // 
             // actualizarSistema
             // 
@@ -900,6 +900,6 @@
         private Button pegarClipb;
         private Button actualizarSistema;
         private Button historialCambios;
-        private Label label11;
+        private Label labelVersion;
     }
 }

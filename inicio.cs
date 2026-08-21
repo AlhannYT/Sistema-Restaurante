@@ -27,6 +27,9 @@ namespace Proyecto_restaurante
 
         private void inicio_Load(object sender, EventArgs e)
         {
+            var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            labelVersion.Text = ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.0.0";
+
             VerificarActivacionMaquina();
 
             AutoUpdater.AppTitle = "PDVRestaurant";
