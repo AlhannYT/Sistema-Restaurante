@@ -43,6 +43,7 @@
             toolTip1 = new ToolTip(components);
             recordarchk = new CheckBox();
             alerta = new PictureBox();
+            historialCambios = new Button();
             AvisoDBIMG = new Panel();
             pictureBox3 = new PictureBox();
             conexionpanel = new Panel();
@@ -78,6 +79,8 @@
             label1 = new Label();
             label2 = new Label();
             panelSesion = new Panel();
+            label11 = new Label();
+            actualizarSistema = new Button();
             panelSerial = new Panel();
             quitarPanelSerial = new Button();
             generarSerial = new Button();
@@ -86,7 +89,6 @@
             label9 = new Label();
             label10 = new Label();
             codigoSerial = new TextBox();
-            actualizarSistema = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)alerta).BeginInit();
             AvisoDBIMG.SuspendLayout();
@@ -252,6 +254,20 @@
             alerta.TabIndex = 14;
             alerta.TabStop = false;
             toolTip1.SetToolTip(alerta, "Base de Datos Faltante");
+            // 
+            // historialCambios
+            // 
+            historialCambios.BackColor = Color.White;
+            historialCambios.Cursor = Cursors.Hand;
+            historialCambios.Image = Properties.Resources.time_past;
+            historialCambios.Location = new Point(13, 300);
+            historialCambios.Name = "historialCambios";
+            historialCambios.Size = new Size(26, 29);
+            historialCambios.TabIndex = 3;
+            historialCambios.TextAlign = ContentAlignment.MiddleRight;
+            toolTip1.SetToolTip(historialCambios, "Historial de cambios");
+            historialCambios.UseVisualStyleBackColor = false;
+            historialCambios.Click += historialCambios_Click;
             // 
             // AvisoDBIMG
             // 
@@ -645,9 +661,11 @@
             panelSesion.Controls.Add(usuarioimagen);
             panelSesion.Controls.Add(recordarchk);
             panelSesion.Controls.Add(pictureBox1);
+            panelSesion.Controls.Add(label11);
             panelSesion.Controls.Add(iniciolabel);
             panelSesion.Controls.Add(passView);
             panelSesion.Controls.Add(panel1);
+            panelSesion.Controls.Add(historialCambios);
             panelSesion.Controls.Add(actualizarSistema);
             panelSesion.Controls.Add(iniciobtn);
             panelSesion.Controls.Add(txtpass);
@@ -656,6 +674,33 @@
             panelSesion.Name = "panelSesion";
             panelSesion.Size = new Size(551, 336);
             panelSesion.TabIndex = 17;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label11.ForeColor = Color.White;
+            label11.Location = new Point(482, 302);
+            label11.Name = "label11";
+            label11.Size = new Size(51, 21);
+            label11.TabIndex = 8;
+            label11.Text = "v1.0.2";
+            // 
+            // actualizarSistema
+            // 
+            actualizarSistema.BackColor = Color.Gold;
+            actualizarSistema.Cursor = Cursors.Hand;
+            actualizarSistema.Image = Properties.Resources.nube_descargar_alt;
+            actualizarSistema.ImageAlign = ContentAlignment.MiddleLeft;
+            actualizarSistema.Location = new Point(43, 300);
+            actualizarSistema.Name = "actualizarSistema";
+            actualizarSistema.Size = new Size(166, 29);
+            actualizarSistema.TabIndex = 3;
+            actualizarSistema.Text = "Actualización Disponible!";
+            actualizarSistema.TextAlign = ContentAlignment.MiddleRight;
+            actualizarSistema.UseVisualStyleBackColor = false;
+            actualizarSistema.Visible = false;
+            actualizarSistema.Click += actualizarSistema_Click;
             // 
             // panelSerial
             // 
@@ -752,22 +797,6 @@
             codigoSerial.Size = new Size(397, 29);
             codigoSerial.TabIndex = 0;
             codigoSerial.UseSystemPasswordChar = true;
-            // 
-            // actualizarSistema
-            // 
-            actualizarSistema.BackColor = Color.Gold;
-            actualizarSistema.Cursor = Cursors.Hand;
-            actualizarSistema.Image = Properties.Resources.nube_descargar_alt;
-            actualizarSistema.ImageAlign = ContentAlignment.MiddleLeft;
-            actualizarSistema.Location = new Point(13, 300);
-            actualizarSistema.Name = "actualizarSistema";
-            actualizarSistema.Size = new Size(166, 29);
-            actualizarSistema.TabIndex = 3;
-            actualizarSistema.Text = "Actualización Disponible!";
-            actualizarSistema.TextAlign = ContentAlignment.MiddleRight;
-            actualizarSistema.UseVisualStyleBackColor = false;
-            actualizarSistema.Visible = false;
-            actualizarSistema.Click += actualizarSistema_Click;
             // 
             // inicio
             // 
@@ -870,5 +899,7 @@
         private Button quitarPanelSerial;
         private Button pegarClipb;
         private Button actualizarSistema;
+        private Button historialCambios;
+        private Label label11;
     }
 }

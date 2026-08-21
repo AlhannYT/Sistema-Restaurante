@@ -27,12 +27,12 @@ namespace Proyecto_restaurante
 
         private void inicio_Load(object sender, EventArgs e)
         {
+            VerificarActivacionMaquina();
+
             AutoUpdater.AppTitle = "PDVRestaurant";
             AutoUpdater.RunUpdateAsAdmin = true;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start("https://raw.githubusercontent.com/AlhannYT/Sistema-Restaurante/main/Version/version.xml");
-
-            VerificarActivacionMaquina();
+            AutoUpdater.Start("https://raw.githubusercontent.com/AlhannYT/Sistema-Restaurante/master/Version/version.xml");
 
             string rutaBase = @"C:\SistemaArchivos";
 
@@ -43,10 +43,7 @@ namespace Proyecto_restaurante
             string[] carpetas = {
                 "Conexion",
                 "Configuracion",
-                "Empleados",
                 "Facturas",
-                "Productos",
-                "Proveedor",
                 "DGIITXT",
                 "Usuarios"
             };
@@ -270,7 +267,7 @@ namespace Proyecto_restaurante
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ocurri� un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -340,7 +337,6 @@ namespace Proyecto_restaurante
         {
             conexionpanel.Location = new Point(605, 45);
             conexionpanel.Visible = false;
-
         }
 
         private void guardarbtn_Click(object sender, EventArgs e)
@@ -568,6 +564,14 @@ namespace Proyecto_restaurante
 
                 await Task.Run(() => EjecutarScript(conexion, scriptDinamico));
 
+                // Aplicar cualquier migración pendiente sobre la base recién creada
+                try
+                {
+                    string conexionConDB = $"Server={servidor};Database={nombreDB};User Id={usuario};Password={passw};TrustServerCertificate=True;";
+                    ScriptDB.AplicarMigraciones(conexionConDB);
+                }
+                catch { }
+
                 progressBar1.Value = 90;
 
                 MessageBox.Show("Base de datos creada correctamente");
@@ -720,6 +724,14 @@ namespace Proyecto_restaurante
                     string connStr = ConexionBD.ConexionSQL();
                     if (!string.IsNullOrEmpty(connStr))
                     {
+                        // 1. Aplicar automáticamente migraciones pendientes de la BD
+                        try
+                        {
+                            ScriptDB.AplicarMigraciones(connStr);
+                        }
+                        catch { }
+
+                        // 2. Verificar activación en base de datos
                         using (SqlConnection conexion = new SqlConnection(connStr))
                         {
                             conexion.Open();
@@ -980,6 +992,23 @@ namespace Proyecto_restaurante
             else
             {
                 MessageBox.Show("Actualmente cuenta con la versión más reciente del sistema.", "Sistema al Día", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void historialCambios_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string url = "https://github.com/AlhannYT/Sistema-Restaurante/releases";
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo abrir el navegador: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

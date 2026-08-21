@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -2310,5 +2311,124 @@ namespace Proyecto_restaurante
 			END;
 			GO
 			";
+
+		/// <summary>
+		/// Estructura para registrar migraciones incrementales de base de datos
+		/// </summary>
+		public class MigracionDB
+		{
+			public int Version { get; set; }
+			public string Descripcion { get; set; } = string.Empty;
+			public string ScriptSQL { get; set; } = string.Empty;
+		}
+
+		/// <summary>
+		/// LISTA DE MIGRACIONES INCREMENTALES:
+		/// Agrega aquí cualquier cambio nuevo (nuevas tablas, nuevas columnas, procedimientos nuevos o modificados).
+		/// El sistema solo aplicará las que falten en la base de datos del cliente sin borrar ningún dato.
+		/// </summary>
+		public static List<MigracionDB> Migraciones = new List<MigracionDB>()
+		{
+			new MigracionDB
+			{
+				Version = 1,
+				Descripcion = "Asegurar columna Activado en Configuracion",
+				ScriptSQL = @"
+					IF NOT EXISTS (
+						SELECT * FROM sys.columns 
+						WHERE object_id = OBJECT_ID('dbo.Configuracion') AND name = 'Activado'
+					)
+					BEGIN
+						ALTER TABLE [dbo].[Configuracion] ADD [Activado] BIT DEFAULT 1 NOT NULL;
+					END
+					GO
+				"
+			}
+			
+			// Para futuras actualizaciones, agregar aquí:
+			// new MigracionDB
+			// {
+			//     Version = 2,
+			//     Descripcion = "Descripción del cambio",
+			//     ScriptSQL = @" ... script SQL ... GO "
+			// }
+		};
+		public static void AplicarMigraciones(string connectionString)
+		{
+			if (string.IsNullOrWhiteSpace(connectionString)) return;
+
+			using (SqlConnection conn = new SqlConnection(connectionString))
+			{
+				conn.Open();
+
+				string crearTablaVersion = @"
+					IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'VersionBD')
+					BEGIN
+						CREATE TABLE [dbo].[VersionBD] (
+							[Id] INT IDENTITY(1,1) PRIMARY KEY,
+							[NumeroVersion] INT NOT NULL,
+							[Descripcion] VARCHAR(200) NOT NULL,
+							[FechaAplicado] DATETIME2 DEFAULT GETDATE()
+						);
+					END";
+
+				using (SqlCommand cmdVersion = new SqlCommand(crearTablaVersion, conn))
+				{
+					cmdVersion.ExecuteNonQuery();
+				}
+
+				int versionActual = 0;
+				using (SqlCommand cmdMax = new SqlCommand("SELECT ISNULL(MAX(NumeroVersion), 0) FROM VersionBD", conn))
+				{
+					object res = cmdMax.ExecuteScalar();
+					if (res != null && res != DBNull.Value)
+						versionActual = Convert.ToInt32(res);
+				}
+
+				foreach (var mig in Migraciones.OrderBy(m => m.Version))
+				{
+					if (mig.Version > versionActual)
+					{
+						using (SqlTransaction trans = conn.BeginTransaction())
+						{
+							try
+							{
+								string[] comandos = mig.ScriptSQL.Split(
+									new[] { "\r\nGO", "\nGO", "GO" },
+									StringSplitOptions.RemoveEmptyEntries
+								);
+
+								foreach (string comando in comandos)
+								{
+									if (!string.IsNullOrWhiteSpace(comando))
+									{
+										using (SqlCommand cmd = new SqlCommand(comando, conn, trans))
+										{
+											cmd.CommandTimeout = 0;
+											cmd.ExecuteNonQuery();
+										}
+									}
+								}
+
+								string registrar = "INSERT INTO VersionBD (NumeroVersion, Descripcion) VALUES (@ver, @desc)";
+								using (SqlCommand cmdReg = new SqlCommand(registrar, conn, trans))
+								{
+									cmdReg.Parameters.AddWithValue("@ver", mig.Version);
+									cmdReg.Parameters.AddWithValue("@desc", mig.Descripcion);
+									cmdReg.ExecuteNonQuery();
+								}
+
+								trans.Commit();
+							}
+							catch
+							{
+								trans.Rollback();
+								throw;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }

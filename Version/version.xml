@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0." encoding="utf-8" ?>
 <item>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <url>https://github.com/AlhannYT/Sistema-Restaurante/releases/download/v1.0.1/PDVRestaurant.Setup_v1.0.1.exe</url>
     <changelog>https://github.com/AlhannYT/Sistema-Restaurante/releases/tag/v1.0.1</changelog>
     <mandatory>true</mandatory>
