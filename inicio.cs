@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using AutoUpdaterDotNET;
 
 namespace Proyecto_restaurante
 {
@@ -22,13 +23,14 @@ namespace Proyecto_restaurante
         public string UsuarioAdmin = "A";
         public string PassAdmin = "A";
         string conexionString = ConexionBD.ConexionSQL();
+        private UpdateInfoEventArgs? infoActualizacion;
 
         private void inicio_Load(object sender, EventArgs e)
         {
-            using (SqlConnection conexion = new SqlConnection(conexionString))
-            {
-
-            }
+            AutoUpdater.AppTitle = "PDVRestaurant";
+            AutoUpdater.RunUpdateAsAdmin = true;
+            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+            AutoUpdater.Start("https://raw.githubusercontent.com/AlhannYT/Sistema-Restaurante/main/Version/version.xml");
 
             VerificarActivacionMaquina();
 
@@ -926,6 +928,58 @@ namespace Proyecto_restaurante
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo pegar desde el portapapeles: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            if (args.Error == null)
+            {
+                if (args.IsUpdateAvailable)
+                {
+                    infoActualizacion = args;
+                    actualizarSistema.Visible = true;
+                    actualizarSistema.BringToFront();
+                }
+                else
+                {
+                    actualizarSistema.Visible = false;
+                }
+            }
+            else
+            {
+                actualizarSistema.Visible = false;
+            }
+        }
+
+        private void actualizarSistema_Click(object sender, EventArgs e)
+        {
+            if (infoActualizacion != null && infoActualizacion.IsUpdateAvailable)
+            {
+                DialogResult actualizar = MessageBox.Show(
+                    $"Hay una nueva versión disponible ({infoActualizacion.CurrentVersion}).\n\n¿Seguro que desea descargar e instalar la actualización ahora?",
+                    "Actualización Disponible",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information);
+
+                if (actualizar == DialogResult.Yes)
+                {
+                    try
+                    {
+                        if (AutoUpdater.DownloadUpdate(infoActualizacion))
+                        {
+                            Application.Exit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("No se pudo iniciar la actualización: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Actualmente cuenta con la versión más reciente del sistema.", "Sistema al Día", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

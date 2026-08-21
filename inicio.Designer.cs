@@ -86,6 +86,7 @@
             label9 = new Label();
             label10 = new Label();
             codigoSerial = new TextBox();
+            actualizarSistema = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)alerta).BeginInit();
             AvisoDBIMG.SuspendLayout();
@@ -190,7 +191,7 @@
             iniciolabel.AutoSize = true;
             iniciolabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             iniciolabel.ForeColor = Color.White;
-            iniciolabel.Location = new Point(343, 68);
+            iniciolabel.Location = new Point(349, 68);
             iniciolabel.Name = "iniciolabel";
             iniciolabel.Size = new Size(130, 21);
             iniciolabel.TabIndex = 8;
@@ -647,6 +648,7 @@
             panelSesion.Controls.Add(iniciolabel);
             panelSesion.Controls.Add(passView);
             panelSesion.Controls.Add(panel1);
+            panelSesion.Controls.Add(actualizarSistema);
             panelSesion.Controls.Add(iniciobtn);
             panelSesion.Controls.Add(txtpass);
             panelSesion.Controls.Add(txtusuario);
@@ -751,6 +753,22 @@
             codigoSerial.TabIndex = 0;
             codigoSerial.UseSystemPasswordChar = true;
             // 
+            // actualizarSistema
+            // 
+            actualizarSistema.BackColor = Color.Gold;
+            actualizarSistema.Cursor = Cursors.Hand;
+            actualizarSistema.Image = Properties.Resources.nube_descargar_alt;
+            actualizarSistema.ImageAlign = ContentAlignment.MiddleLeft;
+            actualizarSistema.Location = new Point(13, 300);
+            actualizarSistema.Name = "actualizarSistema";
+            actualizarSistema.Size = new Size(166, 29);
+            actualizarSistema.TabIndex = 3;
+            actualizarSistema.Text = "Actualización Disponible!";
+            actualizarSistema.TextAlign = ContentAlignment.MiddleRight;
+            actualizarSistema.UseVisualStyleBackColor = false;
+            actualizarSistema.Visible = false;
+            actualizarSistema.Click += actualizarSistema_Click;
+            // 
             // inicio
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -851,5 +869,6 @@
         private Label label10;
         private Button quitarPanelSerial;
         private Button pegarClipb;
+        private Button actualizarSistema;
     }
 }
